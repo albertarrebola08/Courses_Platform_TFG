@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CLASES REUTILIZABLES */
+.cardOption{
+    padding: 3rem;
+    border-radius: 10px;
+    background-color: rgb(196, 189, 235);
+    font-size: 24px;
+}
+.cardOption2{
+    padding: 1rem;
+    border-radius: 10px;
+    background-color: rgb(94, 75, 199);
+    font-size: 18px;
+    height:15%;
+    color: white;
+}
+.subCardOption{
+    padding: 10px;
+    border-radius: 10px;
+    background-color: lightgoldenrodyellow;
+    color: black;
+    font-size: 14px;
+}
+/* ESTILS ETIQUETES PREDEFINITS */
+h1{
+    font-size: 24px;
+    color: black;
+    font-weight: bold;
+}
+
