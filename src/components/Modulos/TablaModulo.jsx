@@ -43,7 +43,7 @@ const TablaModulo = ({moduleId}) => {
     };
 
     obtenerDetalleModulo(moduleId);
-  }, [moduleId]); // Dependencia vacía para ejecutar el efecto solo una vez al montar el componente
+  }, [moduleId]); 
 
 //handles para crud de los registros 
 

@@ -30,7 +30,7 @@ const TablaCurso = () => {
     };
 
     fetchModules();
-  }, [cursos]); // La dependencia vacía asegura que se ejecute solo una vez al montar el componente
+  }, []); // La dependencia vacía asegura que se ejecute solo una vez al montar el componente
 
   return (
     <Table aria-label="Tabla de un curso concreto">

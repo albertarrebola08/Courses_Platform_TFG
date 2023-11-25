@@ -31,7 +31,7 @@ const TablaVideos = () =>{
 
     // Llama a la función para obtener cursos cuando el componente se monta
     fetchVideos();
-  }, [videos]);
+  }, []);
 
   return (
     <div className="flex flex-col gap-3">

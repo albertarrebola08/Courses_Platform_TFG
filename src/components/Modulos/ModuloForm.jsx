@@ -47,7 +47,7 @@ const ModuloForm = ({cursos}) => {
     
         // Llama a la función para obtener modulos cuando el componente se monta
         fetchModulos();
-      }, [modulos]);  //si no hago esto,solo renderizará una vez y no podré ver los modulos hasta que no actualice la pag 
+      }, []);  //si no hago esto,solo renderizará una vez y no podré ver los modulos hasta que no actualice la pag 
 
       const handleInputChange = (value,name) => {
         console.log(value,name);

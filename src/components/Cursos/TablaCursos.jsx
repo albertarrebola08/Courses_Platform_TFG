@@ -29,9 +29,10 @@ const TablaCursos = () => {
       }
     };
 
-    // Llama a la función para obtener cursos cuando el componente se monta
-    fetchCursos();
-  }, [cursos]);
+  // Llama a la función para obtener cursos cada vez que el componente se renderiza
+  fetchCursos();
+}, []); 
+  
 
   const handleEditCurso = (id) => {
     // Lógica para editar el curso con el ID proporcionado
@@ -40,13 +41,27 @@ const TablaCursos = () => {
 
   const handleDeleteCurso = async (id, nombre) => {
     const userConfirmed = window.confirm(`Estàs segur d'eliminar el curs: ${nombre}`);
-      if (userConfirmed) {
-        const { error } = await supabase
-            .from('curso')
-            .delete()
-            .eq('id',id)
+    
+    if (userConfirmed) {
+      const { error } = await supabase
+        .from('curso')
+        .delete()
+        .eq('id', id);
+  
+      if (error) {
+        console.error('Error al eliminar el curso:', error.message);
+      } else {
+        // Actualiza el estado de cursos después de la eliminación
+        const { data: cursosData, error: fetchError } = await supabase.from("curso").select("*");
+  
+        if (fetchError) {
+          console.error('Error al obtener cursos después de la eliminación:', fetchError.message);
+        } else {
+          setCursos(cursosData);
+        }
       }
     }
+  };
   return (
     <div className="flex flex-col gap-3">
       <Table

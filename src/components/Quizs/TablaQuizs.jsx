@@ -31,7 +31,7 @@ const TablaQuizs = () =>{
 
     // Llama a la función para obtener cursos cuando el componente se monta
     fetchQuizs();
-  }, [quizs]);
+  }, []);
 
   return (
     <div className="flex flex-col gap-3">

@@ -15,28 +15,10 @@ import TablaModulo from '../components/Modulos/TablaModulo';
 
 
 const AdminDashboard = () => {
-
-    const [cursos, setCursos] = useState([]);
     const [selectedOption, setSelectedOption] = useState(null);
+    const [cursos, setCursos] = useState([]);
     
-    useEffect(() => {
-        const fetchCursos = async () => {
-            try {
-              const { data: curso, error } = await supabase
-                .from('curso')
-                .select('*');
-              if (error) {
-                throw error;
-              }
-              setCursos(curso);
-            } catch (error) {
-              console.error('Error al obtener cursos:', error.message);
-            }
-          };
-      
-          // Llama a la función para obtener cursos cuando el componente se monta
-          fetchCursos();
-        }, [cursos]);  // El segundo argumento [] garantiza que el efecto se ejecute solo una vez, como componentDidMount()
+    
         
   return (
     <div className='container'>

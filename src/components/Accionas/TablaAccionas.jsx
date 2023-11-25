@@ -31,7 +31,7 @@ const TablaAccionas = () =>{
 
     // Llama a la función para obtener cursos cuando el componente se monta
     fetchAccionas();
-  }, [accionas]);
+  }, []);
 
   return (
     <div className="flex flex-col gap-3">

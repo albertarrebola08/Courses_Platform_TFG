@@ -23,19 +23,31 @@ const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     e.preventDefault();
     try {
       const { data, error } = await supabase.from('curso').insert([cursoData]);
+      
       if (error) {
         throw error;
       }
+  
+      // Obtén la lista actualizada de cursos después de la inserción
+      const { data: cursosData, error: fetchError } = await supabase.from("curso").select("*");
+  
+      if (fetchError) {
+        console.error('Error al obtener cursos después de la inserción:', fetchError.message);
+      } else {
+        // Actualiza el estado de cursos después de la inserción
+        setCursos(cursosData);
+      }
+  
       // Mostrar mensaje de éxito durante 3 segundos
       setShowSuccessMessage(true);
       setTimeout(() => {
         setShowSuccessMessage(false);
       }, 3000);
-     
+  
       // Vaciar el formulario después de enviarlo
       setCursoData({
         nombre: '',
-        descripcion:''
+        descripcion: ''
         // otras propiedades del formulario
       });
     } catch (error) {

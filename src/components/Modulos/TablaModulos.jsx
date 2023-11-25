@@ -48,7 +48,7 @@
                   // Consulta todos los módulos cuando no se ha seleccionado un curso
                   const { data, error } = await supabase
                     .from('modulo')
-                    .select('*');
+                    .select('');
           
                   if (error) {
                     console.error('Error al obtener los módulos:', error.message);
@@ -88,7 +88,7 @@
           
             // Llama a la función para obtener módulos cuando el componente se monta
             fetchModulos();
-          }, [cursoSeleccionado,modulos]); // Dependencia actualizada a cursoSeleccionado
+          }, []); // Dependencia actualizada a cursoSeleccionado
           
     
         const handleEditModulo = (id,nombre) => {
@@ -183,7 +183,7 @@
                 className="m-8 p-8"
               >
                 <ModalContent>
-                  <ModalHeader className="flex flex gap-1">Elements del mòdul: <span className="text-gray-600">{selectedModule.nombre}</span></ModalHeader>
+                  <ModalHeader className="flex gap-1">Elements del mòdul: <span className="text-gray-600">{selectedModule.nombre}</span></ModalHeader>
                   <ModalBody className="flex justify-between flex-row">
                     {/* Contenido del modal con la información del módulo seleccionado */}
                     <TablaModulo className="" moduleId={selectedModule.id} />
