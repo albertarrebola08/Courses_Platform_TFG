@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import CursoForm from '../components/Cursos/CursoForm';
 import TablaModulos from '../components/Modulos/TablaModulos';
-import TablaCursos from '../components/Cursos/TablaCursos';
+import TablaCursos from '../components/Cursos/CardsCursos';
 import ModuloForm from '../components/Modulos/ModuloForm';
 import { supabase } from '../supabase/supabaseClient';
 import TablaCurso from '../components/Cursos/TablaCurso';
