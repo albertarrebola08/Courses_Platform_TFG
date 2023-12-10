@@ -97,7 +97,6 @@
             setSelectedModule({id,nombre});
             onOpen();
         };
-        
         const handleDeleteModulo = async (id, nombre) => {
             // Lógica para eliminar el modulo con el ID proporcionado
             const userConfirmed = window.confirm(`Estàs segur d'eliminar el mòdul: ${nombre}`);
