@@ -210,7 +210,7 @@ const ModuloForm = ({cursos}) => {
             },
           ]).select();
       
-          console.log('Buena tarde soy: ',data)
+          
 
           if (cursoModuloError) {
             throw cursoModuloError;
