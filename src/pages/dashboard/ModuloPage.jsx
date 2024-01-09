@@ -1,5 +1,4 @@
 
-
 // Aqui irá la tabla de un modulo concreto. Se generará a partir de darle al OJO en la tabla modulos. Tendrá los campos que salgan de hacer un JOIN de todas las tablas que tengan el mismo modulo ID:
 
 // - ORDEN
@@ -22,20 +21,30 @@ import {
 } from '@nextui-org/react';
 import { RiEyeFill } from 'react-icons/ri';
 
-const TablaModulo = ({moduleId}) => {
-  const [detalleModulo, setDetalleModulo] = useState([]);
+import { useParams } from "react-router-dom";
+
+const ModuloPage = () => {
+
+    const { moduleId } = useParams();
+
+    const [detalleModulo, setDetalleModulo] = useState([]);
   useEffect(() => {
     const obtenerDetalleModulo = async (moduleId) => {
         try {
-            console.log(moduleId)
+
+          console.log(moduleId)
+           
             const { data, error } = await supabase.rpc('obtenerdetallemodulo', {
-              moduloid: moduleId
-              
+              moduloid: parseInt(moduleId, 10)             
             });
+            
         if (error) {
           console.error('Error al obtener el detalle del módulo:', error.message);
         } else {
+          console.log("Datos: ", data)
           setDetalleModulo(data);
+
+
         }
       } catch (error) {
         console.error('Error al obtener el detalle del módulo:', error.message);
@@ -47,16 +56,16 @@ const TablaModulo = ({moduleId}) => {
 
 //handles para crud de los registros 
 
-const handleEditDetalleModulo = (id,) => {
+const handleEditDetalleModulo = (id) => {
   console.log(`Aqui va la consulta per editar l'element amb ID: ${id} `)
 }
 
 const handleDeleteDetalleModulo = async (nombre) => {
   // Lógica para eliminar el modulo con el ID proporcionado
   confirm(`Estàs segur d'eliminar l'element: ${nombre} ?`);
-  console.log(`Aqui va la consulta per eliminar l'element amb ID: ${id} `)
+  console.log(`Aqui va la consulta per eliminar l'element amb ID: ${moduleId} `)
 };
-const handleViewDetalleModulo = (id,) => {
+const handleViewDetalleModulo = (id) => {
   console.log(`Aqui va la consulta per visualitzar l'element amb ID: ${id} `)
 }
 
@@ -102,13 +111,14 @@ const handleDragStart = (e, orden) => {
     });
 
     setDetalleModulo(reorderedDetalleModulo);
-  };  
+  };
+      
 
   return (
     <div className="flex flex-col gap-3">
       <Table aria-label="Detalle del Módulo">
   <TableHeader>
-  <TableColumn>ID</TableColumn>
+  <TableColumn>ID {moduleId}</TableColumn>
     <TableColumn>Orden</TableColumn>
     <TableColumn>Tipo</TableColumn>
     <TableColumn>Título</TableColumn>
@@ -147,6 +157,5 @@ const handleDragStart = (e, orden) => {
   );
 };
 
-export default TablaModulo;
 
-
+export default ModuloPage;

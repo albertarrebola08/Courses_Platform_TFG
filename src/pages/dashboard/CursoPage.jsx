@@ -46,7 +46,21 @@ const CursoPage = () => {
   };
   const handleSubmit = async (body) => {
     // Insertar el módulo en la tabla modulo y obtener su id
-    const { data: dataArray, error } = await supabase.from("modulo").insert(body).select();
+    const bodyBd = {
+      nombre: body.nombre,
+      descripcion: body.descripcion,
+      have_video: body.have_video,
+      have_material: body.have_material,
+      have_examen: body.have_examen,
+      have_quiz: body.have_quiz,
+      have_acciona: body.have_acciona,
+      have_act3: body.have_act2,
+      have_act2: body.have_act3,
+
+    }
+
+    const { data: dataArray, error } = await supabase.from("modulo").insert(bodyBd).select();
+    
     const data = dataArray[0];
     if (error) {
       throw error;
@@ -58,10 +72,13 @@ const CursoPage = () => {
     // Iterar sobre los tipos de elementos y manejarlos
     for (const tipo of tiposElementos) {
       if (body[`have_${tipo}`]) {
-        const cantidad = body[`${tipo}_cantidad`];
+        console.log(`have_${tipo}`)
+        const cantidad = body[`${tipo}_cantidad`];        
+        console.log('CANTIDADES: ', cantidad)
         for (let i = 0; i < cantidad; i++) {
           switch (tipo) {
             case "video":
+              console.log('insertando video')
               // Lógica para insertar elemento de tipo video en la base de datos
               const videoData = {
                 titulo: "Titulo de video por defecto",
@@ -291,7 +308,7 @@ const CursoPage = () => {
                   <TableCell>{modulo.have_examen ? <RiCheckFill className="text-green-600" /> : <RiCloseFill className="text-red-600" />}</TableCell>
 
                   <TableCell className="flex gap-4 items-center">
-                    <Link to={`/dashboard/modulos/${modulo.id}`}>
+                    <Link to={`/dashboard/modulo/${modulo.id}`}>
                       <Button className="bg-blue-400">
                         <RiEditFill className="text-white" />
                       </Button>

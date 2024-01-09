@@ -32,11 +32,11 @@ const ModuloForm = ({ cursos }) => {
     // Obtener la lista de modulos existentes cuando el componente se monta
     const fetchModulos = async () => {
       try {
-        const { data: modulo, error } = await supabase.from("modulo").select("*");
+        const { data, error } = await supabase.from("modulo").select("*");
         if (error) {
           throw error;
         }
-        setModulos(modulo);
+        setModulos(data);
       } catch (error) {
         console.error("Error al obtener modulos:", error.message);
       }
@@ -90,104 +90,37 @@ const ModuloForm = ({ cursos }) => {
         if (moduloData[`have_${tipo}`]) {
           const cantidad = moduloData[`${tipo}_cantidad`];
           for (let i = 0; i < cantidad; i++) {
+            let insertData;
+      
             switch (tipo) {
               case "video":
-                // Lógica para insertar elemento de tipo video en la base de datos
-                const videoData = {
+                insertData = {
                   titulo: "Titulo de video por defecto",
                   url: "https://youtu.be/CH1XGdu-hzQ",
-                  modulo_id: data.id,
+                  modulo_id: data.moduleId,
                   tipo: tipo,
                 };
-                const { error: videoError } = await supabase.from("video").insert([videoData]);
-                if (videoError) {
-                  throw videoError;
-                }
-                console.log("Video creado con éxito");
                 break;
               case "material":
-                const materialData = {
+                insertData = {
                   titulo: "Titulo de material por defecto",
                   descripcion: "Descripción por defecto",
                   archivo_url: "https://drive.google.com/file/d/19_aCdifK2LTE03SR_GX1KDZ5hYdMa3UN/view?usp=share_link",
                   modulo_id: data.id,
                   tipo: tipo,
                 };
-                const { error: materialError } = await supabase.from("material").insert([materialData]);
-                if (materialError) {
-                  throw materialError;
-                }
-                console.log("material creado con éxito");
                 break;
-              case "acciona":
-                const accionaData = {
-                  titulo: "Titulo de acciona por defecto",
-                  enunciado: "Enunciado por defecto",
-                  video_enunciado: "https://youtu.be/Es4u6GrV7hw",
-                  modulo_id: data.id,
-                  tipo: tipo,
-                };
-                const { error: accionaError } = await supabase.from("acciona").insert([accionaData]);
-                if (accionaError) {
-                  throw accionaError;
-                }
-                console.log("acciona creado con éxito");
-                break;
-              case "examen":
-                const examenData = {
-                  titulo: "Titulo de examen por defecto",
-                  enunciado: "Enunciado de examen por defecto",
-                  modulo_id: data.id,
-                  tipo: tipo,
-                };
-                const { error: examenError } = await supabase.from("examen").insert([examenData]);
-                if (examenError) {
-                  throw examenError;
-                }
-                console.log("examen creado con éxito");
-                break;
-              case "quiz":
-                const quizData = {
-                  titulo: "Titulo de quiz por defecto",
-                  descripcion: "Descripción de quiz por defecto",
-                  modulo_id: data.id,
-                  tipo: tipo,
-                };
-                const { error: quizError } = await supabase.from("actividad_quiz").insert([quizData]);
-                if (quizError) {
-                  throw quizError;
-                }
-                console.log("quiz creado con éxito");
-                break; // ...
-              case "act2":
-                const act2Data = {
-                  titulo: "Titulo de act2 por defecto",
-                  descripcion: "Descripcion de act2 por defecto",
-                  modulo_id: data.id,
-                  tipo: tipo,
-                };
-                const { error: act2Error } = await supabase.from("act2").insert([act2Data]);
-                if (act2Error) {
-                  throw act2Error;
-                }
-                console.log("act2 creado con éxito");
-                break;
-              case "act3":
-                const act3Data = {
-                  titulo: "Titulo de act3 por defecto",
-                  descripcion: "Descripcion de act3 por defecto",
-                  modulo_id: data.id,
-                  tipo: tipo,
-                };
-                const { error: act3Error } = await supabase.from("act3").insert([act3Data]);
-                if (act3Error) {
-                  throw act3Error;
-                }
-                console.log("act3 creado con éxito");
-                break;
+              // Agrega casos para otros tipos aquí...
               default:
                 console.log(`Tipo de elemento no reconocido: ${tipo}`);
+                continue;
             }
+      
+            const { error: insertError } = await supabase.from(tipo).insert([insertData]);
+            if (insertError) {
+              throw insertError;
+            }
+            console.log(`${tipo} creado con éxito`);
           }
         }
       }

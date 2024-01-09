@@ -45,7 +45,10 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
       have_acciona: moduloData.have_acciona,
       have_act3: moduloData.have_act2,
       have_act2: moduloData.have_act3,
+      acciona_cantidad: moduloData.acciona_cantidad,
+      video_cantidad: moduloData.video_cantidad
     };
+
 
     try {
       onSubmit(body);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../../supabase/supabaseClient';
 import {Input, Button, Textarea} from "@nextui-org/react";
 import { RiAddFill, RiCloseFill, RiThumbUpFill } from "react-icons/ri"

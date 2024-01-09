@@ -5,6 +5,7 @@ import DashboardLayout from "./components/Layout/Dashboard/DashboardLayout";
 import CursosPage from "./pages/dashboard/CursosPage";
 import CursoPage from "./pages/dashboard/CursoPage";
 import QuestionsPage from "./pages/dashboard/QuestionsPage";
+import ModuloPage from "./pages/dashboard/ModuloPage";
 
 function App() {
   return (
@@ -17,9 +18,10 @@ function App() {
               <Route index element={<CursosPage />} />
               <Route path="cursos" element={<CursosPage />} />
               <Route path="cursos/:id" element={<CursoPage />} />
+              {<Route path="modulo/:moduleId" element={<ModuloPage />} />}
 
               <Route path="preguntes-diaries" element={<QuestionsPage />} />
-
+              
               <Route path="*" element={<p>404</p>} />
             </Route>
           </Routes>
