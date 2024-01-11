@@ -54,8 +54,8 @@ const CursoPage = () => {
       have_examen: body.have_examen,
       have_quiz: body.have_quiz,
       have_acciona: body.have_acciona,
-      have_act3: body.have_act2,
-      have_act2: body.have_act3,
+      have_camino: body.have_camino,
+      have_numeral: body.have_numeral,
 
     }
 
@@ -67,7 +67,7 @@ const CursoPage = () => {
     }
 
     // Array de tipos de elementos
-    const tiposElementos = ["video", "material", "examen", "quiz", "acciona", "act3", "act2"];
+    const tiposElementos = ["video", "material", "examen", "quiz", "acciona", "camino", "numeral"];
 
     // Iterar sobre los tipos de elementos y manejarlos
     for (const tipo of tiposElementos) {
@@ -146,31 +146,31 @@ const CursoPage = () => {
               }
               console.log("quiz creado con éxito");
               break; // ...
-            case "act2":
-              const act2Data = {
-                titulo: "Titulo de act2 por defecto",
-                descripcion: "Descripcion de act2 por defecto",
+            case "numeral":
+              const numeralData = {
+                titulo: "Titulo de actividad numeral por defecto",
+                descripcion: "Descripcion de actividad numeral por defecto",
                 modulo_id: data.id,
                 tipo: tipo,
               };
-              const { error: act2Error } = await supabase.from("act2").insert([act2Data]);
-              if (act2Error) {
-                throw act2Error;
+              const { error: numeralError } = await supabase.from("actividad_numeral").insert([numeralData]);
+              if (numeralError) {
+                throw numeralError;
               }
-              console.log("act2 creado con éxito");
+              console.log("Actividad numeral creada con éxito");
               break;
-            case "act3":
-              const act3Data = {
-                titulo: "Titulo de act3 por defecto",
-                descripcion: "Descripcion de act3 por defecto",
+            case "camino":
+              const caminoData = {
+                titulo: "Titulo de actividad camino por defecto",
+                descripcion: "Descripcion de actividad camino por defecto",
                 modulo_id: data.id,
                 tipo: tipo,
               };
-              const { error: act3Error } = await supabase.from("act3").insert([act3Data]);
-              if (act3Error) {
-                throw act3Error;
+              const { error: caminoError } = await supabase.from("actividad_camino").insert([caminoData]);
+              if (caminoError) {
+                throw caminoError;
               }
-              console.log("act3 creado con éxito");
+              console.log("Actividad camino creada con éxito");
               break;
             default:
               console.log(`Tipo de elemento no reconocido: ${tipo}`);
@@ -288,9 +288,9 @@ const CursoPage = () => {
               <TableColumn>VIDEO ?</TableColumn>
               <TableColumn>MATERIAL ?</TableColumn>
               <TableColumn>ACCIONA ?</TableColumn>
-              <TableColumn>QUIZ ?</TableColumn>
-              <TableColumn>ACT2 ?</TableColumn>
-              <TableColumn>ACT3 ?</TableColumn>
+              <TableColumn>ACT QUIZ ?</TableColumn>
+              <TableColumn>ACT NUMERAL ?</TableColumn>
+              <TableColumn>ACT CAMINO ?</TableColumn>
               <TableColumn>EXAMEN ?</TableColumn>
               <TableColumn>ACCIONES</TableColumn>
             </TableHeader>
@@ -303,8 +303,8 @@ const CursoPage = () => {
                   <TableCell>{modulo.have_material ? <RiCheckFill className="text-green-600" /> : <RiCloseFill className="text-red-600" />}</TableCell>
                   <TableCell>{modulo.have_acciona ? <RiCheckFill className="text-green-600" /> : <RiCloseFill className="text-red-600" />}</TableCell>
                   <TableCell>{modulo.have_quiz ? <RiCheckFill className="text-green-600" /> : <RiCloseFill className="text-red-600" />}</TableCell>
-                  <TableCell>{modulo.have_act2 ? <RiCheckFill className="text-green-600" /> : <RiCloseFill className="text-red-600" />}</TableCell>
-                  <TableCell>{modulo.have_act3 ? <RiCheckFill className="text-green-600" /> : <RiCloseFill className="text-red-600" />}</TableCell>
+                  <TableCell>{modulo.have_numeral ? <RiCheckFill className="text-green-600" /> : <RiCloseFill className="text-red-600" />}</TableCell>
+                  <TableCell>{modulo.have_camino ? <RiCheckFill className="text-green-600" /> : <RiCloseFill className="text-red-600" />}</TableCell>
                   <TableCell>{modulo.have_examen ? <RiCheckFill className="text-green-600" /> : <RiCloseFill className="text-red-600" />}</TableCell>
 
                   <TableCell className="flex gap-4 items-center">

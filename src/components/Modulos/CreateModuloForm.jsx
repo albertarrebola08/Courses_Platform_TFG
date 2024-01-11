@@ -10,16 +10,16 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
     have_material: false,
     have_video: false,
     have_acciona: false,
-    have_act2: false,
-    have_act3: false,
+    have_numeral: false,
+    have_camino: false,
     have_examen: false,
     have_quiz: false,
     curso_id: cursoId,
     video_cantidad: 1,
     acciona_cantidad: 1,
     examen_cantidad: 1,
-    act2_cantidad: 1,
-    act3_cantidad: 1,
+    act_numeral_cantidad: 1,
+    act_camino_cantidad: 1,
     material_cantidad: 1,
     quiz_cantidad: 1,
   });
@@ -43,13 +43,13 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
       have_examen: moduloData.have_examen,
       have_quiz: moduloData.have_quiz,
       have_acciona: moduloData.have_acciona,
-      have_act3: moduloData.have_act2,
-      have_act2: moduloData.have_act3,
+      have_camino: moduloData.have_camino,
+      have_numeral: moduloData.have_numeral,
       acciona_cantidad: moduloData.acciona_cantidad,
       video_cantidad: moduloData.video_cantidad,
       quiz_cantidad: moduloData.quiz_cantidad,
-      act2_cantidad: moduloData.act2_cantidad,
-      act3_cantidad: moduloData.act3_cantidad,
+      act_numeral_cantidad: moduloData.act_numeral_cantidad,
+      act_camino_cantidad: moduloData.act_camino_cantidad,
       material_cantidad: moduloData.material_cantidad,
       examen_cantidad : moduloData.examen_cantidad
     };
@@ -62,15 +62,15 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
         have_material: false,
         have_video: false,
         have_acciona: false,
-        have_act2: false,
-        have_act3: false,
+        have_numeral: false,
+        have_camino: false,
         have_examen: false,
         have_quiz: false,
         video_cantidad: 0,
         acciona_cantidad: 0,
         examen_cantidad: 0,
-        act2_cantidad: 0,
-        act3_cantidad: 0,
+        act_numeral_cantidad: 0,
+        act_camino_cantidad: 0,
         material_cantidad: 0,
         quiz_cantidad: 0,
       });
@@ -96,7 +96,7 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
         <h4 className="mt-4 font-bold">Quins elements vols afegir al mòdul</h4>
         <div className="p-8 flex flex-col gap-4 ">
           {/* Recorro con map y pinto los checkbox con los select */}
-          {["video", "acciona", "quiz", "act2", "act3", "material", "examen"].map((element) => (
+          {["video", "acciona", "quiz", "numeral", "camino", "material", "examen"].map((element) => (
             <div className="module-element justify-between flex items-center" key={element}>
               <Checkbox name={`have_${element}`} onValueChange={(value) => handleCheckboxChange(`have_${element}`, value)} isSelected={moduloData[`have_${element}`]} />
               <span>{element.charAt(0).toUpperCase() + element.slice(1)}</span>

@@ -3,7 +3,7 @@
 // Aqui irá la tabla de un modulo concreto. Se generará a partir de darle al OJO en la tabla modulos. Tendrá los campos que salgan de hacer un JOIN de todas las tablas que tengan el mismo modulo ID:
 
 // - ORDEN
-// - TIPO (quiz, act2, act3, acciona, material, examen)
+// - TIPO (quiz, numeral, camino, acciona, material, examen)
 // - ACCIONES (VER, EDITAR, ELIMINAR)
 
 //+ un boton de añadir más (que te abrirá un form con un select para indicar que quieres añadir y cuántos)

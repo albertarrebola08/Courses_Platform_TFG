@@ -33,8 +33,8 @@ const AdminDashboard = () => {
             <div className='cardOption' onClick={() => setSelectedOption('Modulos')}>Mòduls</div>
             <div className='cardOption flex flex-col gap-2'>Activitats
               <div className='subCardOption' onClick={() => setSelectedOption('Quizs')}>Quizs</div>
-              <div className='subCardOption'>Activitat 2</div>
-              <div className='subCardOption'>Activitat 3</div>
+              <div className='subCardOption'>Activitat resposta numeral</div>
+              <div className='subCardOption'>Activitat camí simulat</div>
             </div>
             <div className='cardOption'>Usuaris</div>
             <div className='cardOption2' onClick={() => setSelectedOption('Examens')}>Examens</div>

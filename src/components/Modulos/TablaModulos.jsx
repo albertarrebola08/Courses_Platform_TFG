@@ -140,8 +140,8 @@
                   <TableColumn>MATERIAL ?</TableColumn>
                   <TableColumn>ACCIONA ?</TableColumn>
                   <TableColumn>QUIZ ?</TableColumn>
-                  <TableColumn>ACT2 ?</TableColumn>
-                  <TableColumn>ACT3 ?</TableColumn>
+                  <TableColumn>NUMERAL ?</TableColumn>
+                  <TableColumn>CAMINO ?</TableColumn>
                   <TableColumn>EXAMEN ?</TableColumn>
                   <TableColumn>ACCIONES</TableColumn>
                   </TableHeader>
@@ -154,8 +154,8 @@
                       <TableCell>{modulo.have_material ? <RiCheckFill className="text-green-600" /> : <RiCloseFill className="text-red-600" />}</TableCell>
                       <TableCell>{modulo.have_acciona ? <RiCheckFill className="text-green-600"/> : <RiCloseFill className="text-red-600"/>}</TableCell>
                       <TableCell>{modulo.have_quiz ? <RiCheckFill className="text-green-600"/> : <RiCloseFill className="text-red-600"/>  }</TableCell>
-                      <TableCell>{modulo.have_act2 ? <RiCheckFill className="text-green-600"/> : <RiCloseFill className="text-red-600"/>  }</TableCell>
-                      <TableCell>{modulo.have_act3 ? <RiCheckFill className="text-green-600"/> : <RiCloseFill className="text-red-600"/>  }</TableCell>
+                      <TableCell>{modulo.have_numeral ? <RiCheckFill className="text-green-600"/> : <RiCloseFill className="text-red-600"/>  }</TableCell>
+                      <TableCell>{modulo.have_camino ? <RiCheckFill className="text-green-600"/> : <RiCloseFill className="text-red-600"/>  }</TableCell>
                       <TableCell>{modulo.have_examen ? <RiCheckFill className="text-green-600"/> : <RiCloseFill className="text-red-600"/>}</TableCell>
                       
                       <TableCell className="flex gap-4 items-center">
