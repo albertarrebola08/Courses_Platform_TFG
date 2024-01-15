@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { GlobalContext } from '../../GlobalContext';
-import { Button } from '@nextui-org/react';
+import { Button } from 'pol-ui';
 import TablaModulo from '../../components/Modulos/TablaModulo';
 import { RiVideoFill,RiBookOpenFill,RiFileEditFill,RiListCheck3,RiWalkFill      } from "react-icons/ri";
 import { LuDices } from "react-icons/lu";

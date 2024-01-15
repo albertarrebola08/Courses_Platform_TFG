@@ -69,12 +69,16 @@ const CursoPage = () => {
     // Array de tipos de elementos
     const tiposElementos = ["video", "material", "examen", "quiz", "acciona", "camino", "numeral"];
 
+    let ordenCounter = 1;
     // Iterar sobre los tipos de elementos y manejarlos
     for (const tipo of tiposElementos) {
       if (body[`have_${tipo}`]) {
         console.log(`have_${tipo}`)
         const cantidad = body[`${tipo}_cantidad`];        
         console.log('CANTIDADES: ', cantidad)
+
+        
+
         for (let i = 0; i < cantidad; i++) {
           switch (tipo) {
             case "video":
@@ -85,6 +89,8 @@ const CursoPage = () => {
                 url: "https://youtu.be/CH1XGdu-hzQ",
                 modulo_id: data.id,
                 tipo: tipo,
+                orden:ordenCounter
+
               };
               const { error: videoError } = await supabase.from("video").insert([videoData]);
               if (videoError) {
@@ -99,6 +105,8 @@ const CursoPage = () => {
                 archivo_url: "https://drive.google.com/file/d/19_aCdifK2LTE03SR_GX1KDZ5hYdMa3UN/view?usp=share_link",
                 modulo_id: data.id,
                 tipo: tipo,
+                orden:ordenCounter
+
               };
               const { error: materialError } = await supabase.from("material").insert([materialData]);
               if (materialError) {
@@ -113,6 +121,8 @@ const CursoPage = () => {
                 video_enunciado: "https://youtu.be/Es4u6GrV7hw",
                 modulo_id: data.id,
                 tipo: tipo,
+                orden:ordenCounter
+
               };
               const { error: accionaError } = await supabase.from("acciona").insert([accionaData]);
               if (accionaError) {
@@ -126,6 +136,8 @@ const CursoPage = () => {
                 enunciado: "Enunciado de examen por defecto",
                 modulo_id: data.id,
                 tipo: tipo,
+                orden:ordenCounter
+
               };
               const { error: examenError } = await supabase.from("examen").insert([examenData]);
               if (examenError) {
@@ -139,6 +151,7 @@ const CursoPage = () => {
                 descripcion: "Descripción de quiz por defecto",
                 modulo_id: data.id,
                 tipo: tipo,
+                orden:ordenCounter
               };
               const { error: quizError } = await supabase.from("actividad_quiz").insert([quizData]);
               if (quizError) {
@@ -152,6 +165,8 @@ const CursoPage = () => {
                 descripcion: "Descripcion de actividad numeral por defecto",
                 modulo_id: data.id,
                 tipo: tipo,
+                orden:ordenCounter
+
               };
               const { error: numeralError } = await supabase.from("actividad_numeral").insert([numeralData]);
               if (numeralError) {
@@ -165,6 +180,8 @@ const CursoPage = () => {
                 descripcion: "Descripcion de actividad camino por defecto",
                 modulo_id: data.id,
                 tipo: tipo,
+                orden:ordenCounter
+
               };
               const { error: caminoError } = await supabase.from("actividad_camino").insert([caminoData]);
               if (caminoError) {
@@ -175,6 +192,8 @@ const CursoPage = () => {
             default:
               console.log(`Tipo de elemento no reconocido: ${tipo}`);
           }
+
+          ordenCounter ++;
         }
       }
     }

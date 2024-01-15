@@ -18,8 +18,8 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
     video_cantidad: 1,
     acciona_cantidad: 1,
     examen_cantidad: 1,
-    act_numeral_cantidad: 1,
-    act_camino_cantidad: 1,
+    numeral_cantidad: 1,
+    camino_cantidad: 1,
     material_cantidad: 1,
     quiz_cantidad: 1,
   });
@@ -48,8 +48,8 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
       acciona_cantidad: moduloData.acciona_cantidad,
       video_cantidad: moduloData.video_cantidad,
       quiz_cantidad: moduloData.quiz_cantidad,
-      act_numeral_cantidad: moduloData.act_numeral_cantidad,
-      act_camino_cantidad: moduloData.act_camino_cantidad,
+      numeral_cantidad: moduloData.numeral_cantidad,
+      camino_cantidad: moduloData.camino_cantidad,
       material_cantidad: moduloData.material_cantidad,
       examen_cantidad : moduloData.examen_cantidad
     };
@@ -69,8 +69,8 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
         video_cantidad: 0,
         acciona_cantidad: 0,
         examen_cantidad: 0,
-        act_numeral_cantidad: 0,
-        act_camino_cantidad: 0,
+        numeral_cantidad: 0,
+        camino_cantidad: 0,
         material_cantidad: 0,
         quiz_cantidad: 0,
       });

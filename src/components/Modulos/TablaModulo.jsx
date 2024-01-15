@@ -6,8 +6,9 @@
 
 //+ un boton de añadir más (que te abrirá un form con un select para indicar que quieres añadir y cuántos)
 
-
-import { useState,useContext, useEffect } from 'react';
+import { RiArrowUpLine,RiArrowDownLine,RiDeleteBin4Fill,RiEdit2Fill, RiEyeFill } from "react-icons/ri";
+import { Button } from "pol-ui";
+import { useContext, useEffect } from 'react';
 import { supabase } from '../../supabase/supabaseClient';
 import {
   Table,
@@ -16,34 +17,31 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Button,
 } from '@nextui-org/react';
 
 import { useParams } from "react-router-dom";
 import { GlobalContext } from '../../GlobalContext';
 
 const TablaModulo = () => {
+  const { moduleId } = useParams();
+  const { detalleModulo, setDetalleModulo } = useContext(GlobalContext);
 
-    const { moduleId } = useParams();
-    const {detalleModulo,setDetalleModulo} = useContext(GlobalContext)
-  
+  // Estado local para almacenar el orden del elemento arrastrado
+
   useEffect(() => {
-    
     const obtenerDetalleModulo = async (moduleId) => {
-        try {
-          console.log(moduleId)
-           
-            const { data, error } = await supabase.rpc('obtenerdetallemodulo', {
-              moduloid: parseInt(moduleId, 10)             
-            });
-            
+      try {
+        console.log(moduleId);
+        const { data, error } = await supabase.rpc('obtenerdetallemodulo', {
+          moduloid: parseInt(moduleId, 10),
+        });
+        console.log('dataaa: '+ data)
+
         if (error) {
           console.error('Error al obtener el detalle del módulo:', error.message);
         } else {
-          console.log("Datos: ", data)
+          console.log('Datos: ', data);
           setDetalleModulo(data);
-
-
         }
       } catch (error) {
         console.error('Error al obtener el detalle del módulo:', error.message);
@@ -51,111 +49,102 @@ const TablaModulo = () => {
     };
 
     obtenerDetalleModulo(moduleId);
-  }, [setDetalleModulo, moduleId]); 
+  }, [setDetalleModulo, moduleId]);
 
-//handles para crud de los registros 
-
-const handleEditDetalleModulo = (id) => {
-  console.log(`Aqui va la consulta per editar l'element amb ID: ${id} `)
-}
-
-const handleDeleteDetalleModulo = async (nombre) => {
-  // Lógica para eliminar el modulo con el ID proporcionado
-  confirm(`Estàs segur d'eliminar l'element: ${nombre} ?`);
-  console.log(`Aqui va la consulta per eliminar l'element amb ID: ${moduleId} `)
-};
-const handleViewDetalleModulo = (id) => {
-  console.log(`Aqui va la consulta per visualitzar l'element amb ID: ${id} `)
-}
-
-// PARA PODER COMMUTAR Y REORDENAR ROWS EN LA TABLA
-const handleDragStart = (e, orden) => {
-    e.dataTransfer.setData('text/plain', orden);
-  };
-
-  const handleDragOver = (e, orden) => {
-    e.preventDefault();
-  };
-
-  const handleDragEnter = (e, targetOrden) => {
-    e.preventDefault();
-    const draggedOrden = e.dataTransfer.getData('text/plain');
-    if (draggedOrden !== targetOrden.toString()) {
-      const reorderedDetalleModulo = [...detalleModulo];
-      const draggedItem = reorderedDetalleModulo.find(detalle => detalle.orden === parseInt(draggedOrden, 10));
-      const targetIndex = reorderedDetalleModulo.findIndex(detalle => detalle.orden === parseInt(targetOrden, 10));
-      reorderedDetalleModulo.splice(targetIndex + 1, 0, draggedItem);
-      reorderedDetalleModulo.splice(reorderedDetalleModulo.indexOf(draggedItem), 1);
-      setDetalleModulo(reorderedDetalleModulo);
-    }
-  };
-
-  const handleDrop = (e, targetOrden) => {
-    e.preventDefault();
-    const draggedOrden = e.dataTransfer.getData('text/plain');
-    handleReorder(parseInt(draggedOrden, 10), parseInt(targetOrden, 10));
-  };
-
-  const handleReorder = (draggedOrden, targetOrden) => {
-    // Lógica para reordenar los elementos en detalleModulo
-    const reorderedDetalleModulo = [...detalleModulo];
-    const draggedItem = reorderedDetalleModulo.find(detalle => detalle.orden === draggedOrden);
-    reorderedDetalleModulo.splice(reorderedDetalleModulo.indexOf(draggedItem), 1);
-    const targetIndex = reorderedDetalleModulo.findIndex(detalle => detalle.orden === targetOrden);
-    reorderedDetalleModulo.splice(targetIndex, 0, draggedItem);
-
-    // Recalcula los órdenes después del reordenamiento
-    reorderedDetalleModulo.forEach((detalle, index) => {
-      detalle.orden = index + 1;
-    });
-
-    setDetalleModulo(reorderedDetalleModulo);
-  };
-      
+  // const handleMoveUp = (orden) => {
+  //   const reorderedDetalleModulo = [...detalleModulo];
+  //   const index = reorderedDetalleModulo.findIndex((detalle) => detalle.orden === orden);
+  
+  //   if (index > 0) {
+  //     // Intercambia el elemento actual con el anterior
+  //     [reorderedDetalleModulo[index - 1], reorderedDetalleModulo[index]] = [
+  //       reorderedDetalleModulo[index],
+  //       reorderedDetalleModulo[index - 1],
+  //     ];
+  
+  //     // Actualiza el orden después del intercambio
+  //     reorderedDetalleModulo[index].orden = index + 1;
+  //     reorderedDetalleModulo[index - 1].orden = index;
+  
+  //     setDetalleModulo(reorderedDetalleModulo);
+  //   }
+  // };
+  
+  // const handleMoveDown = (orden) => {
+  //   const reorderedDetalleModulo = [...detalleModulo];
+  //   const index = reorderedDetalleModulo.findIndex((detalle) => detalle.orden === orden);
+  
+  //   if (index < detalleModulo.length - 1) {
+  //     // Intercambia el elemento actual con el siguiente
+  //     [reorderedDetalleModulo[index], reorderedDetalleModulo[index + 1]] = [
+  //       reorderedDetalleModulo[index + 1],
+  //       reorderedDetalleModulo[index],
+  //     ];
+  
+  //     // Actualiza el orden después del intercambio
+  //     reorderedDetalleModulo[index].orden = index + 1;
+  //     reorderedDetalleModulo[index + 1].orden = index + 2;
+  
+  //     setDetalleModulo(reorderedDetalleModulo);
+  //   }
+  // };
 
   return (
     <div className="flex flex-col gap-3">
       <Table aria-label="Detalle del Módulo">
         <TableHeader>
-        <TableColumn>ID {moduleId}</TableColumn>
+          <TableColumn>ID {moduleId}</TableColumn>
           <TableColumn>Orden</TableColumn>
           <TableColumn>Tipo</TableColumn>
           <TableColumn>Título</TableColumn>
-          <TableColumn>Acciones</TableColumn> {/* Nueva columna para acciones */}
+          <TableColumn>Acciones</TableColumn>
         </TableHeader>
         <TableBody>
           {detalleModulo.map((detalle) => (
-            // Añado el prefijo de "tipo" para poder diferenciar los ids y que no coincidan en las keys.Ej: video_1 mo coincidirá ahora con material_1
-            <TableRow key={`${detalle.tipo}-${detalle.id}`}
-              draggable="true"
-              onDragStart={(e) => handleDragStart(e, detalle.orden)}
-              onDragOver={(e) => handleDragOver(e, detalle.orden)}
-              onDragEnter={(e) => handleDragEnter(e, detalle.orden)}
-              onDrop={(e) => handleDrop(e, detalle.orden)}>
-              <TableCell>{detalle.id}</TableCell>
+            <TableRow key={`${detalle.tipo}-${detalle.id}`} className="hover:bg-gray-100   ">
+              <TableCell className="flex ">
+              <div
+                  className="p-1 justify-center flex"
+                  onClick={() => handleMoveUp(detalle.orden)}
+                >
+                  <RiArrowUpLine />
+                </div>
+                <div
+                  className="p-1 justify-center flex rounded-xl "
+                  onClick={() => handleMoveDown(detalle.orden)} 
+                ><RiArrowDownLine />
+                </div>
+              </TableCell>
               <TableCell>{detalle.orden}</TableCell>
-              <TableCell>{detalle.tipo}</TableCell>
-              <TableCell>{detalle.titulo}</TableCell>
+              <TableCell>{detalle.tipo || ''}</TableCell>
+              <TableCell>{detalle.titulo || ''}</TableCell>
               <TableCell className="flex gap-4 items-center">
-                <Button className="bg-blue-400" onClick={() => handleEditDetalleModulo(detalle.id)}>
-                  Editar
+                {/* <Button 
+                  className="hover:text-white "
+                  onClick={() => handleEditDetalleModulo(detalle.id)}
+                >
+                  <RiEdit2Fill className=""/>
                 </Button>
-                <Button className="bg-red-400" onClick={() => handleDeleteDetalleModulo(detalle.id)}>
-                  Borrar
+                <Button 
+                  className="hover:text-white bg-red-400"
+                  onClick={() => handleDeleteDetalleModulo(detalle.id)}
+                >
+                  <RiDeleteBin4Fill className=""/>
                 </Button>
-                <Button className="bg-gray-400" onClick={() => handleViewDetalleModulo(detalle.id)}>
-                  Visualizar
-                </Button>
+                <Button 
+                  className="hover:text-white bg-gray-400"
+                  onClick={() => handleViewDetalleModulo(detalle.id)}
+                >
+                  <RiEyeFill className=""/>
+                </Button> */}
+                
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-
     </div>
-     
   );
 };
-
 
 export default TablaModulo;
