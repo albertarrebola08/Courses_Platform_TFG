@@ -10,6 +10,10 @@ import { RiArrowUpLine,RiArrowDownLine,RiDeleteBin4Fill,RiEdit2Fill, RiEyeFill }
 import { Button } from "pol-ui";
 import { useContext, useEffect } from 'react';
 import { supabase } from '../../supabase/supabaseClient';
+
+import { JsonView, allExpanded, darkStyles, defaultStyles } from 'react-json-view-lite';
+import 'react-json-view-lite/dist/index.css';
+
 import {
   Table,
   TableHeader,
@@ -32,62 +36,69 @@ const TablaModulo = () => {
     const obtenerDetalleModulo = async (moduleId) => {
       try {
         console.log(moduleId);
-        const { data, error } = await supabase.rpc('obtenerdetallemodulo', {
-          moduloid: parseInt(moduleId, 10),
-        });
-        console.log('dataaa: '+ data)
-
+  
+        // Corrige la desestructuración de moduloid
+        const { data: elementos, error } = await supabase
+          .from('elementos')
+          .select("*")
+          // Filters
+          .eq('id_modulo', parseInt(moduleId)); // Asegúrate de parsear moduleId a entero si es necesario
+  
+       
+        // <JsonView data={data} shouldExpandNode={allExpanded} style={darkStyles} />
+  
         if (error) {
           console.error('Error al obtener el detalle del módulo:', error.message);
         } else {
-          console.log('Datos: ', data);
-          setDetalleModulo(data);
+          console.log('Datos: ', elementos);
+          setDetalleModulo(elementos);
         }
       } catch (error) {
         console.error('Error al obtener el detalle del módulo:', error.message);
       }
     };
-
+  
     obtenerDetalleModulo(moduleId);
   }, [setDetalleModulo, moduleId]);
 
-  // const handleMoveUp = (orden) => {
-  //   const reorderedDetalleModulo = [...detalleModulo];
-  //   const index = reorderedDetalleModulo.findIndex((detalle) => detalle.orden === orden);
+
+  const handleMoveUp = (orden) => {
+    const reorderedDetalleModulo = [...detalleModulo];
+    const index = reorderedDetalleModulo.findIndex((detalle) => detalle.orden === orden);
   
-  //   if (index > 0) {
-  //     // Intercambia el elemento actual con el anterior
-  //     [reorderedDetalleModulo[index - 1], reorderedDetalleModulo[index]] = [
-  //       reorderedDetalleModulo[index],
-  //       reorderedDetalleModulo[index - 1],
-  //     ];
+    if (index > 0) {
+      // Intercambia el elemento actual con el anterior
+      [reorderedDetalleModulo[index - 1], reorderedDetalleModulo[index]] = [
+        reorderedDetalleModulo[index],
+        reorderedDetalleModulo[index - 1],
+      ];
   
-  //     // Actualiza el orden después del intercambio
-  //     reorderedDetalleModulo[index].orden = index + 1;
-  //     reorderedDetalleModulo[index - 1].orden = index;
+      // Actualiza el orden después del intercambio
+      reorderedDetalleModulo[index].orden = index + 1;
+      reorderedDetalleModulo[index - 1].orden = index;
   
-  //     setDetalleModulo(reorderedDetalleModulo);
-  //   }
-  // };
+      setDetalleModulo(reorderedDetalleModulo);
+    }
+  };
   
-  // const handleMoveDown = (orden) => {
-  //   const reorderedDetalleModulo = [...detalleModulo];
-  //   const index = reorderedDetalleModulo.findIndex((detalle) => detalle.orden === orden);
+  const handleMoveDown = (orden) => {
+    const reorderedDetalleModulo = [...detalleModulo];
+    const index = reorderedDetalleModulo.findIndex((detalle) => detalle.orden === orden);
   
-  //   if (index < detalleModulo.length - 1) {
-  //     // Intercambia el elemento actual con el siguiente
-  //     [reorderedDetalleModulo[index], reorderedDetalleModulo[index + 1]] = [
-  //       reorderedDetalleModulo[index + 1],
-  //       reorderedDetalleModulo[index],
-  //     ];
+    if (index < detalleModulo.length - 1) {
+      // Intercambia el elemento actual con el siguiente
+      [reorderedDetalleModulo[index], reorderedDetalleModulo[index + 1]] = [
+        reorderedDetalleModulo[index + 1],
+        reorderedDetalleModulo[index],
+      ];
   
-  //     // Actualiza el orden después del intercambio
-  //     reorderedDetalleModulo[index].orden = index + 1;
-  //     reorderedDetalleModulo[index + 1].orden = index + 2;
+      // Actualiza el orden después del intercambio
+      reorderedDetalleModulo[index].orden = index + 1;
+      reorderedDetalleModulo[index + 1].orden = index + 2;
   
-  //     setDetalleModulo(reorderedDetalleModulo);
-  //   }
-  // };
+      setDetalleModulo(reorderedDetalleModulo);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-3">
@@ -119,7 +130,7 @@ const TablaModulo = () => {
               <TableCell>{detalle.tipo || ''}</TableCell>
               <TableCell>{detalle.titulo || ''}</TableCell>
               <TableCell className="flex gap-4 items-center">
-                {/* <Button 
+                <Button 
                   className="hover:text-white "
                   onClick={() => handleEditDetalleModulo(detalle.id)}
                 >
@@ -136,7 +147,7 @@ const TablaModulo = () => {
                   onClick={() => handleViewDetalleModulo(detalle.id)}
                 >
                   <RiEyeFill className=""/>
-                </Button> */}
+                </Button>
                 
               </TableCell>
             </TableRow>

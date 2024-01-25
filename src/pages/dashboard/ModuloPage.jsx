@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { GlobalContext } from '../../GlobalContext';
 import { Button } from 'pol-ui';
 import TablaModulo from '../../components/Modulos/TablaModulo';
