@@ -11,7 +11,6 @@ import { Button } from "pol-ui";
 import { useContext, useEffect } from 'react';
 import { supabase } from '../../supabase/supabaseClient';
 
-import { JsonView, allExpanded, darkStyles, defaultStyles } from 'react-json-view-lite';
 import 'react-json-view-lite/dist/index.css';
 
 import {
@@ -42,7 +41,8 @@ const TablaModulo = () => {
           .from('elementos')
           .select("*")
           // Filters
-          .eq('id_modulo', parseInt(moduleId)); // Asegúrate de parsear moduleId a entero si es necesario
+          .eq('id_modulo', parseInt(moduleId));
+    
   
        
         // <JsonView data={data} shouldExpandNode={allExpanded} style={darkStyles} />
@@ -153,6 +153,7 @@ const TablaModulo = () => {
             </TableRow>
           ))}
         </TableBody>
+        
       </Table>
     </div>
   );

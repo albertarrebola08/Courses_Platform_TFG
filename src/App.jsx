@@ -7,6 +7,7 @@ import CursoPage from "./pages/dashboard/CursoPage";
 import QuestionsPage from "./pages/dashboard/QuestionsPage";
 import ModuloPage from "./pages/dashboard/ModuloPage";
 import { GlobalProvider } from "./GlobalContext";
+import FormAddElement from "./components/Modulos/FormAddElement";
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
                 {<Route path="modulo/:moduleId" element={<ModuloPage />} />}
 
                 <Route path="preguntes-diaries" element={<QuestionsPage />} />
-                
+                <Route path="addElement" element={<FormAddElement />} />
                 <Route path="*" element={<p>404</p>} />
               </Route>
             </Routes>

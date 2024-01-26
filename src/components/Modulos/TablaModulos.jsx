@@ -496,7 +496,7 @@ const TablaModulos = () => {
       {isLoading && <p>Cargando...</p>}
 
       {!isLoading && (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 mt-4">
           <Table aria-label="Tabla de Modulos">
             <TableHeader>
               <TableColumn>ID</TableColumn>

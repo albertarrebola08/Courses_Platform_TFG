@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Input, Button, Textarea, Checkbox } from "@nextui-org/react";
+import { Textarea,Input} from "@nextui-org/react"; //estos usan onvaluechange de next ui (cambiar por pol-ui mas adelante)
 import { RiAddFill, RiCloseFill } from "react-icons/ri";
-
+import {Button, Checkbox} from "pol-ui" //estos usan onchange nativo
 const CreateModuloForm = ({ cursoId, onSubmit }) => {
   const [moduloData, setModuloData] = useState({
     id: "",
@@ -30,8 +30,8 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
       [name]: value,
     }));
   };
-  const handleCheckboxChange = (name, isSelected) => {
-    setModuloData({ ...moduloData, [name]: isSelected ? 1 : 0 });
+  const handleCheckboxChange = (name, checked) => {
+    setModuloData({ ...moduloData, [name]: checked ? 1 : 0 });
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -82,7 +82,7 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
 
   return (
     <div className="rounded-lg">
-      <Button className="" onClick={() => setAddModulSelected(!addModulSelected)}>
+      <Button className="mt-4" onClick={() => setAddModulSelected(!addModulSelected)}>
         Crear mòdul {addModulSelected ? <RiCloseFill className="text-red-800" /> : <RiAddFill />}
       </Button>
       {/*  */}
@@ -94,15 +94,18 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
         <Textarea placeholder="Introdueix la descripció" name="descripcion" value={moduloData.descripcion} onValueChange={(v) => handleInputChange(v, "descripcion")} />
 
         <h4 className="mt-4 font-bold">Quins elements vols afegir al mòdul</h4>
-        <div className="p-8 flex flex-col gap-4 ">
+        <div className="p-8 flex gap-4 ">
           {/* Recorro con map y pinto los checkbox con los select */}
           {["video", "acciona", "quiz", "numeral", "camino", "material", "examen"].map((element) => (
             <div className="module-element justify-between flex items-center" key={element}>
-              <Checkbox name={`have_${element}`} onValueChange={(value) => handleCheckboxChange(`have_${element}`, value)} isSelected={moduloData[`have_${element}`]} />
+             
+              <Checkbox type="checkbox" className="rounded-xl mx-2" name={`have_${element}`} onChange={(value) => handleCheckboxChange(`have_${element}`, value.target.checked)} checked={moduloData[`have_${element}`]} />
+
+
               <span>{element.charAt(0).toUpperCase() + element.slice(1)}</span>
-              <select className="ms-3 w-[20%] flex text-center border rounded-sm border-gray-800" name={`${element}_cantidad`} value={moduloData[`have_${element}`] ? moduloData[`${element}_cantidad`] : 0} onChange={(e) => handleInputChange(parseInt(e.target.value, 10), e.target.name)}>
+              <select className="ms-3  flex text-center border rounded-sm border-gray-800" name={`${element}_cantidad`} value={moduloData[`have_${element}`] ? moduloData[`${element}_cantidad`] : 0} onChange={(e) => handleInputChange(parseInt(e.target.value, 10), e.target.name)}>
                 {[0, 1, 2, 3, 4, 5].map((optionValue) => (
-                  <option key={optionValue} value={optionValue}>
+                  <option  key={optionValue} value={optionValue}>
                     {optionValue}
                   </option>
                 ))}
