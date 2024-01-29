@@ -11,7 +11,7 @@ import { useParams } from "react-router-dom";
 const FormAddElement = () => {
   const tiposElementos = ["video", "material", "examen", "quiz", "acciona", "camino", "numeral"];
   const [selectedValue, setSelectedValue] = useState('');
-  const { detalleModulo, setDetalleModulo } = useContext(GlobalContext);
+  const {   detalleModulo, setDetalleModulo } = useContext(GlobalContext);
   const [showForm, setShowForm] = useState(false);
 
   const { moduleId } = useParams();
@@ -24,51 +24,13 @@ const FormAddElement = () => {
     console.log(e.target.value);
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     console.log(selectedValue, lastOrder);
-    insertaDetalle(selectedValue, lastOrder);
-    
+    const objetoInsertado = await insertaDetalle(selectedValue, lastOrder);
+    detalleModulo.push(objetoInsertado)
+    setDetalleModulo([...detalleModulo])
   };
-
-
-
-  useEffect(() => {
-    if (!isNaN(moduleId)) {
-    const obtenerDetalleModulo = async (moduleId) => {
-        //INDICO SOBRE QUE MODULO AÑADIRÁ
-    
-    // console.log(moduleId)
-      try {
-        console.log(moduleId);
-
-        const { data: elementos, error } = await supabase
-          .from('elementos')
-          .select("*")
-          .eq('id_modulo',  parseInt(moduleId));
-
-        if (error) {
-          console.error('Error al obtener el detalle del módulo:', error.message);
-        } else {
-          // console.log('Datos: ', elementos);
-          // Asegúrate de que `setDetalleModulo` no se ejecute si `elementos` no ha cambiado
-          if (JSON.stringify(elementos) !== JSON.stringify(detalleModulo)) {
-            setDetalleModulo(elementos);
-          }
-        }
-      } catch (error) {
-        console.error('Error al obtener el detalle del módulo:', error.message);
-      }
-    };
-
-    obtenerDetalleModulo(moduleId);
-  } else {
-    console.error('moduloid no es un número válido');
-    console.log(moduleId)
-  }
-  }, [setDetalleModulo, detalleModulo,moduleId]);
-
-  // console.log(detalleModulo);
-  // console.log(Object.keys(detalleModulo).length);
+  
   let lastOrder = Object.keys(detalleModulo).length;
 
   const insertaDetalle = async (selectedValue, lastOrder) => {
@@ -111,7 +73,9 @@ const FormAddElement = () => {
         }
 
         console.log("Video creado con éxito");
-        break;
+        console.log('dr: ',elementosDataResult[0])
+        return elementosDataResult[0]
+
       }
       case "material": {
         const elementosData = {
@@ -149,7 +113,8 @@ const FormAddElement = () => {
         }
     
         console.log("Material creado con éxito");
-        break;
+        return elementosDataResult[0]
+
       }
       case "acciona": {
         const elementosData = {
@@ -188,7 +153,8 @@ const FormAddElement = () => {
         }
     
         console.log("Acciona creado con éxito");
-        break;
+        return elementosDataResult[0]
+
       }
       case "examen": {
         const elementosData = {
@@ -226,7 +192,8 @@ const FormAddElement = () => {
         }
     
         console.log("Examen creado con éxito");
-        break;
+        return elementosDataResult[0]
+
       }
       case "quiz": {
         const elementosData = {
@@ -264,7 +231,8 @@ const FormAddElement = () => {
         }
     
         console.log("Quiz creado con éxito");
-        break;
+        return elementosDataResult[0]
+
       }
       case "numeral": {
         const elementosData = {
@@ -302,7 +270,8 @@ const FormAddElement = () => {
         }
     
         console.log("Actividad numeral creada con éxito");
-        break;
+        return elementosDataResult[0]
+
       }
       case "camino": {
         const elementosData = {
@@ -316,10 +285,12 @@ const FormAddElement = () => {
           .from("elementos")
           .insert([elementosData])
           .select();
+         
     
         if (elementosError) {
           throw elementosError;
         }
+        
     
         const elementoId = elementosDataResult[0].id;
     
@@ -340,11 +311,14 @@ const FormAddElement = () => {
         }
     
         console.log("Actividad camino creada con éxito");
-        break;
+       
+        return elementosDataResult[0]
+
       }
       default:
         console.log(`Tipo de elemento no manejado: ${selectedValue}`);
     }
+    
   };
 
   return (

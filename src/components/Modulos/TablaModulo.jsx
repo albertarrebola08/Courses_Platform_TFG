@@ -43,10 +43,6 @@ const TablaModulo = () => {
           // Filters
           .eq('id_modulo', parseInt(moduleId));
     
-  
-       
-        // <JsonView data={data} shouldExpandNode={allExpanded} style={darkStyles} />
-  
         if (error) {
           console.error('Error al obtener el detalle del módulo:', error.message);
         } else {
@@ -59,7 +55,7 @@ const TablaModulo = () => {
     };
   
     obtenerDetalleModulo(moduleId);
-  }, [setDetalleModulo, moduleId]);
+  }, []);
 
 
   const handleMoveUp = (orden) => {
