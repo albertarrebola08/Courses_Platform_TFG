@@ -58,7 +58,7 @@ const TablaModulo = () => {
   }, []);
 
 
-  const handleMoveUp = (orden) => {
+  const handleMoveUp = async (orden) => {
     const reorderedDetalleModulo = [...detalleModulo];
     const index = reorderedDetalleModulo.findIndex((detalle) => detalle.orden === orden);
   
@@ -73,11 +73,33 @@ const TablaModulo = () => {
       reorderedDetalleModulo[index].orden = index + 1;
       reorderedDetalleModulo[index - 1].orden = index;
   
+      try {
+        // Llamada a la API para actualizar el orden en la base de datos
+        await supabase
+          .from('elementos')
+          .upsert(
+            [
+              {
+                id: reorderedDetalleModulo[index].id,
+                orden: reorderedDetalleModulo[index].orden,
+              },
+              {
+                id: reorderedDetalleModulo[index - 1].id,
+                orden: reorderedDetalleModulo[index - 1].orden,
+              },
+            ],
+            { onConflict: ['id'] }
+          );
+    
+        // No olvides manejar posibles errores de la API
+      } catch (error) {
+        console.error('Error al actualizar el orden en la base de datos:', error.message);
+      }
       setDetalleModulo(reorderedDetalleModulo);
     }
   };
   
-  const handleMoveDown = (orden) => {
+  const handleMoveDown = async (orden) => {
     const reorderedDetalleModulo = [...detalleModulo];
     const index = reorderedDetalleModulo.findIndex((detalle) => detalle.orden === orden);
   
@@ -92,6 +114,28 @@ const TablaModulo = () => {
       reorderedDetalleModulo[index].orden = index + 1;
       reorderedDetalleModulo[index + 1].orden = index + 2;
   
+      try {
+        // Llamada a la API para actualizar el orden en la base de datos
+        await supabase
+          .from('elementos')
+          .upsert(
+            [
+              {
+                id: reorderedDetalleModulo[index].id,
+                orden: reorderedDetalleModulo[index].orden,
+              },
+              {
+                id: reorderedDetalleModulo[index + 1].id,
+                orden: reorderedDetalleModulo[index + 1].orden,
+              },
+            ],
+            { onConflict: ['id'] }
+          );
+    
+        // No olvides manejar posibles errores de la API
+      } catch (error) {
+        console.error('Error al actualizar el orden en la base de datos:', error.message);
+      }
       setDetalleModulo(reorderedDetalleModulo);
     }
   };
