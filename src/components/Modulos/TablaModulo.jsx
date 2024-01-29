@@ -10,7 +10,6 @@ import { RiArrowUpLine,RiArrowDownLine,RiDeleteBin4Fill,RiEdit2Fill, RiEyeFill }
 import { Button } from "pol-ui";
 import { useContext, useEffect } from 'react';
 import { supabase } from '../../supabase/supabaseClient';
-
 import 'react-json-view-lite/dist/index.css';
 
 import {
@@ -22,7 +21,7 @@ import {
   TableCell,
 } from '@nextui-org/react';
 
-import { useParams } from "react-router-dom";
+import { useParams, Link} from "react-router-dom";
 import { GlobalContext } from '../../GlobalContext';
 
 const TablaModulo = () => {
@@ -98,7 +97,6 @@ const TablaModulo = () => {
       setDetalleModulo(reorderedDetalleModulo);
     }
   };
-  
   const handleMoveDown = async (orden) => {
     const reorderedDetalleModulo = [...detalleModulo];
     const index = reorderedDetalleModulo.findIndex((detalle) => detalle.orden === orden);
@@ -140,6 +138,73 @@ const TablaModulo = () => {
     }
   };
 
+  //***************/ acciones de eliminar, editar y visualizar elementos del modulo
+
+  const handleEditDetalleModulo = (id) => {
+    // Lógica para la operación de editar
+    console.log(`Editar elemento con ID ${id}`);
+  };
+  const handleDeleteDetalleModulo = async (elementoId) => {
+    try {
+      // Obtén el orden del elemento que estás eliminando
+      const { data: elementoEliminar, error: errorElemento } = await supabase
+        .from('elementos')
+        .select('orden')
+        .eq('id', elementoId);
+  
+      if (errorElemento) {
+        throw errorElemento;
+      }
+  
+      const ordenElementoEliminar = elementoEliminar[0].orden;
+  
+      // Elimina el elemento de la base de datos
+      const { errorEliminar } = await supabase
+        .from('elementos')
+        .delete()
+        .eq('id', elementoId);
+  
+      if (errorEliminar) {
+        throw errorEliminar;
+      }
+  
+      // Obten los elementos restantes con órdenes mayores que el elemento eliminado
+      const { data: elementosRestantes } = await supabase
+        .from('elementos')
+        .select('id, orden')
+        .gt('orden', ordenElementoEliminar)
+        .eq('id_modulo', moduleId)
+        .order('orden');
+  
+      // Actualiza los órdenes de los elementos restantes
+      for (let i = 0; i < elementosRestantes.length; i++) {
+        const nuevoOrden = ordenElementoEliminar + i;
+        await supabase
+          .from('elementos')
+          .update({ orden: nuevoOrden })
+          .eq('id', elementosRestantes[i].id);
+      }
+  
+      // Actualiza el estado local con los nuevos elementos
+      const { data: nuevosElementos } = await supabase
+        .from('elementos')
+        .select('*')
+        .eq('id_modulo', moduleId)
+        .order('orden');
+  
+      setDetalleModulo(nuevosElementos);
+    } catch (error) {
+      console.error('Error al eliminar el detalle del módulo:', error.message);
+    }
+  };
+  
+  
+  //view
+  const handleViewDetalleModulo = (id) => {
+    // Lógica para la operación de ver
+    console.log(`Ver elemento con ID ${id}`);
+  };
+
   return (
     <div className="flex flex-col gap-3">
       <Table aria-label="Detalle del Módulo">
@@ -170,12 +235,12 @@ const TablaModulo = () => {
               <TableCell>{detalle.tipo || ''}</TableCell>
               <TableCell>{detalle.titulo || ''}</TableCell>
               <TableCell className="flex gap-4 items-center">
-                <Button 
-                  className="hover:text-white "
-                  onClick={() => handleEditDetalleModulo(detalle.id)}
-                >
-                  <RiEdit2Fill className=""/>
+
+              <Link to={`/dashboard/modulo/${moduleId}/${detalle.tipo}/${detalle.id}`}>
+                <Button onClick={() => handleEditDetalleModulo(detalle.id)} className="bg-blue-400 hover:text-white">
+                  <RiEdit2Fill className="text-white" />
                 </Button>
+              </Link>
                 <Button 
                   className="hover:text-white bg-red-400"
                   onClick={() => handleDeleteDetalleModulo(detalle.id)}

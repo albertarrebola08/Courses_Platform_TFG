@@ -7,7 +7,14 @@ import CursoPage from "./pages/dashboard/CursoPage";
 import QuestionsPage from "./pages/dashboard/QuestionsPage";
 import ModuloPage from "./pages/dashboard/ModuloPage";
 import { GlobalProvider } from "./GlobalContext";
-import FormAddElement from "./components/Modulos/FormAddElement";
+
+import DetalleVideo from "./components/Videos/DetalleVideo";
+import DetalleAcciona from "./components/Accionas/DetalleAcciona";
+import DetalleExamen from "./components/Examenes/DetalleExamen";
+import DetalleMaterial from "./components/Materiales/DetalleMaterial";
+import DetalleNumeral from "./components/Numerales/DetalleNumeral";
+import DetalleQuiz from "./components/Quizs/DetalleQuiz";
+import DetalleCamino from "./components/Caminos/DetalleCamino";
 
 function App() {
   return (
@@ -24,7 +31,14 @@ function App() {
                 {<Route path="modulo/:moduleId" element={<ModuloPage />} />}
 
                 <Route path="preguntes-diaries" element={<QuestionsPage />} />
-                <Route path="addElement" element={<FormAddElement />} />
+
+                <Route path="modulo/:moduleId/video/:elementoId" element={<DetalleVideo />} />
+                <Route path="modulo/:moduleId/material/:elementoId" element={<DetalleMaterial />} />
+                <Route path="modulo/:moduleId/examen/:elementoId" element={<DetalleExamen />} />
+                <Route path="modulo/:moduleId/acciona/:elementoId" element={<DetalleAcciona />} />
+                <Route path="modulo/:moduleId/quiz/:elementoId" element={<DetalleQuiz />} />
+                <Route path="modulo/:moduleId/numeral/:elementoId" element={<DetalleNumeral />} />
+                <Route path="modulo/:moduleId/camino/:elementoId" element={<DetalleCamino />} />
                 <Route path="*" element={<p>404</p>} />
               </Route>
             </Routes>
