@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { RiMenu2Line, RiQuestionFill, RiShapesFill } from "react-icons/ri";
+import { RiQuestionFill, RiShapesFill } from "react-icons/ri";
 import { Link, Outlet } from "react-router-dom";
+import { FiMenu } from "react-icons/fi";
 
 const DashboardLayout = () => {
   const [openMenu, setOpenMenu] = useState(true);
@@ -9,7 +10,7 @@ const DashboardLayout = () => {
     <div className="grid grid-rows-[1fr,auto] min-h-screen gap-4">
       <nav className="flex justify-between items-center p-4 h-[80px] bg-gray-700 text-white fixed z-50 w-full">
         <div className="flex w-1/2 gap-4 items-center text-2xl font-bold">
-          <RiMenu2Line className=" bg-[white] rounded-lg w-[40px] h-[40px]" onClick={() => setOpenMenu((prevState) => !prevState)} />
+          <FiMenu className=" bg-gray-300  text-black p-2  w-[40px] h-[40px]" onClick={() => setOpenMenu((prevState) => !prevState)} />
           <img className="w-[46px] " src="https://static.vecteezy.com/system/resources/previews/001/192/065/non_2x/circle-logo-turbine-png.png" alt="" />
           Rispot Consulting
         </div>

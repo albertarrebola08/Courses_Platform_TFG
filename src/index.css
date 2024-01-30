@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=San+Francisco&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&family=Work+Sans&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -33,19 +34,11 @@ h1{
     font-weight: bold;
 }
 body{
-    font-family: 'San Francisco';
+    /* font-family: 'Work Sans'; */
+    font-family: 'montserrat';
 }
 
 
-
-/* TIPOGRAFIA APPLE */
-
-/** Regular */
-  @font-face {
-    font-family: "San Francisco";
-    font-weight: 200;
-    src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-regular-webfont.woff");
-  }
   
   
   
