@@ -10,7 +10,7 @@
     import { supabase } from '../../supabase/supabaseClient';
     import { RiEditFill, RiDeleteBin7Fill,RiCheckFill,RiCloseFill, RiEyeFill } from 'react-icons/ri';
     import CreateModuloForm from "./CreateModuloForm";
-    import { Button } from "pol-ui";
+    import { Button,IconButton } from "pol-ui";
 
     import { Link, useParams } from "react-router-dom";
 
@@ -525,17 +525,17 @@ const TablaModulos = () => {
 
                   <TableCell className="flex gap-4 items-center">
                     <Link to={`/dashboard/modulo/${modulo.id}`}>
-                      <Button className="bg-blue-400">
-                        <RiEditFill className="text-white" />
-                      </Button>
+                      <IconButton className="">
+                        <RiEditFill className="" />
+                      </IconButton>
                     </Link>
 
-                    <Button className="bg-red-400" onClick={() => handleDeleteModulo(modulo.id, modulo.nombre)}>
-                      <RiDeleteBin7Fill className="text-white" />
-                    </Button>
-                    <Button className="bg-gray-400" onClick={() => handleViewModulo(modulo.id, modulo.nombre)}>
-                      <RiEyeFill className="text-lg text-white" />
-                    </Button>
+                    <IconButton className="" onClick={() => handleDeleteModulo(modulo.id, modulo.nombre)}>
+                      <RiDeleteBin7Fill className="" />
+                    </IconButton>
+                    <IconButton className="" onClick={() => handleViewModulo(modulo.id, modulo.nombre)}>
+                      <RiEyeFill className="text-lg " />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Textarea,Input} from "@nextui-org/react"; //estos usan onvaluechange de next ui (cambiar por pol-ui mas adelante)
+import { Textarea, Input } from "@nextui-org/react"; //estos usan onvaluechange de next ui (cambiar por pol-ui mas adelante)
 import { RiAddFill, RiCloseFill } from "react-icons/ri";
-import {Button, Checkbox} from "pol-ui" //estos usan onchange nativo
+import { Button, Checkbox } from "pol-ui";
 const CreateModuloForm = ({ cursoId, onSubmit }) => {
   const [moduloData, setModuloData] = useState({
     id: "",
@@ -51,9 +51,8 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
       numeral_cantidad: moduloData.numeral_cantidad,
       camino_cantidad: moduloData.camino_cantidad,
       material_cantidad: moduloData.material_cantidad,
-      examen_cantidad : moduloData.examen_cantidad
+      examen_cantidad: moduloData.examen_cantidad,
     };
-
 
     try {
       onSubmit(body);
@@ -82,30 +81,83 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
 
   return (
     <div className="rounded-lg">
-      <Button className="mt-4" onClick={() => setAddModulSelected(!addModulSelected)}>
-        Crear mòdul {addModulSelected ? <RiCloseFill className="text-red-800" /> : <RiAddFill />}
+      <Button
+        className="mt-4"
+        onClick={() => setAddModulSelected(!addModulSelected)}
+      >
+        Crear mòdul{" "}
+        {addModulSelected ? (
+          <RiCloseFill className="text-red-800" />
+        ) : (
+          <RiAddFill />
+        )}
       </Button>
       {/*  */}
-      <form onSubmit={handleSubmit} className={`mt-4 flex flex-col gap-4  ${addModulSelected ? "block" : "hidden"}`}>
+      <form
+        onSubmit={handleSubmit}
+        className={`mt-4 flex flex-col gap-4  ${
+          addModulSelected ? "block" : "hidden"
+        }`}
+      >
         {/* Nombre del modulo */}
-        <Input name="nombre" type="text" autoComplete="new-module-name" label="Nom del mòdul" value={moduloData.nombre} onValueChange={(v) => handleInputChange(v, "nombre")} required />
+        <Input
+          name="nombre"
+          type="text"
+          autoComplete="new-module-name"
+          label="Nom del mòdul"
+          value={moduloData.nombre}
+          onValueChange={(v) => handleInputChange(v, "nombre")}
+          required
+        />
 
         {/* Descripcion */}
-        <Textarea placeholder="Introdueix la descripció" name="descripcion" value={moduloData.descripcion} onValueChange={(v) => handleInputChange(v, "descripcion")} />
+        <Textarea
+          placeholder="Introdueix la descripció"
+          name="descripcion"
+          value={moduloData.descripcion}
+          onValueChange={(v) => handleInputChange(v, "descripcion")}
+        />
 
         <h4 className="mt-4 font-bold">Quins elements vols afegir al mòdul</h4>
         <div className="p-8 flex gap-4 ">
           {/* Recorro con map y pinto los checkbox con los select */}
-          {["video", "acciona", "quiz", "numeral", "camino", "material", "examen"].map((element) => (
-            <div className="module-element justify-between flex items-center" key={element}>
-             
-              <Checkbox type="checkbox" className="rounded-xl mx-2" name={`have_${element}`} onChange={(value) => handleCheckboxChange(`have_${element}`, value.target.checked)} checked={moduloData[`have_${element}`]} />
+          {[
+            "video",
+            "acciona",
+            "quiz",
+            "numeral",
+            "camino",
+            "material",
+            "examen",
+          ].map((element) => (
+            <div
+              className="module-element justify-between flex items-center"
+              key={element}
+            >
+              <Checkbox
+                label={element.charAt(0).toUpperCase() + element.slice(1)}
+                className=""
+                name={`have_${element}`}
+                onChange={(value) =>
+                  handleCheckboxChange(`have_${element}`, value.target.checked)
+                }
+                checked={moduloData[`have_${element}`]}
+              />
 
-
-              <span>{element.charAt(0).toUpperCase() + element.slice(1)}</span>
-              <select className="ms-3  flex text-center border rounded-sm border-gray-800" name={`${element}_cantidad`} value={moduloData[`have_${element}`] ? moduloData[`${element}_cantidad`] : 0} onChange={(e) => handleInputChange(parseInt(e.target.value, 10), e.target.name)}>
+              <select
+                className="ms-3  flex text-center border rounded-sm border-gray-800"
+                name={`${element}_cantidad`}
+                value={
+                  moduloData[`have_${element}`]
+                    ? moduloData[`${element}_cantidad`]
+                    : 0
+                }
+                onChange={(e) =>
+                  handleInputChange(parseInt(e.target.value, 10), e.target.name)
+                }
+              >
                 {[0, 1, 2, 3, 4, 5].map((optionValue) => (
-                  <option  key={optionValue} value={optionValue}>
+                  <option key={optionValue} value={optionValue}>
                     {optionValue}
                   </option>
                 ))}
