@@ -1,22 +1,25 @@
-import { Select, SelectItem } from '@nextui-org/react';
-import { Button } from 'pol-ui';
-import { useState, useEffect, useContext } from 'react';
-import { supabase } from '../../supabase/supabaseClient';
-import { GlobalContext } from '../../GlobalContext';
-import { RiAddLine } from 'react-icons/ri';
+import { Button, Select } from "pol-ui";
+import { useState, useEffect, useContext } from "react";
+import { supabase } from "../../supabase/supabaseClient";
+import { GlobalContext } from "../../GlobalContext";
+import { RiAddLine, RiCloseFill } from "react-icons/ri";
 import { useParams } from "react-router-dom";
 
-
-
 const FormAddElement = () => {
-  const tiposElementos = ["video", "material", "examen", "quiz", "acciona", "camino", "numeral"];
-  const [selectedValue, setSelectedValue] = useState('');
-  const {   detalleModulo, setDetalleModulo } = useContext(GlobalContext);
+  const tiposElementos = [
+    "video",
+    "material",
+    "examen",
+    "quiz",
+    "acciona",
+    "camino",
+    "numeral",
+  ];
+  const [selectedValue, setSelectedValue] = useState(null);
+  const { detalleModulo, setDetalleModulo } = useContext(GlobalContext);
   const [showForm, setShowForm] = useState(false);
 
   const { moduleId } = useParams();
-
-
 
   //GESTIONO EL CAMBIO DEL INPUT DEL SELECT
   const onInputChange = (e) => {
@@ -26,11 +29,14 @@ const FormAddElement = () => {
 
   const onSubmit = async () => {
     console.log(selectedValue, lastOrder);
-    const objetoInsertado = await insertaDetalle(selectedValue, lastOrder);
-    detalleModulo.push(objetoInsertado)
-    setDetalleModulo([...detalleModulo])
+    const objetoInsertado = await insertaDetalle(
+      selectedValue ?? "video",
+      lastOrder
+    );
+    detalleModulo.push(objetoInsertado);
+    setDetalleModulo([...detalleModulo]);
   };
-  
+
   let lastOrder = Object.keys(detalleModulo).length;
 
   const insertaDetalle = async (selectedValue, lastOrder) => {
@@ -45,10 +51,8 @@ const FormAddElement = () => {
         };
 
         // Inserta en la tabla "elementos" y obtén el ID generado
-        const { data: elementosDataResult, error: elementosError } = await supabase
-          .from("elementos")
-          .insert([elementosData])
-          .select();
+        const { data: elementosDataResult, error: elementosError } =
+          await supabase.from("elementos").insert([elementosData]).select();
 
         if (elementosError) {
           throw elementosError;
@@ -66,16 +70,17 @@ const FormAddElement = () => {
         };
 
         // Inserta en la tabla "video"
-        const { error: videoError } = await supabase.from("video").insert([videoData]);
+        const { error: videoError } = await supabase
+          .from("video")
+          .insert([videoData]);
 
         if (videoError) {
           throw videoError;
         }
 
         console.log("Video creado con éxito");
-        console.log('dr: ',elementosDataResult[0])
-        return elementosDataResult[0]
-
+        console.log("dr: ", elementosDataResult[0]);
+        return elementosDataResult[0];
       }
       case "material": {
         const elementosData = {
@@ -84,37 +89,37 @@ const FormAddElement = () => {
           orden: lastOrder + 1,
           titulo: `Titulo de ${selectedValue} por defecto`,
         };
-    
-        const { data: elementosDataResult, error: elementosError } = await supabase
-          .from("elementos")
-          .insert([elementosData])
-          .select();
-    
+
+        const { data: elementosDataResult, error: elementosError } =
+          await supabase.from("elementos").insert([elementosData]).select();
+
         if (elementosError) {
           throw elementosError;
         }
-    
+
         const elementoId = elementosDataResult[0].id;
-    
+
         // Campos específicos para el tipo "material"
         const materialData = {
           descripcion: "Descripción por defecto",
-          archivo_url: "https://drive.google.com/file/d/19_aCdifK2LTE03SR_GX1KDZ5hYdMa3UN/view?usp=share_link",
+          archivo_url:
+            "https://drive.google.com/file/d/19_aCdifK2LTE03SR_GX1KDZ5hYdMa3UN/view?usp=share_link",
           modulo_id: moduleId,
           tipo: selectedValue,
           elemento_id: elementoId,
         };
-    
+
         // Inserta en la tabla "material"
-        const { error: materialError } = await supabase.from("material").insert([materialData]);
-    
+        const { error: materialError } = await supabase
+          .from("material")
+          .insert([materialData]);
+
         if (materialError) {
           throw materialError;
         }
-    
-        console.log("Material creado con éxito");
-        return elementosDataResult[0]
 
+        console.log("Material creado con éxito");
+        return elementosDataResult[0];
       }
       case "acciona": {
         const elementosData = {
@@ -123,18 +128,16 @@ const FormAddElement = () => {
           orden: lastOrder + 1,
           titulo: `Titulo de ${selectedValue} por defecto`,
         };
-    
-        const { data: elementosDataResult, error: elementosError } = await supabase
-          .from("elementos")
-          .insert([elementosData])
-          .select();
-    
+
+        const { data: elementosDataResult, error: elementosError } =
+          await supabase.from("elementos").insert([elementosData]).select();
+
         if (elementosError) {
           throw elementosError;
         }
-    
+
         const elementoId = elementosDataResult[0].id;
-    
+
         // Campos específicos para el tipo "acciona"
         const accionaData = {
           titulo: "Titulo de acciona por defecto",
@@ -144,17 +147,18 @@ const FormAddElement = () => {
           tipo: selectedValue,
           elemento_id: elementoId,
         };
-    
+
         // Inserta en la tabla "acciona"
-        const { error: accionaError } = await supabase.from("acciona").insert([accionaData]);
-    
+        const { error: accionaError } = await supabase
+          .from("acciona")
+          .insert([accionaData]);
+
         if (accionaError) {
           throw accionaError;
         }
-    
-        console.log("Acciona creado con éxito");
-        return elementosDataResult[0]
 
+        console.log("Acciona creado con éxito");
+        return elementosDataResult[0];
       }
       case "examen": {
         const elementosData = {
@@ -163,18 +167,16 @@ const FormAddElement = () => {
           orden: lastOrder + 1,
           titulo: `Titulo de ${selectedValue} por defecto`,
         };
-    
-        const { data: elementosDataResult, error: elementosError } = await supabase
-          .from("elementos")
-          .insert([elementosData])
-          .select();
-    
+
+        const { data: elementosDataResult, error: elementosError } =
+          await supabase.from("elementos").insert([elementosData]).select();
+
         if (elementosError) {
           throw elementosError;
         }
-    
+
         const elementoId = elementosDataResult[0].id;
-    
+
         // Campos específicos para el tipo "examen"
         const examenData = {
           titulo: "Titulo de examen por defecto",
@@ -183,17 +185,18 @@ const FormAddElement = () => {
           tipo: selectedValue,
           elemento_id: elementoId,
         };
-    
+
         // Inserta en la tabla "examen"
-        const { error: examenError } = await supabase.from("examen").insert([examenData]);
-    
+        const { error: examenError } = await supabase
+          .from("examen")
+          .insert([examenData]);
+
         if (examenError) {
           throw examenError;
         }
-    
-        console.log("Examen creado con éxito");
-        return elementosDataResult[0]
 
+        console.log("Examen creado con éxito");
+        return elementosDataResult[0];
       }
       case "quiz": {
         const elementosData = {
@@ -202,18 +205,16 @@ const FormAddElement = () => {
           orden: lastOrder + 1,
           titulo: `Titulo de ${selectedValue} por defecto`,
         };
-    
-        const { data: elementosDataResult, error: elementosError } = await supabase
-          .from("elementos")
-          .insert([elementosData])
-          .select();
-    
+
+        const { data: elementosDataResult, error: elementosError } =
+          await supabase.from("elementos").insert([elementosData]).select();
+
         if (elementosError) {
           throw elementosError;
         }
-    
+
         const elementoId = elementosDataResult[0].id;
-    
+
         // Campos específicos para el tipo "quiz"
         const quizData = {
           titulo: "Titulo de quiz por defecto",
@@ -222,17 +223,18 @@ const FormAddElement = () => {
           tipo: selectedValue,
           elemento_id: elementoId,
         };
-    
+
         // Inserta en la tabla "actividad_quiz"
-        const { error: quizError } = await supabase.from("actividad_quiz").insert([quizData]);
-    
+        const { error: quizError } = await supabase
+          .from("actividad_quiz")
+          .insert([quizData]);
+
         if (quizError) {
           throw quizError;
         }
-    
-        console.log("Quiz creado con éxito");
-        return elementosDataResult[0]
 
+        console.log("Quiz creado con éxito");
+        return elementosDataResult[0];
       }
       case "numeral": {
         const elementosData = {
@@ -241,18 +243,16 @@ const FormAddElement = () => {
           orden: lastOrder + 1,
           titulo: `Titulo de ${selectedValue} por defecto`,
         };
-    
-        const { data: elementosDataResult, error: elementosError } = await supabase
-          .from("elementos")
-          .insert([elementosData])
-          .select();
-    
+
+        const { data: elementosDataResult, error: elementosError } =
+          await supabase.from("elementos").insert([elementosData]).select();
+
         if (elementosError) {
           throw elementosError;
         }
-    
+
         const elementoId = elementosDataResult[0].id;
-    
+
         // Campos específicos para el tipo "numeral"
         const numeralData = {
           titulo: "Titulo de actividad numeral por defecto",
@@ -261,17 +261,18 @@ const FormAddElement = () => {
           tipo: selectedValue,
           elemento_id: elementoId,
         };
-    
+
         // Inserta en la tabla "actividad_numeral"
-        const { error: numeralError } = await supabase.from("actividad_numeral").insert([numeralData]);
-    
+        const { error: numeralError } = await supabase
+          .from("actividad_numeral")
+          .insert([numeralData]);
+
         if (numeralError) {
           throw numeralError;
         }
-    
-        console.log("Actividad numeral creada con éxito");
-        return elementosDataResult[0]
 
+        console.log("Actividad numeral creada con éxito");
+        return elementosDataResult[0];
       }
       case "camino": {
         const elementosData = {
@@ -280,20 +281,16 @@ const FormAddElement = () => {
           orden: lastOrder + 1,
           titulo: `Titulo de ${selectedValue} por defecto`,
         };
-    
-        const { data: elementosDataResult, error: elementosError } = await supabase
-          .from("elementos")
-          .insert([elementosData])
-          .select();
-         
-    
+
+        const { data: elementosDataResult, error: elementosError } =
+          await supabase.from("elementos").insert([elementosData]).select();
+
         if (elementosError) {
           throw elementosError;
         }
-        
-    
+
         const elementoId = elementosDataResult[0].id;
-    
+
         // Campos específicos para el tipo "camino"
         const caminoData = {
           titulo: "Titulo de actividad camino por defecto",
@@ -302,47 +299,56 @@ const FormAddElement = () => {
           tipo: selectedValue,
           elemento_id: elementoId,
         };
-    
+
         // Inserta en la tabla "actividad_camino"
-        const { error: caminoError } = await supabase.from("actividad_camino").insert([caminoData]);
-    
+        const { error: caminoError } = await supabase
+          .from("actividad_camino")
+          .insert([caminoData]);
+
         if (caminoError) {
           throw caminoError;
         }
-    
-        console.log("Actividad camino creada con éxito");
-       
-        return elementosDataResult[0]
 
+        console.log("Actividad camino creada con éxito");
+
+        return elementosDataResult[0];
       }
       default:
         console.log(`Tipo de elemento no manejado: ${selectedValue}`);
     }
-    
   };
 
   return (
-    <div className='mb-5'>
-      <Button onClick={() => setShowForm(!showForm)} className='bg-green-700 text-white mb-4'>
-        <RiAddLine /> Afegir element al mòdul
+    <div className="mb-5">
+      <Button
+        onClick={() => setShowForm(!showForm)}
+        className={`bg-${
+          showForm ? "error-700" : "primary-700"
+        } text-white mb-4`}
+      >
+        {showForm ? <RiCloseFill /> : <RiAddLine />} Afegir element al mòdul
       </Button>
-      <form className={`filtering-box flex gap-2 items-center ${showForm ? 'block' : 'hidden'}`}>
+      <form
+        className={`filtering-box flex gap-2 items-center ${
+          showForm ? "block" : "hidden"
+        }`}
+      >
         <label htmlFor="tipo-elemento">Selecciona el tipo de elemento:</label>
         <Select
           id="tipo-elemento"
           name="elementos"
-          value={selectedValue}
+          value={selectedValue ?? "video"}
           onChange={onInputChange}
           className="w-[20%]"
           aria-label="Quin element vols afegir?"
         >
-          {tiposElementos.map(e => (
-            <SelectItem key={e} value={e}>
+          {tiposElementos.map((e) => (
+            <option key={e} value={e}>
               {e}
-            </SelectItem>
+            </option>
           ))}
         </Select>
-        <Button onClick={onSubmit} className='bg-orange-400 text-white font-bold'>
+        <Button onClick={onSubmit} className="bg-gray-700 text-white ">
           Afegir
         </Button>
       </form>

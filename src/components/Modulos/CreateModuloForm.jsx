@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Textarea, Input } from "@nextui-org/react"; //estos usan onvaluechange de next ui (cambiar por pol-ui mas adelante)
 import { RiAddFill, RiCloseFill } from "react-icons/ri";
-import { Button, Checkbox } from "pol-ui";
+import { Button, Checkbox, Select, Input, Textarea } from "pol-ui";
 const CreateModuloForm = ({ cursoId, onSubmit }) => {
   const [moduloData, setModuloData] = useState({
     id: "",
@@ -58,6 +57,7 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
       onSubmit(body);
       setModuloData({
         nombre: "",
+        descripcion: "",
         have_material: false,
         have_video: false,
         have_acciona: false,
@@ -80,14 +80,16 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
   if (!cursoId) return null;
 
   return (
-    <div className="rounded-lg">
+    <div className="rounded-lg ">
       <Button
-        className="mt-4"
+        className={`mt-4 ${
+          addModulSelected ? "bg-error-700" : "bg-orange-400"
+        }`}
         onClick={() => setAddModulSelected(!addModulSelected)}
       >
         Crear mòdul{" "}
         {addModulSelected ? (
-          <RiCloseFill className="text-red-800" />
+          <RiCloseFill className="text-white" />
         ) : (
           <RiAddFill />
         )}
@@ -95,30 +97,32 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
       {/*  */}
       <form
         onSubmit={handleSubmit}
-        className={`mt-4 flex flex-col gap-4  ${
+        className={`mt-6 flex flex-col gap-4 rounded-xl  ${
           addModulSelected ? "block" : "hidden"
         }`}
       >
         {/* Nombre del modulo */}
         <Input
+          className="w-[20%]"
           name="nombre"
           type="text"
-          autoComplete="new-module-name"
           label="Nom del mòdul"
           value={moduloData.nombre}
-          onValueChange={(v) => handleInputChange(v, "nombre")}
+          onChange={(v) => handleInputChange(v.target.value, "nombre")} //los inputs de pol ui son mas nativos que nextui y no tienen el valor en el value. debes acceder al target.value
           required
         />
 
         {/* Descripcion */}
         <Textarea
-          placeholder="Introdueix la descripció"
+          className="w-[20%]"
+          innerClassName="resize"
+          label="Descripció"
           name="descripcion"
           value={moduloData.descripcion}
-          onValueChange={(v) => handleInputChange(v, "descripcion")}
+          onChange={(v) => handleInputChange(v.target.value, "descripcion")}
         />
 
-        <h4 className="mt-4 font-bold">Quins elements vols afegir al mòdul</h4>
+        <h5 className="mt-4 ">Quins elements vols afegir al mòdul</h5>
         <div className="p-8 flex gap-4 ">
           {/* Recorro con map y pinto los checkbox con los select */}
           {[
@@ -166,7 +170,7 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
           ))}
         </div>
 
-        <Button className="bg-green-200 w-full" type="submit">
+        <Button className="bg-success-400 text-black w-[20%]" type="submit">
           Afegir
         </Button>
       </form>

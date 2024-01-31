@@ -11,6 +11,7 @@ import {
   RiCheckFill,
   RiPencilFill,
 } from "react-icons/ri";
+
 import { LuDices } from "react-icons/lu";
 import { MdBackHand } from "react-icons/md";
 import FormAddElement from "../../components/Modulos/FormAddElement";
@@ -26,8 +27,6 @@ const ModuloPage = () => {
   const [moduloInfo, setModuloInfo] = useState([]);
   const Params = useParams();
   const { moduleId } = useParams();
-  console.log(moduleId);
-  console.log(Params);
 
   useEffect(() => {
     const obtenerInfoModulo = async (moduleId) => {
