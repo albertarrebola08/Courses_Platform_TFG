@@ -223,7 +223,10 @@ const DetalleMaterial = () => {
 
                 <div>
                   <Input
-                    defaultValue={materialInfo[0].url}
+                    defaultValue={
+                      materialInfo[0]?.archivo_url ??
+                      "https://arsa.alwaysdata.net/files/materialdefault.pdf"
+                    }
                     name="url"
                     label="Introdueix URL"
                   ></Input>
@@ -240,9 +243,11 @@ const DetalleMaterial = () => {
             </div>
           )}
 
-          {/* <div>materialInfo[0]url</div> */}
           <embed
-            src="https://arsa.alwaysdata.net/files/materialdefault.pdf"
+            src={
+              materialInfo[0]?.archivo_url ??
+              "https://arsa.alwaysdata.net/files/materialdefault.pdf"
+            }
             type="application/pdf"
             width="100%"
             height="600px"
