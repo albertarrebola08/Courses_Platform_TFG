@@ -49,7 +49,7 @@ const ModuloPage = () => {
     obtenerInfoModulo(moduleId);
   }, []);
 
-  console.log("DATA MODULE INFO: ", moduloInfo);
+  // console.log("DATA MODULE INFO: ", moduloInfo);
 
   const obtenerIconoPorTipo = (tipo) => {
     switch (tipo) {

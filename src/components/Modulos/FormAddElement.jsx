@@ -112,9 +112,9 @@ const FormAddElement = () => {
         // Campos específicos para el tipo "material"
         const materialData = {
           descripcion: "Descripción por defecto",
-          archivo_url:
-            "https://drive.google.com/file/d/19_aCdifK2LTE03SR_GX1KDZ5hYdMa3UN/view?usp=share_link",
+          archivo_url: "https://arsa.alwaysdata.net/files/materialdefault.pdf",
           modulo_id: moduleId,
+          titulo: "Titulo de material por defecto",
           tipo: selectedValue,
           elemento_id: elementoId,
         };
