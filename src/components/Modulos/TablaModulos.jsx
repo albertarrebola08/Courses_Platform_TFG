@@ -1,39 +1,39 @@
-
-
 // Esta es la tabla donde se visualizan las caracteristicas de TODOS los modulos de un CURSO
-    // - nombre del modulo
-    // - id del curso
-    // - descripción
-    // - acciones (editar, borrar)
+// - nombre del modulo
+// - id del curso
+// - descripción
+// - acciones (editar, borrar)
 
-    import { useState, useEffect } from "react";
-    import { supabase } from '../../supabase/supabaseClient';
-    import { RiEditFill, RiDeleteBin7Fill,RiCheckFill,RiCloseFill, RiEyeFill } from 'react-icons/ri';
-    import CreateModuloForm from "./CreateModuloForm";
-    import { Button,IconButton } from "pol-ui";
+import { useState, useEffect, useContext } from "react";
+import { supabase } from "../../supabase/supabaseClient";
+import {
+  RiEditFill,
+  RiDeleteBin7Fill,
+  RiCheckFill,
+  RiCloseFill,
+  RiEyeFill,
+} from "react-icons/ri";
+import CreateModuloForm from "./CreateModuloForm";
+import { Button, IconButton } from "pol-ui";
+import { Link, useParams } from "react-router-dom";
+import { GlobalContext } from "../../GlobalContext";
 
-    import { Link, useParams } from "react-router-dom";
-
-    
-    import {
-      Table,
-      TableHeader,
-      TableColumn,
-      TableBody,
-      TableRow,
-      TableCell,
-    } from "@nextui-org/react";
-
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@nextui-org/react";
 
 const TablaModulos = () => {
-
-  
   const { id } = useParams();
 
   const [lastCreatedCourse, setLastCreatedCourse] = useState({}); // Estado para almacenar el último curso creado
   const [curso, setCurso] = useState({}); // Estado para almacenar los detalles del curso seleccionado
   const [modulos, setModulos] = useState([]); // Estado para almacenar los módulos relacionados con el curso seleccionado
-
+  // const { detalleModulo} = useContext(GlobalContext);
   const [isLoading, setIsLoading] = useState(false); // Estado para almacenar el estado de carga
 
   const [error, setError] = useState(""); // Estado para almacenar los errores
@@ -44,7 +44,9 @@ const TablaModulos = () => {
 
   const handleDeleteModulo = async (id, nombre) => {
     // Lógica para eliminar el modulo con el ID proporcionado
-    const userConfirmed = window.confirm(`Estàs segur d'eliminar el mòdul: ${nombre}`);
+    const userConfirmed = window.confirm(
+      `Estàs segur d'eliminar el mòdul: ${nombre}`
+    );
     if (userConfirmed) {
       setIsLoading(true);
       const { error } = await supabase.from("modulo").delete().eq("id", id);
@@ -64,6 +66,7 @@ const TablaModulos = () => {
     // Al hacer clic en el ojo, guarda el módulo seleccionado
     console.log(`Ver modulo con ID: ${id} y nombre ${nombre}`);
   };
+
   const handleSubmit = async (body) => {
     // Insertar el módulo en la tabla modulo y obtener su id
     const bodyBd = {
@@ -76,28 +79,36 @@ const TablaModulos = () => {
       have_acciona: body.have_acciona,
       have_camino: body.have_camino,
       have_numeral: body.have_numeral,
+    };
 
-    }
+    const { data: dataArray, error } = await supabase
+      .from("modulo")
+      .insert(bodyBd)
+      .select();
 
-    const { data: dataArray, error } = await supabase.from("modulo").insert(bodyBd).select();
-    
     const data = dataArray[0];
     if (error) {
       throw error;
     }
 
     // Array de tipos de elementos
-    const tiposElementos = ["video", "material", "examen", "quiz", "acciona", "camino", "numeral"];
+    const tiposElementos = [
+      "video",
+      "material",
+      "examen",
+      "quiz",
+      "acciona",
+      "camino",
+      "numeral",
+    ];
 
     let ordenCounter = 1;
     // Iterar sobre los tipos de elementos y manejarlos
     for (const tipo of tiposElementos) {
       if (body[`have_${tipo}`]) {
-        console.log(`have_${tipo}`)
-        const cantidad = body[`${tipo}_cantidad`];        
-        console.log('CANTIDADES: ', cantidad)
-
-        
+        console.log(`have_${tipo}`);
+        const cantidad = body[`${tipo}_cantidad`];
+        console.log("CANTIDADES: ", cantidad);
 
         for (let i = 0; i < cantidad; i++) {
           switch (tipo) {
@@ -109,19 +120,20 @@ const TablaModulos = () => {
                 orden: ordenCounter,
                 titulo: `Titulo de ${tipo} por defecto`,
               };
-            
+
               // Inserta en la tabla "elementos" y obtén el ID generado
-              const { data: elementosDataResult, error: elementosError } = await supabase
-                .from("elementos")
-                .insert([elementosData])
-                .select();
-            
+              const { data: elementosDataResult, error: elementosError } =
+                await supabase
+                  .from("elementos")
+                  .insert([elementosData])
+                  .select();
+
               if (elementosError) {
                 throw elementosError;
               }
-            
+
               const elementoId = elementosDataResult[0].id;
-            
+
               // Campos específicos para el tipo "video"
               const videoData = {
                 titulo: "Titulo de video por defecto",
@@ -130,18 +142,20 @@ const TablaModulos = () => {
                 tipo: tipo,
                 elemento_id: elementoId,
               };
-            
+
               // Inserta en la tabla "video"
-              const { error: videoError } = await supabase.from("video").insert([videoData]);
-            
+              const { error: videoError } = await supabase
+                .from("video")
+                .insert([videoData]);
+
               if (videoError) {
                 throw videoError;
               }
-            
+
               console.log("Video creado con éxito");
               break;
             }
-            
+
             case "material": {
               // Registra en elementos
               const elementosData = {
@@ -150,37 +164,41 @@ const TablaModulos = () => {
                 orden: ordenCounter,
                 titulo: `Titulo de ${tipo} por defecto`,
               };
-            
-              console.log(elementosData)
+
+              console.log(elementosData);
               // Inserta en la tabla "elementos" y obtén el ID generado
-              const { data: elementosDataResult, error: elementosError } = await supabase
-                .from("elementos")
-                .insert([elementosData])
-                .select()
-              
-                console.log(elementosDataResult)
-            
+              const { data: elementosDataResult, error: elementosError } =
+                await supabase
+                  .from("elementos")
+                  .insert([elementosData])
+                  .select();
+
+              console.log(elementosDataResult);
+
               if (elementosError) {
                 throw elementosError;
               }
-            
-               const elementoId = elementosDataResult[0].id;
-            
+
+              const elementoId = elementosDataResult[0].id;
+
               const materialData = {
                 descripcion: "Descripción por defecto",
-                archivo_url: "https://drive.google.com/file/d/19_aCdifK2LTE03SR_GX1KDZ5hYdMa3UN/view?usp=share_link",
+                archivo_url:
+                  "https://drive.google.com/file/d/19_aCdifK2LTE03SR_GX1KDZ5hYdMa3UN/view?usp=share_link",
                 modulo_id: data.id,
                 tipo: tipo,
                 elemento_id: elementoId,
               };
-            
+
               // Inserta en la tabla "material"
-              const { error: materialError } = await supabase.from("material").insert([materialData]);
-            
+              const { error: materialError } = await supabase
+                .from("material")
+                .insert([materialData]);
+
               if (materialError) {
                 throw materialError;
               }
-            
+
               console.log("Material creado con éxito");
               break;
             }
@@ -192,19 +210,20 @@ const TablaModulos = () => {
                 orden: ordenCounter,
                 titulo: `Titulo de ${tipo} por defecto`,
               };
-            
+
               // Inserta en la tabla "elementos" y obtén el ID generado
-              const { data: elementosDataResult, error: elementosError } = await supabase
-                .from("elementos")
-                .insert([elementosData])
-                .select();
-            
+              const { data: elementosDataResult, error: elementosError } =
+                await supabase
+                  .from("elementos")
+                  .insert([elementosData])
+                  .select();
+
               if (elementosError) {
                 throw elementosError;
               }
-            
+
               const elementoId = elementosDataResult[0].id;
-            
+
               // Campos específicos para el tipo "acciona"
               const accionaData = {
                 titulo: "Titulo de acciona por defecto",
@@ -214,18 +233,20 @@ const TablaModulos = () => {
                 tipo: tipo,
                 elemento_id: elementoId,
               };
-            
+
               // Inserta en la tabla "acciona"
-              const { error: accionaError } = await supabase.from("acciona").insert([accionaData]);
-            
+              const { error: accionaError } = await supabase
+                .from("acciona")
+                .insert([accionaData]);
+
               if (accionaError) {
                 throw accionaError;
               }
-            
+
               console.log("Acciona creado con éxito");
               break;
             }
-            
+
             case "examen": {
               // Registra en elementos
               const elementosData = {
@@ -234,19 +255,20 @@ const TablaModulos = () => {
                 orden: ordenCounter,
                 titulo: `Titulo de ${tipo} por defecto`,
               };
-            
+
               // Inserta en la tabla "elementos" y obtén el ID generado
-              const { data: elementosDataResult, error: elementosError } = await supabase
-                .from("elementos")
-                .insert([elementosData])
-                .select();
-            
+              const { data: elementosDataResult, error: elementosError } =
+                await supabase
+                  .from("elementos")
+                  .insert([elementosData])
+                  .select();
+
               if (elementosError) {
                 throw elementosError;
               }
-            
+
               const elementoId = elementosDataResult[0].id;
-            
+
               // Campos específicos para el tipo "examen"
               const examenData = {
                 titulo: "Titulo de examen por defecto",
@@ -255,18 +277,20 @@ const TablaModulos = () => {
                 tipo: tipo,
                 elemento_id: elementoId,
               };
-            
+
               // Inserta en la tabla "examen"
-              const { error: examenError } = await supabase.from("examen").insert([examenData]);
-            
+              const { error: examenError } = await supabase
+                .from("examen")
+                .insert([examenData]);
+
               if (examenError) {
                 throw examenError;
               }
-            
+
               console.log("Examen creado con éxito");
               break;
             }
-            
+
             case "quiz": {
               // Registra en elementos
               const elementosData = {
@@ -275,19 +299,20 @@ const TablaModulos = () => {
                 orden: ordenCounter,
                 titulo: `Titulo de ${tipo} por defecto`,
               };
-            
+
               // Inserta en la tabla "elementos" y obtén el ID generado
-              const { data: elementosDataResult, error: elementosError } = await supabase
-                .from("elementos")
-                .insert([elementosData])
-                .select();
-            
+              const { data: elementosDataResult, error: elementosError } =
+                await supabase
+                  .from("elementos")
+                  .insert([elementosData])
+                  .select();
+
               if (elementosError) {
                 throw elementosError;
               }
-            
+
               const elementoId = elementosDataResult[0].id;
-            
+
               // Campos específicos para el tipo "quiz"
               const quizData = {
                 titulo: "Titulo de quiz por defecto",
@@ -296,14 +321,16 @@ const TablaModulos = () => {
                 tipo: tipo,
                 elemento_id: elementoId,
               };
-            
+
               // Inserta en la tabla "actividad_quiz"
-              const { error: quizError } = await supabase.from("actividad_quiz").insert([quizData]);
-            
+              const { error: quizError } = await supabase
+                .from("actividad_quiz")
+                .insert([quizData]);
+
               if (quizError) {
                 throw quizError;
               }
-            
+
               console.log("Quiz creado con éxito");
               break;
             }
@@ -315,19 +342,20 @@ const TablaModulos = () => {
                 orden: ordenCounter,
                 titulo: `Titulo de ${tipo} por defecto`,
               };
-            
+
               // Inserta en la tabla "elementos" y obtén el ID generado
-              const { data: elementosDataResult, error: elementosError } = await supabase
-                .from("elementos")
-                .insert([elementosData])
-                .select();
-            
+              const { data: elementosDataResult, error: elementosError } =
+                await supabase
+                  .from("elementos")
+                  .insert([elementosData])
+                  .select();
+
               if (elementosError) {
                 throw elementosError;
               }
-            
+
               const elementoId = elementosDataResult[0].id;
-            
+
               // Campos específicos para el tipo "numeral"
               const numeralData = {
                 titulo: "Titulo de actividad numeral por defecto",
@@ -336,18 +364,20 @@ const TablaModulos = () => {
                 tipo: tipo,
                 elemento_id: elementoId,
               };
-            
+
               // Inserta en la tabla "actividad_numeral"
-              const { error: numeralError } = await supabase.from("actividad_numeral").insert([numeralData]);
-            
+              const { error: numeralError } = await supabase
+                .from("actividad_numeral")
+                .insert([numeralData]);
+
               if (numeralError) {
                 throw numeralError;
               }
-            
+
               console.log("Actividad numeral creada con éxito");
               break;
             }
-            
+
             case "camino": {
               // Registra en elementos
               const elementosData = {
@@ -356,19 +386,20 @@ const TablaModulos = () => {
                 orden: ordenCounter,
                 titulo: `Titulo de ${tipo} por defecto`,
               };
-            
+
               // Inserta en la tabla "elementos" y obtén el ID generado
-              const { data: elementosDataResult, error: elementosError } = await supabase
-                .from("elementos")
-                .insert([elementosData])
-                .select();
-            
+              const { data: elementosDataResult, error: elementosError } =
+                await supabase
+                  .from("elementos")
+                  .insert([elementosData])
+                  .select();
+
               if (elementosError) {
                 throw elementosError;
               }
-            
+
               const elementoId = elementosDataResult[0].id;
-            
+
               // Campos específicos para el tipo "camino"
               const caminoData = {
                 titulo: "Titulo de actividad camino por defecto",
@@ -377,23 +408,25 @@ const TablaModulos = () => {
                 tipo: tipo,
                 elemento_id: elementoId,
               };
-            
+
               // Inserta en la tabla "actividad_camino"
-              const { error: caminoError } = await supabase.from("actividad_camino").insert([caminoData]);
-            
+              const { error: caminoError } = await supabase
+                .from("actividad_camino")
+                .insert([caminoData]);
+
               if (caminoError) {
                 throw caminoError;
               }
-            
+
               console.log("Actividad camino creada con éxito");
               break;
             }
-            
+
             default:
               console.log(`Tipo de elemento no reconocido: ${tipo}`);
           }
 
-          ordenCounter ++;
+          ordenCounter++;
         }
       }
     }
@@ -414,7 +447,6 @@ const TablaModulos = () => {
       throw cursoModuloError;
     }
 
-
     console.log("Módulo creado y asociado al curso exitosamente:", data);
 
     setLastCreatedCourse(data);
@@ -428,17 +460,27 @@ const TablaModulos = () => {
         if (id) {
           // Consulta módulos relacionados con el curso seleccionado
 
-          const { data: cursoData, error: cursoError } = await supabase.from("curso").select("nombre,descripcion").eq("id", id).order("id", { ascending: false });
+          const { data: cursoData, error: cursoError } = await supabase
+            .from("curso")
+            .select("nombre,descripcion")
+            .eq("id", id)
+            .order("id", { ascending: false });
           console.log(cursoData);
 
           if (cursoError) {
-            console.error("Error al obtener los detalles del curso:", cursoError.message);
+            console.error(
+              "Error al obtener los detalles del curso:",
+              cursoError.message
+            );
             setError(cursoError.message);
           } else {
             setCurso(cursoData[0]);
           }
 
-          const { data, error } = await supabase.from("curso_modulo").select("modulo_id").eq("curso_id", id);
+          const { data, error } = await supabase
+            .from("curso_modulo")
+            .select("modulo_id")
+            .eq("curso_id", id);
 
           if (error) {
             console.error("Error al obtener los módulos:", error.message);
@@ -448,10 +490,16 @@ const TablaModulos = () => {
             const moduloIds = data.map((cursoModulo) => cursoModulo.modulo_id);
 
             // Ahora puedes consultar los detalles completos de los módulos usando los IDs obtenidos
-            const { data: moduloData, error: moduloError } = await supabase.from("modulo").select("*").in("id", moduloIds); // Filtra por los IDs de los módulos relacionados
+            const { data: moduloData, error: moduloError } = await supabase
+              .from("modulo")
+              .select("*")
+              .in("id", moduloIds); // Filtra por los IDs de los módulos relacionados
 
             if (moduloError) {
-              console.error("Error al obtener los detalles de los módulos:", moduloError.message);
+              console.error(
+                "Error al obtener los detalles de los módulos:",
+                moduloError.message
+              );
             } else {
               setModulos(moduloData); // Establece los módulos obtenidos en el estado
             }
@@ -478,7 +526,10 @@ const TablaModulos = () => {
       <section className="flex gap-4 flex-col justify-center items-center">
         <p>No hay módulos para este curso</p>
 
-        <CreateModuloForm cursoId={id} onSubmit={(body) => handleSubmit(body)} />
+        <CreateModuloForm
+          cursoId={id}
+          onSubmit={(body) => handleSubmit(body)}
+        />
 
         <Button href="/dashboard/cursos">Volver</Button>
       </section>
@@ -515,13 +566,55 @@ const TablaModulos = () => {
                 <TableRow key={modulo.id}>
                   <TableCell>{modulo.id}</TableCell>
                   <TableCell>{modulo.nombre}</TableCell>
-                  <TableCell>{modulo.have_video ? <RiCheckFill className="text-green-600" /> : <RiCloseFill className="text-red-600" />}</TableCell>
-                  <TableCell>{modulo.have_material ? <RiCheckFill className="text-green-600" /> : <RiCloseFill className="text-red-600" />}</TableCell>
-                  <TableCell>{modulo.have_acciona ? <RiCheckFill className="text-green-600" /> : <RiCloseFill className="text-red-600" />}</TableCell>
-                  <TableCell>{modulo.have_quiz ? <RiCheckFill className="text-green-600" /> : <RiCloseFill className="text-red-600" />}</TableCell>
-                  <TableCell>{modulo.have_numeral ? <RiCheckFill className="text-green-600" /> : <RiCloseFill className="text-red-600" />}</TableCell>
-                  <TableCell>{modulo.have_camino ? <RiCheckFill className="text-green-600" /> : <RiCloseFill className="text-red-600" />}</TableCell>
-                  <TableCell>{modulo.have_examen ? <RiCheckFill className="text-green-600" /> : <RiCloseFill className="text-red-600" />}</TableCell>
+                  <TableCell>
+                    {modulo.have_video ? (
+                      <RiCheckFill className="text-green-600" />
+                    ) : (
+                      <RiCloseFill className="text-red-600" />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {modulo.have_material ? (
+                      <RiCheckFill className="text-green-600" />
+                    ) : (
+                      <RiCloseFill className="text-red-600" />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {modulo.have_acciona ? (
+                      <RiCheckFill className="text-green-600" />
+                    ) : (
+                      <RiCloseFill className="text-red-600" />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {modulo.have_quiz ? (
+                      <RiCheckFill className="text-green-600" />
+                    ) : (
+                      <RiCloseFill className="text-red-600" />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {modulo.have_numeral ? (
+                      <RiCheckFill className="text-green-600" />
+                    ) : (
+                      <RiCloseFill className="text-red-600" />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {modulo.have_camino ? (
+                      <RiCheckFill className="text-green-600" />
+                    ) : (
+                      <RiCloseFill className="text-red-600" />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {modulo.have_examen ? (
+                      <RiCheckFill className="text-green-600" />
+                    ) : (
+                      <RiCloseFill className="text-red-600" />
+                    )}
+                  </TableCell>
 
                   <TableCell className="flex gap-4 items-center">
                     <Link to={`/dashboard/modulo/${modulo.id}`}>
@@ -530,10 +623,18 @@ const TablaModulos = () => {
                       </IconButton>
                     </Link>
 
-                    <IconButton className="" onClick={() => handleDeleteModulo(modulo.id, modulo.nombre)}>
+                    <IconButton
+                      className=""
+                      onClick={() =>
+                        handleDeleteModulo(modulo.id, modulo.nombre)
+                      }
+                    >
                       <RiDeleteBin7Fill className="" />
                     </IconButton>
-                    <IconButton className="" onClick={() => handleViewModulo(modulo.id, modulo.nombre)}>
+                    <IconButton
+                      className=""
+                      onClick={() => handleViewModulo(modulo.id, modulo.nombre)}
+                    >
                       <RiEyeFill className="text-lg " />
                     </IconButton>
                   </TableCell>
@@ -546,6 +647,5 @@ const TablaModulos = () => {
     </div>
   );
 };
-        
+
 export default TablaModulos;
-    

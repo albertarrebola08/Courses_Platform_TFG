@@ -182,6 +182,28 @@ const TablaModulo = () => {
         throw errorEliminar;
       }
 
+      const elementoEliminadoTipo = detalleModulo.find(
+        (elemento) => elemento.id === elementoId
+      )?.tipo;
+
+      const elementosRestantesTipo = detalleModulo.filter(
+        (elemento) => elemento.tipo === elementoEliminadoTipo
+      );
+
+      // Verifica si no hay más elementos de ese tipo
+      if (elementosRestantesTipo.length == 1) {
+        const campoHaveElemento = `have_${elementoEliminadoTipo}`;
+
+        // Cambia el have_elemento del modulo a false
+        const { data: moduloActualizado, error: errorModulo } = await supabase
+          .from("modulo")
+          .update({ [campoHaveElemento]: false })
+          .eq("id", moduleId);
+
+        if (errorModulo) {
+          throw errorModulo;
+        }
+      }
       // Obten los elementos restantes con órdenes mayores que el elemento eliminado
       const { data: elementosRestantes } = await supabase
         .from("elementos")

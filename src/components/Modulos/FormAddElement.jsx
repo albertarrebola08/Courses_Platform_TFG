@@ -40,6 +40,16 @@ const FormAddElement = () => {
   let lastOrder = Object.keys(detalleModulo).length;
 
   const insertaDetalle = async (selectedValue, lastOrder) => {
+    const campoHaveElemento = `have_${selectedValue}`;
+    const { error: moduloError } = await supabase
+      .from("modulo")
+      .update({ [campoHaveElemento]: true })
+      .eq("id", moduleId);
+
+    if (moduloError) {
+      throw moduloError;
+    }
+
     switch (selectedValue) {
       case "video": {
         // Registra en elementos
@@ -79,7 +89,7 @@ const FormAddElement = () => {
         }
 
         console.log("Video creado con éxito");
-        console.log("dr: ", elementosDataResult[0]);
+
         return elementosDataResult[0];
       }
       case "material": {
