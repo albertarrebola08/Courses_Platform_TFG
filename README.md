@@ -1,4 +1,4 @@
-# Plataforma de Cursos Gamificables
+# Plataforma de Cursos Interactivos
 
 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTC-_pznqoQWgrnvpX5mm3rQJFais5vsNRqtfQVwHMXrTQ4lvjgGY6DIBjP8XivfWhV2dw&usqp=CAU" width="120px"></img>
 
@@ -7,7 +7,7 @@
 
 ## Descripción
 
-La **Plataforma de Cursos Gamificables** es una herramienta completa diseñada para facilitar la creación, administración y participación en cursos gamificados. La plataforma proporciona una interfaz intuitiva y personalizable, permitiendo a los administradores de cursos diseñar experiencias educativas atractivas.
+  La **Plataforma de Cursos Interactivos** es una herramienta completa diseñada para facilitar la creación, administración y participación en cursos gamificados. La plataforma proporciona una interfaz intuitiva y personalizable, permitiendo a los administradores de cursos diseñar experiencias educativas atractivas.
 
 ## Características Principales
 
