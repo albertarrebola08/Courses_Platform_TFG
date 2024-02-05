@@ -15,6 +15,7 @@ import DetalleMaterial from "./components/Materiales/DetalleMaterial";
 import DetalleNumeral from "./components/Numerales/DetalleNumeral";
 import DetalleQuiz from "./components/Quizs/DetalleQuiz";
 import DetalleCamino from "./components/Caminos/DetalleCamino";
+import Error404Page from "./pages/dashboard/Error404Page";
 
 function App() {
   return (
@@ -32,20 +33,40 @@ function App() {
 
                 <Route path="preguntes-diaries" element={<QuestionsPage />} />
 
-                <Route path="modulo/:moduleId/video/:elementoId" element={<DetalleVideo />} />
-                <Route path="modulo/:moduleId/material/:elementoId" element={<DetalleMaterial />} />
-                <Route path="modulo/:moduleId/examen/:elementoId" element={<DetalleExamen />} />
-                <Route path="modulo/:moduleId/acciona/:elementoId" element={<DetalleAcciona />} />
-                <Route path="modulo/:moduleId/quiz/:elementoId" element={<DetalleQuiz />} />
-                <Route path="modulo/:moduleId/numeral/:elementoId" element={<DetalleNumeral />} />
-                <Route path="modulo/:moduleId/camino/:elementoId" element={<DetalleCamino />} />
-                <Route path="*" element={<p>404</p>} />
+                <Route
+                  path="modulo/:moduleId/video/:elementoId"
+                  element={<DetalleVideo />}
+                />
+                <Route
+                  path="modulo/:moduleId/material/:elementoId"
+                  element={<DetalleMaterial />}
+                />
+                <Route
+                  path="modulo/:moduleId/examen/:elementoId"
+                  element={<DetalleExamen />}
+                />
+                <Route
+                  path="modulo/:moduleId/acciona/:elementoId"
+                  element={<DetalleAcciona />}
+                />
+                <Route
+                  path="modulo/:moduleId/quiz/:elementoId"
+                  element={<DetalleQuiz />}
+                />
+                <Route
+                  path="modulo/:moduleId/numeral/:elementoId"
+                  element={<DetalleNumeral />}
+                />
+                <Route
+                  path="modulo/:moduleId/camino/:elementoId"
+                  element={<DetalleCamino />}
+                />
+                <Route path="*" element={<Error404Page />} />
               </Route>
             </Routes>
           </div>
         </NextUIProvider>
       </GlobalProvider>
-
     </Router>
   );
 }
