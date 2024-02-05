@@ -27,6 +27,4 @@ La **Plataforma de Cursos Gamificables** es una herramienta completa diseñada p
 
 - **Tailwind CSS:** Marco de diseño utilizable directamente desde el marcado HTML.
 
-- **Next UI:** Librería de componentes para React que facilita la creación de interfaces de usuario atractivas y responsivas.
-
-- **<a href="https://github.com/PolGubau/pol-ui">POL-UI</a>:** Librería desarrollada por Pol Gubau que proporciona componentes adicionales para mejorar la interfaz y experiencia del usuario.
+- **<a href="https://github.com/PolGubau/pol-ui">POL-UI</a>:** Librería de componentes desarrollada por Pol Gubau Amores. Es la librería escogida por su compatibilidad con Tailwind CSS, por su variedad de componentes, fácil personalización y buena <a href="https://pol-ui-storybook.vercel.app/?path=/docs/" target = "_blank"> documentación</a>. Usa las propiedades nativas de HTML 5 lo cual es una ventaja respecto a otras como Next UI algunas ocasiones.
