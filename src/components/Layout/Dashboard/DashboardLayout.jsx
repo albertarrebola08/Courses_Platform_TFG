@@ -19,7 +19,7 @@ const DashboardLayout = () => {
     <div className="flex w-full overflow-hidden border bg-primary-100 flex-col h-[100vh]">
       <Navbar className="bg-primary-50 shadow-md py-4">
         {/* <CiMenuFries /> */}
-        <Navbar.Brand className="">
+        <Navbar.Brand className="mx-1">
           <img
             src="https://rispot.com/wp-content/uploads/2023/12/cropped-logo_possible3.png"
             className="h-6"

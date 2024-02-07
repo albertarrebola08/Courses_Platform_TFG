@@ -11,6 +11,8 @@ import {
   RiCrossFill,
 } from "react-icons/ri";
 
+import DocumentViewer from "./DocumentViewer";
+
 const DetalleMaterial = () => {
   const { elementoId } = useParams();
   // const [titulo, setTitulo] = useState("");
@@ -101,76 +103,90 @@ const DetalleMaterial = () => {
     setIsEditingDesc(false);
   };
 
-  //gestiono el material por url
+  //gestiono el material
   const handleMaterialChange = async (e, elementoId) => {
     e.preventDefault();
 
-    // console.log("urlMATERIAL!!!  : ", e.target.archivo_url.value);
-    // console.log("ARCHIVO SELECCIONADO: ", e.target.file.value);
-
     const fileInput = e.target.file;
-    const urlInput = e.target.archivo_url;
-
-    console.log(fileInput.files);
 
     // Si se seleccionó un archivo, lo subimos a Supabase
     if (fileInput.files.length > 0) {
       try {
         const file = fileInput.files[0];
 
-        const { data, error } = await supabase.storage
-          .from("materialFiles") // Reemplaza 'tu-bucket' con el nombre de tu bucket en Supabase Storage
-          .upload(`materialFiles/${file.name}`, file, {
+        const fileName = fileInput.files[0].name
+          .normalize("NFD")
+          .replace(/\s+/g, "_")
+          .replace(/[^\w.-]/g, "");
+
+        // Verificar si el archivo ya existe en el bucket
+        // const { data: fileList, error: fileListError } = await supabase.storage
+        //   .from("materialFiles")
+        //   .list({
+        //     limit: 100, // Límite de resultados
+        //     offset: 0, // Desplazamiento (para la paginación)
+        //   });
+
+        // if (fileListError) {
+        //   console.error(
+        //     "Error al obtener la lista de archivos:",
+        //     fileListError
+        //   );
+        //   return;
+        // }
+
+        // if (fileList.find((fileItem) => fileItem.name === file.name)) {
+        //   // El archivo ya existe, mostrar un aviso
+        //   alert(
+        //     "El archivo ya existe en el bucket. Por favor, seleccione otro archivo."
+        //   );
+        //   return;
+        // }
+
+        // Subir el archivo al bucket
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("materialFiles")
+          .upload(`${fileName}`, file, {
             cacheControl: "3600",
             upsert: false,
           });
 
-        if (error) {
-          console.error("Error al subir el archivo a Supabase:", error);
-        } else {
-          const fileUrl = data.Key;
-          console.log("Archivo subido con éxito. URL:", fileUrl);
-
-          // Ahora, puedes almacenar 'fileUrl' en tu tabla de materiales.
-          const { data: updateData, error: updateError } = await supabase
-            .from("material")
-            .update({ archivo_url: fileUrl })
-            .eq("elemento_id", parseInt(elementoId))
-            .select();
-
-          if (updateError) {
-            console.error("Error al actualizar en Supabase:", updateError);
-          } else {
-            console.log("Actualizado correctamente en Supabase:", updateData);
-            setMaterialInfo([{ ...materialInfo[0], archivo_url: fileUrl }]);
-          }
+        if (uploadError) {
+          console.error("Error al subir el archivo a Supabase:", uploadError);
+          return;
         }
-      } catch (error) {
-        console.error("Error en la operación Supabase:", error);
-      }
-    } else if (urlInput.value.trim() !== "") {
-      // Si se proporcionó una URL, la utilizamos directamente
-      const url = urlInput.value;
 
-      try {
-        const { data, error } = await supabase
+        // Obtener la URL pública del archivo recién subido
+        const { data: publicUrl, error: getPublicUrlError } = supabase.storage
+          .from("materialFiles")
+          .getPublicUrl(uploadData.path);
+
+        if (getPublicUrlError) {
+          console.error("Error al obtener la URL pública:", getPublicUrlError);
+          return;
+        }
+
+        // Actualizar el campo archivo_url en la tabla material con la nueva URL
+        const { data: updateData, error: updateError } = await supabase
           .from("material")
-          .update({ archivo_url: url })
-          .eq("elemento_id", parseInt(elementoId))
-          .select();
+          .update({ archivo_url: publicUrl.publicUrl })
+          .eq("elemento_id", parseInt(elementoId));
 
-        if (error) {
-          console.error("Error al actualizar en Supabase:", error);
-        } else {
-          console.log("Actualizado correctamente en Supabase:", data);
+        if (updateError) {
+          console.error("Error al actualizar en Supabase:", updateError);
+          return;
         }
 
-        setMaterialInfo([{ ...materialInfo[0], archivo_url: url }]);
+        // Actualizar el estado local con la nueva información del material
+        setMaterialInfo([
+          { ...materialInfo[0], archivo_url: publicUrl.publicUrl },
+        ]);
       } catch (error) {
         console.error("Error en la operación Supabase:", error);
       }
     }
 
+    // Restablecer el estado de edición del material
     setIsEditingMaterial(false);
   };
 
@@ -215,7 +231,6 @@ const DetalleMaterial = () => {
               </form>
             )}
           </div>
-
           <div className="flex items-center justify-between gap-4">
             {!isEditingDesc ? (
               <span className="flex gap-2 items-center">
@@ -254,7 +269,6 @@ const DetalleMaterial = () => {
               </form>
             )}
           </div>
-
           {!isEditingMaterial ? (
             <span className="flex gap-2 items-center">
               <h1 className="text-lg">Material actual:</h1>
@@ -288,7 +302,7 @@ const DetalleMaterial = () => {
                     <div className=" my-6 bg-gray-800 border-md h-[1px] w-[50%] mx-auto"></div>
                   </div>
 
-                  <div>
+                  {/* <div>
                     <Input
                       defaultValue={
                         materialInfo[0]?.archivo_url ??
@@ -297,7 +311,7 @@ const DetalleMaterial = () => {
                       name="archivo_url"
                       label="Introdueix URL"
                     ></Input>
-                  </div>
+                  </div> */}
                 </div>
                 <IconButton type="submit">
                   <RiCheckFill className="bg-primary" />
@@ -312,15 +326,14 @@ const DetalleMaterial = () => {
             </form>
           )}
 
-          <iframe
-            src={
-              materialInfo[0]?.archivo_url ??
-              "https://arsa.alwaysdata.net/files/materialdefault.pdf"
-            }
-            type="application/pdf"
-            width="100%"
-            height="600px"
-          />
+          {materialInfo[0] &&
+            materialInfo[0].archivo_url &&
+            materialInfo[0].titulo && (
+              <DocumentViewer
+                archivoUrl={materialInfo[0].archivo_url}
+                titulo={materialInfo[0].titulo}
+              />
+            )}
         </div>
       </div>
     </div>
