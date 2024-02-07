@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { RiAddFill, RiCloseFill } from "react-icons/ri";
-import { Button, Checkbox, Select, Input, Textarea } from "pol-ui";
+import { Button, Checkbox, Input, Textarea, Badge } from "pol-ui";
 const CreateModuloForm = ({ cursoId, onSubmit }) => {
   const [moduloData, setModuloData] = useState({
     id: "",
@@ -148,8 +148,9 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
                 checked={moduloData[`have_${element}`]}
               />
 
-              <select
-                className="ms-3  flex text-center border rounded-sm border-gray-800"
+              <Input
+                type="number"
+                className="ms-3  flex text-center "
                 name={`${element}_cantidad`}
                 value={
                   moduloData[`have_${element}`]
@@ -159,13 +160,7 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
                 onChange={(e) =>
                   handleInputChange(parseInt(e.target.value, 10), e.target.name)
                 }
-              >
-                {[0, 1, 2, 3, 4, 5].map((optionValue) => (
-                  <option key={optionValue} value={optionValue}>
-                    {optionValue}
-                  </option>
-                ))}
-              </select>
+              ></Input>
             </div>
           ))}
         </div>

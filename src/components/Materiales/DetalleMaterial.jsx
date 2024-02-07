@@ -321,14 +321,6 @@ const DetalleMaterial = () => {
             width="100%"
             height="600px"
           />
-
-          <Button
-            className="bg-gray-700 rounded-md text-white flex justify-center truncate px-4 items-center gap-2"
-            title="Guardar canvis"
-            type="submit"
-          >
-            Guardar canvis <RiCheckLine />
-          </Button>
         </div>
       </div>
     </div>

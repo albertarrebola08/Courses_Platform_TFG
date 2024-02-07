@@ -14,7 +14,7 @@ import {
   RiEyeFill,
 } from "react-icons/ri";
 import CreateModuloForm from "./CreateModuloForm";
-import { Button, IconButton } from "pol-ui";
+import { Button, IconButton, Badge } from "pol-ui";
 import { Link, useParams } from "react-router-dom";
 import { GlobalContext } from "../../GlobalContext";
 
@@ -30,9 +30,12 @@ import {
 const TablaModulos = () => {
   const { id } = useParams();
 
+  const { detalleModulo, setDetalleModulo } = useContext(GlobalContext);
   const [lastCreatedCourse, setLastCreatedCourse] = useState({}); // Estado para almacenar el último curso creado
   const [curso, setCurso] = useState({}); // Estado para almacenar los detalles del curso seleccionado
   const [modulos, setModulos] = useState([]); // Estado para almacenar los módulos relacionados con el curso seleccionado
+  const [moduloElementosCounts, setModuloElementosCounts] = useState([]);
+
   // const { detalleModulo} = useContext(GlobalContext);
   const [isLoading, setIsLoading] = useState(false); // Estado para almacenar el estado de carga
 
@@ -503,8 +506,70 @@ const TablaModulos = () => {
             } else {
               setModulos(moduloData); // Establece los módulos obtenidos en el estado
             }
+
+            // Realiza la consulta para obtener los datos de los elementos
+            const { data: elementosData, error: elementosError } =
+              await supabase.from("elementos").select("*");
+
+            if (elementosError) {
+              console.error(
+                "Error al obtener los detalles de los elementos:",
+                elementosError.message
+              );
+            }
+
+            // Procesa los datos para calcular la cantidad de elementos de cada tipo para cada módulo
+            const counts = moduloData.map((modulo) => {
+              const videoCount = elementosData.filter(
+                (elemento) =>
+                  elemento.id_modulo === modulo.id && elemento.tipo === "video"
+              ).length;
+              const materialCount = elementosData.filter(
+                (elemento) =>
+                  elemento.id_modulo === modulo.id &&
+                  elemento.tipo === "material"
+              ).length;
+              const accionaCount = elementosData.filter(
+                (elemento) =>
+                  elemento.id_modulo === modulo.id &&
+                  elemento.tipo === "acciona"
+              ).length;
+              const quizCount = elementosData.filter(
+                (elemento) =>
+                  elemento.id_modulo === modulo.id && elemento.tipo === "quiz"
+              ).length;
+              const numeralCount = elementosData.filter(
+                (elemento) =>
+                  elemento.id_modulo === modulo.id &&
+                  elemento.tipo === "numeral"
+              ).length;
+              const caminoCount = elementosData.filter(
+                (elemento) =>
+                  elemento.id_modulo === modulo.id && elemento.tipo === "camino"
+              ).length;
+              const examenCount = elementosData.filter(
+                (elemento) =>
+                  elemento.id_modulo === modulo.id && elemento.tipo === "examen"
+              ).length;
+              // Agrega más contadores para otros tipos de elementos si es necesario
+
+              return {
+                id: modulo.id,
+                videoCount,
+                materialCount,
+                accionaCount,
+                quizCount,
+                numeralCount,
+                caminoCount,
+                examenCount,
+                // Agrega más contadores para otros tipos de elementos si es necesario
+              };
+            });
+
+            setModuloElementosCounts(counts);
           }
         }
+        console.log("counts: ", moduloElementosCounts);
       } catch (error) {
         console.error("Error al obtener los módulos:", error.message);
       }
@@ -568,49 +633,114 @@ const TablaModulos = () => {
                   <TableCell>{modulo.nombre}</TableCell>
                   <TableCell>
                     {modulo.have_video ? (
-                      <RiCheckFill className="text-green-600" />
+                      <div className="flex items-center">
+                        <RiCheckFill className="text-green-600" />
+                        <Badge>
+                          {
+                            moduloElementosCounts.find(
+                              (m) => modulo.id === m.id
+                            )?.videoCount
+                          }
+                        </Badge>
+                      </div>
                     ) : (
                       <RiCloseFill className="text-red-600" />
                     )}
                   </TableCell>
                   <TableCell>
                     {modulo.have_material ? (
-                      <RiCheckFill className="text-green-600" />
+                      <div className="flex items-center">
+                        <RiCheckFill className="text-green-600" />
+                        <Badge className="">
+                          {
+                            moduloElementosCounts.find(
+                              (m) => modulo.id === m.id
+                            )?.materialCount
+                          }
+                        </Badge>
+                      </div>
                     ) : (
                       <RiCloseFill className="text-red-600" />
                     )}
                   </TableCell>
                   <TableCell>
                     {modulo.have_acciona ? (
-                      <RiCheckFill className="text-green-600" />
+                      <div className="flex items-center">
+                        <RiCheckFill className="text-green-600" />
+                        <Badge>
+                          {
+                            moduloElementosCounts.find(
+                              (m) => modulo.id === m.id
+                            )?.accionaCount
+                          }
+                        </Badge>
+                      </div>
                     ) : (
                       <RiCloseFill className="text-red-600" />
                     )}
                   </TableCell>
                   <TableCell>
                     {modulo.have_quiz ? (
-                      <RiCheckFill className="text-green-600" />
+                      <div className="flex items-center">
+                        <RiCheckFill className="text-green-600" />
+                        <Badge>
+                          {
+                            moduloElementosCounts.find(
+                              (m) => modulo.id === m.id
+                            )?.quizCount
+                          }
+                        </Badge>
+                      </div>
                     ) : (
                       <RiCloseFill className="text-red-600" />
                     )}
                   </TableCell>
                   <TableCell>
                     {modulo.have_numeral ? (
-                      <RiCheckFill className="text-green-600" />
+                      <div className="flex items-center">
+                        <div className="flex">
+                          <RiCheckFill className="text-green-600" />
+                          <Badge>
+                            {
+                              moduloElementosCounts.find(
+                                (m) => modulo.id === m.id
+                              )?.numeralCount
+                            }
+                          </Badge>
+                        </div>
+                      </div>
                     ) : (
                       <RiCloseFill className="text-red-600" />
                     )}
                   </TableCell>
                   <TableCell>
                     {modulo.have_camino ? (
-                      <RiCheckFill className="text-green-600" />
+                      <div className="flex items-center">
+                        <RiCheckFill className="text-green-600" />
+                        <Badge>
+                          {
+                            moduloElementosCounts.find(
+                              (m) => modulo.id === m.id
+                            )?.caminoCount
+                          }
+                        </Badge>
+                      </div>
                     ) : (
                       <RiCloseFill className="text-red-600" />
                     )}
                   </TableCell>
                   <TableCell>
                     {modulo.have_examen ? (
-                      <RiCheckFill className="text-green-600" />
+                      <div className="flex items-center">
+                        <RiCheckFill className="text-green-600" />
+                        <Badge>
+                          {
+                            moduloElementosCounts.find(
+                              (m) => modulo.id === m.id
+                            )?.examenCount
+                          }
+                        </Badge>
+                      </div>
                     ) : (
                       <RiCloseFill className="text-red-600" />
                     )}

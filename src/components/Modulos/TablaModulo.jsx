@@ -34,8 +34,6 @@ const TablaModulo = () => {
   const { moduleId } = useParams();
   const { detalleModulo, setDetalleModulo } = useContext(GlobalContext);
 
-  // Estado local para almacenar el orden del elemento arrastrado
-
   useEffect(() => {
     const obtenerDetalleModulo = async (moduleId) => {
       try {
