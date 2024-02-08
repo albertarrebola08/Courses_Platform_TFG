@@ -2,7 +2,8 @@ import { useParams } from "react-router-dom";
 import { supabase } from "../../supabase/supabaseClient";
 import { useState, useEffect, useContext } from "react";
 import { Input, FileInput, Button, IconButton, Textarea } from "pol-ui";
-import { GlobalContext } from "../../GlobalContext";
+import DocumentViewer from "../Materiales/DocumentViewer";
+import VideoViewer from "../VideoViewer";
 import {
   RiArrowDownSLine,
   RiPencilFill,
@@ -13,8 +14,7 @@ import {
 
 const DetalleVideo = () => {
   const { elementoId } = useParams();
-  const [titulo, setTitulo] = useState("");
-
+  const [isFileUploaded, setIsFileUploaded] = useState(null);
   // const { detalleModulo, setDetalleModulo } = useContext(GlobalContext);
 
   const [videoInfo, setVideoInfo] = useState("");
@@ -68,7 +68,6 @@ const DetalleVideo = () => {
       }
 
       setVideoInfo([{ ...videoInfo[0], titulo: titulo }]);
-      console.log("dv: ", videoInfo);
     } catch (error) {
       console.error("Error en la operación Supabase:", error);
     }
@@ -79,26 +78,86 @@ const DetalleVideo = () => {
   //gestiono el video por url
   const handleVideoChange = async (e, elementoId) => {
     e.preventDefault();
-    //console.log("la url!!!!: ", e.target.url);
-    const url = e.target.url.value;
+    const urlInput = e.target.url;
+    const fileInput = e.target.file;
 
-    try {
-      const { data, error } = await supabase
-        .from("video")
-        .update({ url: url })
-        .eq("elemento_id", parseInt(elementoId))
-        .select();
+    // Si se proporcionó una URL, actualiza la URL en la base de datos
+    if (urlInput.value.trim() !== "") {
+      const url = urlInput.value.trim();
+      console.log("URL TRIM: ", url);
 
-      if (error) {
-        console.error("Error al actualizar en Supabase:", error);
-      } else {
-        console.log("Actualizado correctamente en Supabase:", data);
+      try {
+        // Actualizar el campo archivo_url en la tabla Video con la nueva URL
+        const { data: updateData, error: updateError } = await supabase
+          .from("video")
+          .update({ url: url })
+          .eq("elemento_id", parseInt(elementoId));
+
+        if (updateError) {
+          console.error("Error al actualizar en Supabase:", updateError);
+          return;
+        }
+
+        // Actualizar el estado local con la nueva información del Video
+        setVideoInfo([{ ...videoInfo[0], url }]);
+        console.log("video actualizado: ", videoInfo);
+      } catch (error) {
+        console.error("Error en la operación Supabase:", error);
       }
+    } else if (fileInput.files.length > 0) {
+      setIsFileUploaded(true);
+      //estado auxiliar para saber como se ha subido si con file o con url
+      // Si se selecciona un archivo, lo subimos a Supabase Storage
+      try {
+        const file = fileInput.files[0];
 
-      setVideoInfo([{ ...videoInfo[0], url: url }]);
-    } catch (error) {
-      console.error("Error en la operación Supabase:", error);
+        const fileName = fileInput.files[0].name
+          .normalize("NFD")
+          .replace(/\s+/g, "_")
+          .replace(/[^\w.-]/g, "");
+
+        // Subir el archivo al bucket
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("videos")
+          .upload(`${fileName}`, file, {
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+        if (uploadError) {
+          console.error("Error al subir el archivo a Supabase:", uploadError);
+          return;
+        }
+
+        // Obtener la URL pública del archivo recién subido
+        const { data: publicUrl, error: getPublicUrlError } = supabase.storage
+          .from("videos")
+          .getPublicUrl(uploadData.path);
+
+        if (getPublicUrlError) {
+          console.error("Error al obtener la URL pública:", getPublicUrlError);
+          return;
+        }
+
+        // Actualizar el campo archivo_url en la tabla Video con la nueva URL
+        const { data: updateData, error: updateError } = await supabase
+          .from("video")
+          .update({ url: publicUrl.publicUrl })
+          .eq("elemento_id", parseInt(elementoId));
+
+        if (updateError) {
+          console.error("Error al actualizar en Supabase:", updateError);
+          return;
+        }
+
+        // Actualizar el estado local con la nueva información del Video
+        setVideoInfo([{ ...videoInfo[0], url: publicUrl.publicUrl }]);
+      } catch (error) {
+        console.error("Error en la operación Supabase:", error);
+      }
     }
+
+    // Restablecer el estado de edición del Video
     setIsEditingVideo(false);
   };
 
@@ -166,7 +225,7 @@ const DetalleVideo = () => {
                     isEditingVideo ? "block" : "hidden"
                   } `}
                 >
-                  <FileInput color="secondary"></FileInput>
+                  <FileInput color="secondary" name="file"></FileInput>
                   <div className="flex items-center justify-around px-16 gap-4">
                     <div className=" my-6 bg-gray-800 border-md h-[1px] w-[50%] mx-auto"></div>
                     <div className="pb-1">o</div>
@@ -176,7 +235,7 @@ const DetalleVideo = () => {
                   <div>
                     <Textarea
                       innerClassName="resize"
-                      defaultValue={videoInfo[0].url}
+                      defaultValue=""
                       name="url"
                       label="Introdueix URL"
                     ></Textarea>
@@ -194,13 +253,24 @@ const DetalleVideo = () => {
               </div>
             </form>
           )}
+          {console.log("vinfo antes de vviewer: ", videoInfo)}
 
-          <video width="50%" height="350px" controls>
-            {videoInfo[0] && videoInfo[0].url && (
-              <source src={videoInfo[0].url} type="video/mp4" />
-            )}
-            Tu navegador no soporta el elemento de video.
-          </video>
+          {isFileUploaded && videoInfo[0] && videoInfo[0].url ? (
+            <DocumentViewer
+              archivoUrl={videoInfo[0].url}
+              titulo={videoInfo[0].titulo}
+            />
+          ) : (
+            videoInfo[0] &&
+            videoInfo[0].url &&
+            videoInfo[0].titulo && (
+              <VideoViewer
+                key={videoInfo[0].url}
+                archivoUrl={videoInfo[0].url}
+                titulo={videoInfo[0].titulo}
+              />
+            )
+          )}
         </div>
       </div>
     </div>

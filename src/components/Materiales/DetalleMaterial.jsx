@@ -73,14 +73,14 @@ const DetalleMaterial = () => {
     } catch (error) {
       console.error("Error en la operación Supabase:", error);
     }
-    console.log(titulo);
+
     setIsEditingName(false);
   };
 
   //gestiono description
   const handleDescriptionChange = async (e, elementoId) => {
     e.preventDefault();
-    console.log("desc!!!  : ", e.target.descripcion.value);
+
     const description = e.target.descripcion.value;
 
     try {

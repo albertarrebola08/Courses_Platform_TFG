@@ -44,7 +44,7 @@ const DashboardLayout = () => {
         </Navbar.Collapse>
       </Navbar>
       <section className="flex h-full">
-        <div className="bg-primary-50 w-fit shadow-lg">
+        <div className="bg-primary-50 w-fit shadow-md">
           <Sidebar
             className="bg-primary-50 "
             collapsed={!openMenu}
@@ -68,13 +68,13 @@ const DashboardLayout = () => {
             </SidebarItem>
           </Sidebar>
         </div>
-        <div className="overflow-y-auto flex-1 m-4 rounded-lg p-6 bg-gray-200">
+        <div className="overflow-y-auto flex-1 m-4 rounded-lg p-6 ">
           <Outlet />
         </div>
       </section>
-      {/* <footer className="h-auto bg-gray-800 p-2 flex justify-center text-gray-300 text-[12px]">
+      <footer className="h-auto bg-gray-800 p-2 flex justify-center text-gray-300 text-[12px]">
         <div>Developed by @albertarrebola08</div>
-      </footer> */}
+      </footer>
     </div>
 
     // <div className="flex w-full overflow-hidden bordermin-h-[400px]  bg-primary-100 flex-col">

@@ -5,7 +5,6 @@ import { FaFileDownload } from "react-icons/fa";
 const DocumentViewer = ({ archivoUrl, titulo }) => {
   // Obtener la extensión del archivo
   const extension = archivoUrl.split(".").pop().toLowerCase();
-  console.log(extension);
   const compatibleExtension = ["pdf", "html", "jpg", "jpeg", "png"];
   const videoExtension = ["mp4", "avi", "mov"];
   const audioExtension = ["mp3", "wav"];

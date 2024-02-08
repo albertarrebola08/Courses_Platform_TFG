@@ -16,6 +16,7 @@ import DetalleNumeral from "./components/Numerales/DetalleNumeral";
 import DetalleQuiz from "./components/Quizs/DetalleQuiz";
 import DetalleCamino from "./components/Caminos/DetalleCamino";
 import Error404Page from "./pages/dashboard/Error404Page";
+// import TextEditor from "./components/TextEditor";
 
 function App() {
   return (
@@ -30,7 +31,7 @@ function App() {
                 <Route path="cursos" element={<CursosPage />} />
                 <Route path="cursos/:id" element={<CursoPage />} />
                 {<Route path="modulo/:moduleId" element={<ModuloPage />} />}
-
+                {/* {<Route path="editor" element={<TextEditor />} />} */}
                 <Route path="preguntes-diaries" element={<QuestionsPage />} />
 
                 <Route
