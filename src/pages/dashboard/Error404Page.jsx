@@ -13,11 +13,7 @@ const Error404Page = () => {
           existeix...
         </h3>
       </div>
-      <img
-        className="w-[40%]"
-        src="../../../src/assets/programming.png"
-        alt=""
-      />
+      <img className="w-[40%]" src="/images/programming.png" alt="" />
     </div>
   );
 };

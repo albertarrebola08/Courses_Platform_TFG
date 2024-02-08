@@ -5,20 +5,21 @@ import { FaFileDownload } from "react-icons/fa";
 const DocumentViewer = ({ archivoUrl, titulo }) => {
   // Obtener la extensión del archivo
   const extension = archivoUrl.split(".").pop().toLowerCase();
-  const compatibleExtension = ["pdf", "html", "jpg", "jpeg", "png"];
+  const compatibleExtension = ["pdf", "html"];
+  const imageExtension = ["png", "jpg", "jpeg", "gif", "webp"];
   const videoExtension = ["mp4", "avi", "mov"];
   const audioExtension = ["mp3", "wav"];
   const uncompatibleExtension = [
-    "flac",
-    "doc",
-    "docx",
-    "ppt",
-    "pptx",
-    "xls",
-    "xlsx",
-    "csv",
-    "txt",
-    "key",
+    { name: "flac", logo: "flac_logo.png" },
+    { name: "doc", logo: "doc_logo.png" },
+    { name: "docx", logo: "docx_logo.png" },
+    { name: "ppt", logo: "ppt_logo.png" },
+    { name: "pptx", logo: "pptx_logo.png" },
+    { name: "xls", logo: "xls_logo.png" },
+    { name: "xlsx", logo: "xlsx_logo.png" },
+    { name: "csv", logo: "csv_logo.png" },
+    { name: "txt", logo: "txt_logo.png" },
+    { name: "key", logo: "key_logo.png" },
   ];
 
   // Verificar si la extensión está en la lista de tipos de extensiones compatibles
@@ -26,6 +27,7 @@ const DocumentViewer = ({ archivoUrl, titulo }) => {
   const isVideoExtension = videoExtension.includes(extension);
   const isAudioExtension = audioExtension.includes(extension);
   const isUncompatibleExtension = uncompatibleExtension.includes(extension);
+  const isImageExtension = imageExtension.includes(extension);
 
   // Renderizar el contenido según la extensión del archivo
   if (isCompatibleExtension) {
@@ -56,22 +58,20 @@ const DocumentViewer = ({ archivoUrl, titulo }) => {
   } else if (isUncompatibleExtension) {
     // Si es una extensión incompatible, mostrar el botón de descarga
     return (
-      <div>
-        <a href={archivoUrl} download>
-          <Button className="bg-gray-700">
-            <div className="flex gap-2 items-center">
-              <FaFileDownload />
-              <span>
-                Descarregar{" "}
-                <span className="underline">
-                  {titulo}.{extension.toUpperCase()}{" "}
-                </span>
-              </span>
-            </div>
-          </Button>
-        </a>
-      </div>
+      <Button href={archivoUrl} download className="bg-gray-700">
+        <div className="flex gap-2 items-center">
+          <FaFileDownload />
+          <span>
+            Descarregar{" "}
+            <span className="underline">
+              {titulo}.{extension.toUpperCase()}{" "}
+            </span>
+          </span>
+        </div>
+      </Button>
     );
+  } else if (isImageExtension) {
+    return <img src={archivoUrl} alt={`imagen-${titulo}`} />;
   }
 };
 

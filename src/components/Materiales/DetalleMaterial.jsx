@@ -326,6 +326,63 @@ const DetalleMaterial = () => {
             </form>
           )}
 
+          {!isEditingMaterial ? (
+            <span className="flex gap-2 items-center">
+              <h1 className="text-lg">Material actual:</h1>
+
+              <RiPencilFill
+                onClick={() => setIsEditingMaterial(true)}
+                className="text-primary-800"
+              />
+            </span>
+          ) : (
+            <form
+              className="w-full"
+              onSubmit={(e) => {
+                handleMaterialChange(e, elementoId);
+              }}
+            >
+              <div className="flex gap-3 items-center w-full">
+                <div
+                  className={`border border-md border-gray-800  p-8 rounded-lg ${
+                    isEditingMaterial ? "block" : "hidden"
+                  } `}
+                >
+                  <FileInput
+                    color="secondary"
+                    name="file"
+                    accept=".doc,.docx,.xml,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  ></FileInput>
+                  <div className="flex items-center justify-around px-16 gap-4">
+                    <div className=" my-6 bg-gray-800 border-md h-[1px] w-[50%] mx-auto"></div>
+                    <div className="pb-1">o</div>
+                    <div className=" my-6 bg-gray-800 border-md h-[1px] w-[50%] mx-auto"></div>
+                  </div>
+
+                  {/* <div>
+                    <Input
+                      defaultValue={
+                        materialInfo[0]?.archivo_url ??
+                        "https://arsa.alwaysdata.net/files/materialdefault.pdf"
+                      }
+                      name="archivo_url"
+                      label="Introdueix URL"
+                    ></Input>
+                  </div> */}
+                </div>
+                <IconButton type="submit">
+                  <RiCheckFill className="bg-primary" />
+                </IconButton>
+                <IconButton
+                  onClick={() => setIsEditingMaterial(false)}
+                  color="error"
+                >
+                  <RiCloseFill className="" />
+                </IconButton>
+              </div>
+            </form>
+          )}
+
           {materialInfo[0] &&
             materialInfo[0].archivo_url &&
             materialInfo[0].titulo && (

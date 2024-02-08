@@ -27,7 +27,7 @@ import {
   TableCell,
 } from "@nextui-org/react";
 
-const TablaModulos = () => {
+const TablaModulos = ({ setNombreCurso }) => {
   const { id } = useParams();
 
   const { detalleModulo, setDetalleModulo } = useContext(GlobalContext);
@@ -478,6 +478,7 @@ const TablaModulos = () => {
             setError(cursoError.message);
           } else {
             setCurso(cursoData[0]);
+            setNombreCurso(cursoData[0].nombre);
           }
 
           const { data, error } = await supabase

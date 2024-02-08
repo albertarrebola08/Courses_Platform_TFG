@@ -19,6 +19,7 @@ const DetalleAcciona = () => {
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingEnun, setIsEditingEnun] = useState(false);
   const [isEditingAcciona, setIsEditingAcciona] = useState(false);
+  const [isEditingAccionaImg, setIsEditingAccionaImg] = useState(false);
 
   useEffect(() => {
     const obtenerDetalleAcciona = async (elementoId) => {
@@ -187,6 +188,90 @@ const DetalleAcciona = () => {
     setIsEditingAcciona(false);
   };
 
+  const handleAccionaImg = async (e, elementoId) => {
+    e.preventDefault();
+    const urlInput = e.target.url;
+    const fileInput = e.target.file;
+
+    // Si se proporcionó una URL, actualiza la URL en la base de datos
+    if (urlInput.value.trim() !== "") {
+      const url = urlInput.value.trim();
+      console.log("URL TRIM: ", url);
+
+      try {
+        // Actualizar el campo archivo_url en la tabla Video con la nueva URL
+        const { data: updateData, error: updateError } = await supabase
+          .from("acciona")
+          .update({ imagen: url })
+          .eq("elemento_id", parseInt(elementoId));
+
+        if (updateError) {
+          console.error("Error al actualizar en Supabase:", updateError);
+          return;
+        }
+
+        // Actualizar el estado local con la nueva información del Video
+        setAccionaInfo([{ ...accionaInfo[0], imagen: url }]);
+      } catch (error) {
+        console.error("Error en la operación Supabase:", error);
+      }
+    } else if (fileInput.files.length > 0) {
+      setIsFileUploaded(true);
+      //estado auxiliar para saber como se ha subido si con file o con url
+      // Si se selecciona un archivo, lo subimos a Supabase Storage
+      try {
+        const file = fileInput.files[0];
+
+        const fileName = fileInput.files[0].name
+          .normalize("NFD")
+          .replace(/\s+/g, "_")
+          .replace(/[^\w.-]/g, "");
+
+        // Subir el archivo al bucket
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("accionas")
+          .upload(`/imagenes/${fileName}`, file, {
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+        if (uploadError) {
+          console.error("Error al subir el archivo a Supabase:", uploadError);
+          return;
+        }
+
+        // Obtener la URL pública del archivo recién subido
+        const { data: publicUrl, error: getPublicUrlError } = supabase.storage
+          .from("accionas")
+          .getPublicUrl(uploadData.path);
+
+        if (getPublicUrlError) {
+          console.error("Error al obtener la URL pública:", getPublicUrlError);
+          return;
+        }
+
+        // Actualizar el campo archivo_url en la tabla Video con la nueva URL
+        const { data: updateData, error: updateError } = await supabase
+          .from("acciona")
+          .update({ imagen: publicUrl.publicUrl })
+          .eq("elemento_id", parseInt(elementoId));
+
+        if (updateError) {
+          console.error("Error al actualizar en Supabase:", updateError);
+          return;
+        }
+
+        // Actualizar el estado local con la nueva información del Video
+        setAccionaInfo([{ ...accionaInfo[0], imagen: publicUrl.publicUrl }]);
+      } catch (error) {
+        console.error("Error en la operación Supabase:", error);
+      }
+    }
+
+    // Restablecer el estado de edición del Acciona
+    setIsEditingAcciona(false);
+  };
+
   return (
     <div className="p-8">
       <div className="flex flex-col gap-3 w-[50%] ">
@@ -323,25 +408,66 @@ const DetalleAcciona = () => {
               </div>
             </form>
           )}
+
+          {/* IMAGENES */}
+          {!isEditingAccionaImg ? (
+            <span className="flex gap-2 items-center">
+              <h1 className="text-lg">Imatge (opcional):</h1>
+
+              <RiPencilFill
+                onClick={() => setIsEditingAccionaImg(true)}
+                className="text-primary-800"
+              />
+            </span>
+          ) : (
+            <form
+              className="w-full"
+              onSubmit={(e) => {
+                handleAccionaImg(e, elementoId);
+              }}
+            >
+              <div className="flex gap-3 items-center w-full">
+                <div
+                  className={`border border-md border-gray-800  p-8 rounded-lg ${
+                    isEditingAccionaImg ? "block" : "hidden"
+                  } `}
+                >
+                  <FileInput name="file" color="secondary"></FileInput>
+                  <div className="flex items-center justify-around px-16 gap-4">
+                    <div className=" my-6 bg-gray-800 border-md h-[1px] w-[50%] mx-auto"></div>
+                    <div className="pb-1">o</div>
+                    <div className=" my-6 bg-gray-800 border-md h-[1px] w-[50%] mx-auto"></div>
+                  </div>
+
+                  <div>
+                    <Textarea
+                      innerClassName="resize"
+                      name="url"
+                      label="Introdueix URL"
+                    ></Textarea>
+                  </div>
+                </div>
+                <IconButton type="submit">
+                  <RiCheckFill className="bg-primary" />
+                </IconButton>
+                <IconButton
+                  onClick={() => setIsEditingAccionaImg(false)}
+                  color="error"
+                >
+                  <RiCloseFill className="" />
+                </IconButton>
+              </div>
+            </form>
+          )}
+
           {console.log(accionaInfo)}
 
-          {isFileUploaded &&
-          accionaInfo[0] &&
-          accionaInfo[0].video_enunciado ? (
+          {accionaInfo[0]?.imagen && accionaInfo[0]?.titulo && (
             <DocumentViewer
-              archivoUrl={accionaInfo[0].video_enunciado}
+              key={accionaInfo[0].imagen}
+              archivoUrl={accionaInfo[0].imagen}
               titulo={accionaInfo[0].titulo}
             />
-          ) : (
-            accionaInfo[0] &&
-            accionaInfo[0].video_enunciado &&
-            accionaInfo[0].titulo && (
-              <VideoViewer
-                key={accionaInfo[0].video_enunciado}
-                archivoUrl={accionaInfo[0].video_enunciado}
-                titulo={accionaInfo[0].titulo}
-              />
-            )
           )}
         </div>
       </div>

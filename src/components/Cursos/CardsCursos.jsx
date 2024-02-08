@@ -3,8 +3,6 @@ import { Card, CardHeader, CardBody, Image } from "@nextui-org/react";
 import { RiEdit2Line, RiDeleteBin2Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
-//coment
-
 const CardsCursos = ({ cursos, onDelete }) => {
   const handleEditCurso = (id) => {
     console.log(`Editar curso con ID: ${id}`);
