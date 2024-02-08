@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import { supabase } from "../../supabase/supabaseClient";
 import { useState, useEffect } from "react";
 import { Input, FileInput, Button, IconButton, Textarea } from "pol-ui";
+import VideoViewer from "../VideoViewer";
+import DocumentViewer from "../Materiales/DocumentViewer";
 import {
   RiArrowDownSLine,
   RiPencilFill,
@@ -12,7 +14,7 @@ import {
 
 const DetalleAcciona = () => {
   const { elementoId } = useParams();
-
+  const [isFileUploaded, setIsFileUploaded] = useState(null);
   const [accionaInfo, setAccionaInfo] = useState("");
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingEnun, setIsEditingEnun] = useState(false);
@@ -32,7 +34,7 @@ const DetalleAcciona = () => {
             error.message
           );
         } else {
-          console.log("Detalle acciona: ", accionaData);
+          // console.log("Detalle acciona: ", accionaData);
           setAccionaInfo(accionaData);
         }
       } catch (error) {
@@ -72,7 +74,7 @@ const DetalleAcciona = () => {
     console.log(titulo);
     setIsEditingName(false);
   };
-  //gestiono description
+  //gestiono enunciado - POSIBLE MODIFICACION A EDITOR DE TEXTO BUSCAR COMPONENTE O PREGUNTAR POL-UI
   const handleEnunciadoChange = async (e, elementoId) => {
     e.preventDefault();
     console.log("desc!!!  : ", e.target.enunciado.value);
@@ -97,29 +99,91 @@ const DetalleAcciona = () => {
     }
     setIsEditingEnun(false);
   };
+
   //gestiono el acciona por url
   const handleVideoEnunChange = async (e, elementoId) => {
     e.preventDefault();
-    console.log("la url!!!!: ", e.target.url.value);
-    const url = e.target.url.value;
+    const urlInput = e.target.url;
+    const fileInput = e.target.file;
 
-    try {
-      const { data, error } = await supabase
-        .from("acciona")
-        .update({ video_enunciado: url })
-        .eq("elemento_id", parseInt(elementoId))
-        .select();
+    // Si se proporcionó una URL, actualiza la URL en la base de datos
+    if (urlInput.value.trim() !== "") {
+      const url = urlInput.value.trim();
+      console.log("URL TRIM: ", url);
 
-      if (error) {
-        console.error("Error al actualizar en Supabase:", error);
-      } else {
-        console.log("Actualizado correctamente en Supabase:", data);
+      try {
+        // Actualizar el campo archivo_url en la tabla Video con la nueva URL
+        const { data: updateData, error: updateError } = await supabase
+          .from("acciona")
+          .update({ video_enunciado: url })
+          .eq("elemento_id", parseInt(elementoId));
+
+        if (updateError) {
+          console.error("Error al actualizar en Supabase:", updateError);
+          return;
+        }
+
+        // Actualizar el estado local con la nueva información del Video
+        setAccionaInfo([{ ...accionaInfo[0], video_enunciado: url }]);
+      } catch (error) {
+        console.error("Error en la operación Supabase:", error);
       }
+    } else if (fileInput.files.length > 0) {
+      setIsFileUploaded(true);
+      //estado auxiliar para saber como se ha subido si con file o con url
+      // Si se selecciona un archivo, lo subimos a Supabase Storage
+      try {
+        const file = fileInput.files[0];
 
-      setAccionaInfo([{ ...accionaInfo[0], video_enunciado: url }]);
-    } catch (error) {
-      console.error("Error en la operación Supabase:", error);
+        const fileName = fileInput.files[0].name
+          .normalize("NFD")
+          .replace(/\s+/g, "_")
+          .replace(/[^\w.-]/g, "");
+
+        // Subir el archivo al bucket
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("accionas")
+          .upload(`${fileName}`, file, {
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+        if (uploadError) {
+          console.error("Error al subir el archivo a Supabase:", uploadError);
+          return;
+        }
+
+        // Obtener la URL pública del archivo recién subido
+        const { data: publicUrl, error: getPublicUrlError } = supabase.storage
+          .from("accionas")
+          .getPublicUrl(uploadData.path);
+
+        if (getPublicUrlError) {
+          console.error("Error al obtener la URL pública:", getPublicUrlError);
+          return;
+        }
+
+        // Actualizar el campo archivo_url en la tabla Video con la nueva URL
+        const { data: updateData, error: updateError } = await supabase
+          .from("acciona")
+          .update({ video_enunciado: publicUrl.publicUrl })
+          .eq("elemento_id", parseInt(elementoId));
+
+        if (updateError) {
+          console.error("Error al actualizar en Supabase:", updateError);
+          return;
+        }
+
+        // Actualizar el estado local con la nueva información del Video
+        setAccionaInfo([
+          { ...accionaInfo[0], video_enunciado: publicUrl.publicUrl },
+        ]);
+      } catch (error) {
+        console.error("Error en la operación Supabase:", error);
+      }
     }
+
+    // Restablecer el estado de edición del Acciona
     setIsEditingAcciona(false);
   };
 
@@ -232,7 +296,7 @@ const DetalleAcciona = () => {
                     isEditingAcciona ? "block" : "hidden"
                   } `}
                 >
-                  <FileInput color="secondary"></FileInput>
+                  <FileInput name="file" color="secondary"></FileInput>
                   <div className="flex items-center justify-around px-16 gap-4">
                     <div className=" my-6 bg-gray-800 border-md h-[1px] w-[50%] mx-auto"></div>
                     <div className="pb-1">o</div>
@@ -242,7 +306,6 @@ const DetalleAcciona = () => {
                   <div>
                     <Textarea
                       innerClassName="resize"
-                      defaultValue={accionaInfo[0].video_enunciado}
                       name="url"
                       label="Introdueix URL"
                     ></Textarea>
@@ -260,13 +323,26 @@ const DetalleAcciona = () => {
               </div>
             </form>
           )}
+          {console.log(accionaInfo)}
 
-          <video width="50%" height="350px" controls>
-            {accionaInfo[0] && accionaInfo[0].video_enunciado && (
-              <source src={accionaInfo[0].video_enunciado} type="video/mp4" />
-            )}
-            Tu navegador no soporta el elemento de video.
-          </video>
+          {isFileUploaded &&
+          accionaInfo[0] &&
+          accionaInfo[0].video_enunciado ? (
+            <DocumentViewer
+              archivoUrl={accionaInfo[0].video_enunciado}
+              titulo={accionaInfo[0].titulo}
+            />
+          ) : (
+            accionaInfo[0] &&
+            accionaInfo[0].video_enunciado &&
+            accionaInfo[0].titulo && (
+              <VideoViewer
+                key={accionaInfo[0].video_enunciado}
+                archivoUrl={accionaInfo[0].video_enunciado}
+                titulo={accionaInfo[0].titulo}
+              />
+            )
+          )}
         </div>
       </div>
     </div>
