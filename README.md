@@ -27,4 +27,4 @@
 
 - <img src="https://seeklogo.com/images/T/tailwind-css-logo-5AD4175897-seeklogo.com.png" width="30px"></img> **Tailwind CSS:** Marco de diseño utilizable directamente desde el marcado HTML.
 
--  **<a href="https://github.com/PolGubau/pol-ui">POL-UI</a>:** Librería de componentes desarrollada por Pol Gubau Amores. Es la librería escogida por su compatibilidad con Tailwind CSS, por su variedad de componentes, fácil personalización y buena <a href="https://pol-ui-storybook.vercel.app/?path=/docs/" target = "_blank"> documentación</a>. Usa las propiedades nativas de HTML 5 lo cual es una ventaja respecto a otras como Next UI algunas ocasiones.
+-  <img src="https://ui.polgubau.com/logo.png" width="30px"></img> **<a href="https://github.com/PolGubau/pol-ui">POL-UI</a>:** Librería de componentes desarrollada por Pol Gubau Amores. Es la librería escogida por su compatibilidad con Tailwind CSS, por su variedad de componentes, fácil personalización y buena <a href="https://pol-ui-storybook.vercel.app/?path=/docs/" target = "_blank"> documentación</a>. Usa las propiedades nativas de HTML 5 lo cual es una ventaja respecto a otras como Next UI algunas ocasiones.
