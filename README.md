@@ -1,6 +1,6 @@
 # Plataforma de Cursos Interactivos
 
-<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTC-_pznqoQWgrnvpX5mm3rQJFais5vsNRqtfQVwHMXrTQ4lvjgGY6DIBjP8XivfWhV2dw&usqp=CAU" width="120px"></img>
+<img src="https://png.pngtree.com/png-vector/20220913/ourmid/pngtree-work-in-progress-png-image_6173846.png" width="200px"></img>
 
 > Este es el trabajo de fin de grado para mi grado universitario en Comunicación Interactiva en la Universidad Autónoma de Barcelona (UAB)
 > Aquí se podrá ir viendo la evolución de proyecto
@@ -21,10 +21,10 @@
 
 ## Tecnologías Utilizadas
 
-- **Vite:** Herramienta de construcción rápida y eficiente para aplicaciones web modernas.
+- <img src="https://seeklogo.com/images/V/vite-logo-BFD4283991-seeklogo.com.png" width="30px"></img> **Vite:** Herramienta de construcción rápida y eficiente para aplicaciones web modernas.
 
-- **React:** Biblioteca de JavaScript para construir interfaces de usuario interactivas.
+- <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/React.svg/1200px-React.svg.png" width="30px"></img> **React:** Biblioteca de JavaScript para construir interfaces de usuario interactivas.
 
-- **Tailwind CSS:** Marco de diseño utilizable directamente desde el marcado HTML.
+- <img src="https://seeklogo.com/images/T/tailwind-css-logo-5AD4175897-seeklogo.com.png" width="30px"></img> **Tailwind CSS:** Marco de diseño utilizable directamente desde el marcado HTML.
 
-- **<a href="https://github.com/PolGubau/pol-ui">POL-UI</a>:** Librería de componentes desarrollada por Pol Gubau Amores. Es la librería escogida por su compatibilidad con Tailwind CSS, por su variedad de componentes, fácil personalización y buena <a href="https://pol-ui-storybook.vercel.app/?path=/docs/" target = "_blank"> documentación</a>. Usa las propiedades nativas de HTML 5 lo cual es una ventaja respecto a otras como Next UI algunas ocasiones.
+-  <img src="https://ui.polgubau.com/logo.png" width="30px"></img> **<a href="https://github.com/PolGubau/pol-ui">POL-UI</a>:** Librería de componentes desarrollada por Pol Gubau Amores. Es la librería escogida por su compatibilidad con Tailwind CSS, por su variedad de componentes, fácil personalización y buena <a href="https://pol-ui-storybook.vercel.app/?path=/docs/" target = "_blank"> documentación</a>. Usa las propiedades nativas de HTML 5 lo cual es una ventaja respecto a otras como Next UI algunas ocasiones.
