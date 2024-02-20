@@ -2,20 +2,18 @@ import { Button, IconButton, Loader } from "pol-ui";
 import { useParams } from "react-router-dom";
 import { supabase } from "../../supabase/supabaseClient";
 import { useState, useEffect } from "react";
-import { Input, FileInput, Textarea } from "pol-ui";
+import { Input, FileInput, Textarea, Alert } from "pol-ui";
 import {
   RiPencilFill,
-  RiCheckLine,
   RiCloseFill,
   RiCheckFill,
-  RiCrossFill,
+  RiInformationLine,
 } from "react-icons/ri";
 
 import DocumentViewer from "./DocumentViewer";
 
-const DetalleMaterial = () => {
+const DetalleMaterial = ({ setTitulo }) => {
   const { elementoId } = useParams();
-  // const [titulo, setTitulo] = useState("");
 
   const [materialInfo, setMaterialInfo] = useState("");
   const [isEditingName, setIsEditingName] = useState(false);
@@ -69,6 +67,7 @@ const DetalleMaterial = () => {
       }
 
       setMaterialInfo([{ ...materialInfo[0], titulo: titulo }]);
+      setTitulo(...materialInfo[0].titulo);
       console.log("dv: ", materialInfo);
     } catch (error) {
       console.error("Error en la operación Supabase:", error);
@@ -301,17 +300,6 @@ const DetalleMaterial = () => {
                     <div className="pb-1">o</div>
                     <div className=" my-6 bg-gray-800 border-md h-[1px] w-[50%] mx-auto"></div>
                   </div>
-
-                  {/* <div>
-                    <Input
-                      defaultValue={
-                        materialInfo[0]?.archivo_url ??
-                        "https://arsa.alwaysdata.net/files/materialdefault.pdf"
-                      }
-                      name="archivo_url"
-                      label="Introdueix URL"
-                    ></Input>
-                  </div> */}
                 </div>
                 <IconButton type="submit">
                   <RiCheckFill className="bg-primary" />
@@ -326,71 +314,42 @@ const DetalleMaterial = () => {
             </form>
           )}
 
-          {!isEditingMaterial ? (
-            <span className="flex gap-2 items-center">
-              <h1 className="text-lg">Material actual:</h1>
-
-              <RiPencilFill
-                onClick={() => setIsEditingMaterial(true)}
-                className="text-primary-800"
-              />
-            </span>
-          ) : (
-            <form
-              className="w-full"
-              onSubmit={(e) => {
-                handleMaterialChange(e, elementoId);
-              }}
-            >
-              <div className="flex gap-3 items-center w-full">
-                <div
-                  className={`border border-md border-gray-800  p-8 rounded-lg ${
-                    isEditingMaterial ? "block" : "hidden"
-                  } `}
-                >
-                  <FileInput
-                    color="secondary"
-                    name="file"
-                    accept=".doc,.docx,.xml,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                  ></FileInput>
-                  <div className="flex items-center justify-around px-16 gap-4">
-                    <div className=" my-6 bg-gray-800 border-md h-[1px] w-[50%] mx-auto"></div>
-                    <div className="pb-1">o</div>
-                    <div className=" my-6 bg-gray-800 border-md h-[1px] w-[50%] mx-auto"></div>
-                  </div>
-
-                  {/* <div>
-                    <Input
-                      defaultValue={
-                        materialInfo[0]?.archivo_url ??
-                        "https://arsa.alwaysdata.net/files/materialdefault.pdf"
-                      }
-                      name="archivo_url"
-                      label="Introdueix URL"
-                    ></Input>
-                  </div> */}
-                </div>
-                <IconButton type="submit">
-                  <RiCheckFill className="bg-primary" />
-                </IconButton>
-                <IconButton
-                  onClick={() => setIsEditingMaterial(false)}
-                  color="error"
-                >
-                  <RiCloseFill className="" />
-                </IconButton>
+          <Alert className="text-[14px]" bordered color="info">
+            <div className="flex gap-3 items-center ">
+              <RiInformationLine className="text-[18px]" />
+              <div className=" gap-2 items-center mb-2">
+                <h3 className="text-lg font-bold ">
+                  Informació important per arxius
+                </h3>
+                <h4 className="text-[15px]">
+                  Els formats que soporta el navegador son:
+                </h4>
               </div>
-            </form>
-          )}
+            </div>
 
-          {materialInfo[0] &&
-            materialInfo[0].archivo_url &&
-            materialInfo[0].titulo && (
-              <DocumentViewer
-                archivoUrl={materialInfo[0].archivo_url}
-                titulo={materialInfo[0].titulo}
-              />
-            )}
+            <ul>
+              <li>
+                - <i>.pdf</i>,<i>.html</i> per documents.
+              </li>
+              <li>
+                - <i>.png</i> <i> .jpg</i> <i> .jpeg</i> <i> .webp</i> per
+                imatges
+              </li>
+              <li>
+                - <i> .mp4</i> <i> .avi</i>, <i> .mov</i> per videos
+              </li>
+              <li>
+                - <i>.mp3</i> <i>.wav</i> per audios
+              </li>
+            </ul>
+            <div className="mt-3">
+              Si el material es d'un altre format no es visualitzarà però
+              s'oferirà la possibilitat de descarregar-lo.
+            </div>
+          </Alert>
+          {materialInfo[0] && materialInfo[0].archivo_url && (
+            <DocumentViewer archivoUrl={materialInfo[0].archivo_url} />
+          )}
         </div>
       </div>
     </div>

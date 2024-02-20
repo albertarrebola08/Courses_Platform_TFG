@@ -16,7 +16,9 @@ import DetalleNumeral from "./components/Numerales/DetalleNumeral";
 import DetalleQuiz from "./components/Quizs/DetalleQuiz";
 import DetalleCamino from "./components/Caminos/DetalleCamino";
 import Error404Page from "./pages/dashboard/Error404Page";
-// import TextEditor from "./components/TextEditor";
+import MaterialPage from "./pages/dashboard/MaterialPage";
+import VideoPage from "./pages/dashboard/VideoPage";
+import AccionaPage from "./pages/dashboard/AccionaPage";
 
 function App() {
   return (
@@ -36,11 +38,11 @@ function App() {
 
                 <Route
                   path="modulo/:moduleId/video/:elementoId"
-                  element={<DetalleVideo />}
+                  element={<VideoPage />}
                 />
                 <Route
                   path="modulo/:moduleId/material/:elementoId"
-                  element={<DetalleMaterial />}
+                  element={<MaterialPage />}
                 />
                 <Route
                   path="modulo/:moduleId/examen/:elementoId"
@@ -48,7 +50,7 @@ function App() {
                 />
                 <Route
                   path="modulo/:moduleId/acciona/:elementoId"
-                  element={<DetalleAcciona />}
+                  element={<AccionaPage />}
                 />
                 <Route
                   path="modulo/:moduleId/quiz/:elementoId"

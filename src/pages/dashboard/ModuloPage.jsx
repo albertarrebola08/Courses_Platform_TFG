@@ -16,11 +16,14 @@ import { LuDices } from "react-icons/lu";
 import { MdBackHand } from "react-icons/md";
 import FormAddElement from "../../components/Modulos/FormAddElement";
 import { useParams } from "react-router-dom";
-import { Input, Textarea, IconButton } from "pol-ui";
+import { Input, Textarea, IconButton, Breadcrumb } from "pol-ui";
+import { TiHome } from "react-icons/ti";
+import { AiOutlineRead, AiTwotoneDatabase } from "react-icons/ai";
 
 const ModuloPage = () => {
   const { detalleModulo } = useContext(GlobalContext);
-  //const [showForm, setShowForm] = useState()
+  const { itemsBreadcrumb, setItemsBreadcrumb } = useContext(GlobalContext);
+
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingDesc, setIsEditingDesc] = useState(false);
 
@@ -41,6 +44,15 @@ const ModuloPage = () => {
         }
 
         setModuloInfo(data);
+        const nuevoBreadcrumbItem = {
+          icono: AiTwotoneDatabase,
+          texto: data[0].nombre,
+        };
+
+        setItemsBreadcrumb((prevItems) => {
+          // Clonar el array existente y añadir el nuevo elemento al final
+          return [...prevItems, nuevoBreadcrumbItem];
+        });
       } catch (error) {
         console.error("Error al obtener el módulo:", error.message);
       }
@@ -48,8 +60,6 @@ const ModuloPage = () => {
 
     obtenerInfoModulo(moduleId);
   }, []);
-
-  // console.log("DATA MODULE INFO: ", moduloInfo);
 
   const obtenerIconoPorTipo = (tipo) => {
     switch (tipo) {
@@ -75,7 +85,7 @@ const ModuloPage = () => {
         return <RiWalkFill className="text-xl" />;
     }
   };
-
+  //ACCIONES PARA EDITAR EN LINEA EL TITULO Y DESCRIPCION DEL MODULO
   const handleTitleChange = async (e, moduleId) => {
     e.preventDefault();
 
@@ -101,7 +111,6 @@ const ModuloPage = () => {
 
     setIsEditingName(false);
   };
-
   const handleDescriptionChange = async (e, moduleId) => {
     e.preventDefault();
 

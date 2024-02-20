@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { supabase } from "../../supabase/supabaseClient";
 import { useState, useEffect, useContext } from "react";
-import { Input, FileInput, Button, IconButton, Textarea } from "pol-ui";
+import { Input, FileInput, Button, IconButton, Textarea, Alert } from "pol-ui";
 import DocumentViewer from "../Materiales/DocumentViewer";
 import VideoViewer from "../VideoViewer";
 import {
@@ -11,6 +11,14 @@ import {
   RiCloseFill,
   RiCheckFill,
 } from "react-icons/ri";
+import { TiHome } from "react-icons/ti";
+import {
+  AiFillAlert,
+  AiOutlinePlaySquare,
+  AiOutlineRead,
+  AiTwotoneDatabase,
+} from "react-icons/ai";
+import { GlobalContext } from "../../GlobalContext";
 
 const DetalleVideo = () => {
   const { elementoId } = useParams();
@@ -20,6 +28,7 @@ const DetalleVideo = () => {
   const [videoInfo, setVideoInfo] = useState("");
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingVideo, setIsEditingVideo] = useState(false);
+  const { itemsBreadcrumb, setItemsBreadcrumb } = useContext(GlobalContext);
 
   useEffect(() => {
     const obtenerDetalleVideo = async (elementoId) => {
@@ -37,6 +46,17 @@ const DetalleVideo = () => {
         } else {
           console.log("Detalle video:", videoData);
           setVideoInfo(videoData);
+
+          const nuevoBreadcrumbItem = {
+            icono: AiOutlinePlaySquare,
+            texto: videoData[0].titulo,
+          };
+
+          setItemsBreadcrumb((prevItems) => {
+            // Clonar el array existente y añadir el nuevo elemento al final
+            return [...prevItems, nuevoBreadcrumbItem];
+          });
+
           //*****************************************************
           //CAMBIAR EL TITULO EN TABLA MODULO - HAY QUE CAMBIAR TITULO EN TABLA ELEMENTOS!!! importante
           //*****************************************************
@@ -253,23 +273,32 @@ const DetalleVideo = () => {
               </div>
             </form>
           )}
-          {console.log("vinfo antes de vviewer: ", videoInfo)}
+          <Alert className="text-[14px]" bordered="true" color="info">
+            <div className="">
+              <h3 className="text-lg font-bold">
+                Informació important per arxius
+              </h3>
+              <h4 className="text-[16px] mb-2 ">
+                Els formats de video que soporta el navegador son:
+              </h4>
+            </div>
 
-          {isFileUploaded && videoInfo[0] && videoInfo[0].url ? (
-            <DocumentViewer
+            <ul>
+              <li>
+                - <i> .mp4</i> <i> .avi</i>, <i> .mov</i> per videos
+              </li>
+            </ul>
+            <div className="mt-3">
+              Si el material es d'un altre format no es visualitzarà però
+              s'oferirà la possibilitat de descarregar-lo.
+            </div>
+          </Alert>
+          {videoInfo[0] && videoInfo[0].url && (
+            <VideoViewer
+              key={videoInfo[0].url}
               archivoUrl={videoInfo[0].url}
               titulo={videoInfo[0].titulo}
             />
-          ) : (
-            videoInfo[0] &&
-            videoInfo[0].url &&
-            videoInfo[0].titulo && (
-              <VideoViewer
-                key={videoInfo[0].url}
-                archivoUrl={videoInfo[0].url}
-                titulo={videoInfo[0].titulo}
-              />
-            )
           )}
         </div>
       </div>

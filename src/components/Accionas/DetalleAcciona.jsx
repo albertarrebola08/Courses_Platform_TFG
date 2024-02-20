@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { supabase } from "../../supabase/supabaseClient";
 import { useState, useEffect } from "react";
-import { Input, FileInput, Button, IconButton, Textarea } from "pol-ui";
+import { Input, FileInput, Button, IconButton, Textarea, Alert } from "pol-ui";
 import VideoViewer from "../VideoViewer";
 import DocumentViewer from "../Materiales/DocumentViewer";
 import {
@@ -10,6 +10,7 @@ import {
   RiCheckLine,
   RiCloseFill,
   RiCheckFill,
+  RiInformationLine,
 } from "react-icons/ri";
 
 const DetalleAcciona = () => {
@@ -460,7 +461,36 @@ const DetalleAcciona = () => {
             </form>
           )}
 
-          {console.log(accionaInfo)}
+          <Alert className="text-[14px]" bordered="true" color="info">
+            <div className="">
+              <h3 className="text-lg font-bold">
+                Informació important per arxius
+              </h3>
+              <h4 className="text-[16px] mb-2 ">
+                Els formats que soporta el navegador son:
+              </h4>
+            </div>
+
+            <ul>
+              <li>
+                - <i>.pdf</i>,<i>.html</i> per documents.
+              </li>
+              <li>
+                - <i>.png</i> <i> .jpg</i> <i> .jpeg</i> <i> .webp</i> per
+                imatges
+              </li>
+              <li>
+                - <i> .mp4</i> <i> .avi</i>, <i> .mov</i> per videos
+              </li>
+              <li>
+                - <i>.mp3</i> <i>.wav</i> per audios
+              </li>
+            </ul>
+            <div className="mt-3">
+              Si el material es d'un altre format no es visualitzarà però
+              s'oferirà la possibilitat de descarregar-lo.
+            </div>
+          </Alert>
 
           {accionaInfo[0]?.imagen && accionaInfo[0]?.titulo && (
             <DocumentViewer

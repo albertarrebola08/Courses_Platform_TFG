@@ -29,6 +29,8 @@ import {
 
 import { useParams, Link } from "react-router-dom";
 import { GlobalContext } from "../../GlobalContext";
+import { TiHome } from "react-icons/ti";
+import { AiOutlineRead, AiTwotoneDatabase } from "react-icons/ai";
 
 const TablaModulo = () => {
   const { moduleId } = useParams();
@@ -37,8 +39,6 @@ const TablaModulo = () => {
   useEffect(() => {
     const obtenerDetalleModulo = async (moduleId) => {
       try {
-        console.log(moduleId);
-
         // Corrige la desestructuración de moduloid
         const { data: elementos, error } = await supabase
           .from("elementos")

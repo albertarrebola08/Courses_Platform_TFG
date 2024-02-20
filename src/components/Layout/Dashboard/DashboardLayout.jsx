@@ -4,7 +4,6 @@ import { Link, Outlet } from "react-router-dom";
 import { RiQuestionFill } from "react-icons/ri";
 import { TiHome } from "react-icons/ti";
 import { PiHandWavingFill } from "react-icons/pi";
-import { CiMenuFries } from "react-icons/ci";
 
 import {
   Sidebar,
@@ -15,6 +14,7 @@ import {
   Copyright,
   Button,
 } from "pol-ui";
+import DrawBreadcrumb from "../../DrawBreadcrumb";
 
 const DashboardLayout = () => {
   const [openMenu, setOpenMenu] = useState(true);
@@ -72,6 +72,7 @@ const DashboardLayout = () => {
           </Sidebar>
         </div>
         <div className="overflow-y-auto flex-1 mt-4 rounded-lg">
+          <DrawBreadcrumb />
           <Outlet />
         </div>
       </section>

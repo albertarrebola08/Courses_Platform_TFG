@@ -57,15 +57,6 @@ const CursosPage = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <Breadcrumb>
-        <Breadcrumb.Item className=" items-baseline" icon={TiHome}>
-          Els meus cursos
-        </Breadcrumb.Item>
-        <Breadcrumb.Item className=" items-baseline" icon={TiHome}>
-          Aqui va el nom del curs
-        </Breadcrumb.Item>
-      </Breadcrumb>
-
       <CursoForm />
       <CardsCursos cursos={cursos} onDelete={handleDeleteCurso} />
     </div>

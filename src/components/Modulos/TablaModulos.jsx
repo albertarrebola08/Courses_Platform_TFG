@@ -26,8 +26,10 @@ import {
   TableRow,
   TableCell,
 } from "@nextui-org/react";
+import { AiOutlineRead } from "react-icons/ai";
+import { TiHome } from "react-icons/ti";
 
-const TablaModulos = ({ setNombreCurso }) => {
+const TablaModulos = () => {
   const { id } = useParams();
 
   const { detalleModulo, setDetalleModulo } = useContext(GlobalContext);
@@ -35,8 +37,8 @@ const TablaModulos = ({ setNombreCurso }) => {
   const [curso, setCurso] = useState({}); // Estado para almacenar los detalles del curso seleccionado
   const [modulos, setModulos] = useState([]); // Estado para almacenar los módulos relacionados con el curso seleccionado
   const [moduloElementosCounts, setModuloElementosCounts] = useState([]);
+  const { itemsBreadcrumb, setItemsBreadcrumb } = useContext(GlobalContext);
 
-  // const { detalleModulo} = useContext(GlobalContext);
   const [isLoading, setIsLoading] = useState(false); // Estado para almacenar el estado de carga
 
   const [error, setError] = useState(""); // Estado para almacenar los errores
@@ -478,7 +480,15 @@ const TablaModulos = ({ setNombreCurso }) => {
             setError(cursoError.message);
           } else {
             setCurso(cursoData[0]);
-            setNombreCurso(cursoData[0].nombre);
+            const nuevoBreadcrumbItem = {
+              icono: AiOutlineRead,
+              texto: cursoData[0].nombre,
+            };
+
+            setItemsBreadcrumb((prevItems) => {
+              // Clonar el array existente y añadir el nuevo elemento al final
+              return [...prevItems, nuevoBreadcrumbItem];
+            });
           }
 
           const { data, error } = await supabase

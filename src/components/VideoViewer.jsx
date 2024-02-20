@@ -9,3 +9,5 @@ const VideoViewer = ({ archivoUrl }) => {
 };
 
 export default VideoViewer;
+
+//FALTA ASSEGURAR FORMAT VEURE QUINS SON COMPATIBLES Y FER ALERT EN BASE A AIXO !!!

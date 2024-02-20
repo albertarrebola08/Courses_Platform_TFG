@@ -6,20 +6,20 @@ const DocumentViewer = ({ archivoUrl, titulo }) => {
   // Obtener la extensión del archivo
   const extension = archivoUrl.split(".").pop().toLowerCase();
   const compatibleExtension = ["pdf", "html"];
-  const imageExtension = ["png", "jpg", "jpeg", "gif", "webp"];
+  const imageExtension = ["png", "jpg", "jpeg", "webp"];
   const videoExtension = ["mp4", "avi", "mov"];
   const audioExtension = ["mp3", "wav"];
   const uncompatibleExtension = [
-    { name: "flac", logo: "flac_logo.png" },
-    { name: "doc", logo: "doc_logo.png" },
-    { name: "docx", logo: "docx_logo.png" },
-    { name: "ppt", logo: "ppt_logo.png" },
-    { name: "pptx", logo: "pptx_logo.png" },
-    { name: "xls", logo: "xls_logo.png" },
-    { name: "xlsx", logo: "xlsx_logo.png" },
-    { name: "csv", logo: "csv_logo.png" },
-    { name: "txt", logo: "txt_logo.png" },
-    { name: "key", logo: "key_logo.png" },
+    { name: "flac", logo: "/images/flac_logo.png" },
+    { name: "doc", logo: "/images/doc_logo.png" },
+    { name: "docx", logo: "/images/docx_logo.png" },
+    { name: "ppt", logo: "/images/ppt_logo.png" },
+    { name: "pptx", logo: "/images/pptx_logo.png" },
+    { name: "xls", logo: "/images/xls_logo.png" },
+    { name: "xlsx", logo: "/images/xlsx_logo.png" },
+    { name: "csv", logo: "/images/csv_logo.png" },
+    { name: "txt", logo: "/images/txt_logo.png" },
+    { name: "key", logo: "/images/key_logo.png" },
   ];
 
   // Verificar si la extensión está en la lista de tipos de extensiones compatibles
@@ -28,6 +28,10 @@ const DocumentViewer = ({ archivoUrl, titulo }) => {
   const isAudioExtension = audioExtension.includes(extension);
   const isUncompatibleExtension = uncompatibleExtension.includes(extension);
   const isImageExtension = imageExtension.includes(extension);
+
+  const matchingExtension = uncompatibleExtension.find(
+    (item) => item.name === extension
+  );
 
   // Renderizar el contenido según la extensión del archivo
   if (isCompatibleExtension) {
@@ -55,11 +59,17 @@ const DocumentViewer = ({ archivoUrl, titulo }) => {
         <source src={archivoUrl} type={`audio/${extension}`} />
       </audio>
     );
-  } else if (isUncompatibleExtension) {
+  } else if (matchingExtension) {
     // Si es una extensión incompatible, mostrar el botón de descarga
+
     return (
-      <Button href={archivoUrl} download className="bg-gray-700">
+      <Button href={archivoUrl} download className="bg-gray-700 w-[50%]">
         <div className="flex gap-2 items-center">
+          <img
+            width="30px"
+            src={matchingExtension.logo}
+            alt={`logo_${matchingExtension.name}`}
+          />
           <FaFileDownload />
           <span>
             Descarregar{" "}
