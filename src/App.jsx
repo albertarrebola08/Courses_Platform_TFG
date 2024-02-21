@@ -19,6 +19,8 @@ import Error404Page from "./pages/dashboard/Error404Page";
 import MaterialPage from "./pages/dashboard/MaterialPage";
 import VideoPage from "./pages/dashboard/VideoPage";
 import AccionaPage from "./pages/dashboard/AccionaPage";
+import ExamenForm from "./components/Examenes/ExamenForm";
+import ExamenPage from "./pages/dashboard/ExamenPage";
 
 function App() {
   return (
@@ -35,6 +37,7 @@ function App() {
                 {<Route path="modulo/:moduleId" element={<ModuloPage />} />}
                 {/* {<Route path="editor" element={<TextEditor />} />} */}
                 <Route path="preguntes-diaries" element={<QuestionsPage />} />
+                <Route path="examen" element={<ExamenForm />} />
 
                 <Route
                   path="modulo/:moduleId/video/:elementoId"
@@ -46,7 +49,7 @@ function App() {
                 />
                 <Route
                   path="modulo/:moduleId/examen/:elementoId"
-                  element={<DetalleExamen />}
+                  element={<ExamenPage />}
                 />
                 <Route
                   path="modulo/:moduleId/acciona/:elementoId"

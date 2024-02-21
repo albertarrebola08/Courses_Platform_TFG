@@ -2,16 +2,8 @@ import { useParams } from "react-router-dom";
 import { supabase } from "../../supabase/supabaseClient";
 import { useState, useEffect } from "react";
 import { Input, FileInput, Button, IconButton, Textarea, Alert } from "pol-ui";
-import VideoViewer from "../VideoViewer";
 import DocumentViewer from "../Materiales/DocumentViewer";
-import {
-  RiArrowDownSLine,
-  RiPencilFill,
-  RiCheckLine,
-  RiCloseFill,
-  RiCheckFill,
-  RiInformationLine,
-} from "react-icons/ri";
+import { RiPencilFill, RiCloseFill, RiCheckFill } from "react-icons/ri";
 
 const DetalleAcciona = () => {
   const { elementoId } = useParams();
