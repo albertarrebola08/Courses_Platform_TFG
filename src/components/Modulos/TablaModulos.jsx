@@ -14,7 +14,7 @@ import {
   RiEyeFill,
 } from "react-icons/ri";
 import CreateModuloForm from "./CreateModuloForm";
-import { Button, IconButton, Badge } from "pol-ui";
+import { Button, IconButton, Badge, Loader } from "pol-ui";
 import { Link, useParams } from "react-router-dom";
 import { GlobalContext } from "../../GlobalContext";
 
@@ -25,6 +25,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  divider,
 } from "@nextui-org/react";
 import { AiOutlineRead } from "react-icons/ai";
 import { TiHome } from "react-icons/ti";
@@ -507,7 +508,8 @@ const TablaModulos = () => {
             const { data: moduloData, error: moduloError } = await supabase
               .from("modulo")
               .select("*")
-              .in("id", moduloIds); // Filtra por los IDs de los módulos relacionados
+              .in("id", moduloIds) // Filtra por los IDs de los módulos relacionados
+              .order("id", { ascending: true });
 
             if (moduloError) {
               console.error(
@@ -620,13 +622,18 @@ const TablaModulos = () => {
 
       <CreateModuloForm cursoId={id} onSubmit={(body) => handleSubmit(body)} />
 
-      {isLoading && <p>Cargando...</p>}
+      {isLoading && (
+        <Button color="secondary" className="mt-2 bg-primary-900">
+          <Loader aria-label="Loading" color="primary" />
+          <span className="pl-3">Carregant...</span>
+        </Button>
+      )}
 
       {!isLoading && (
         <div className="flex flex-col gap-3 mt-4">
           <Table aria-label="Tabla de Modulos">
             <TableHeader>
-              <TableColumn>ID</TableColumn>
+              {/* <TableColumn>ID</TableColumn> */}
               <TableColumn>NOMBRE</TableColumn>
               <TableColumn>VIDEO ?</TableColumn>
               <TableColumn>MATERIAL ?</TableColumn>
@@ -640,7 +647,7 @@ const TablaModulos = () => {
             <TableBody>
               {modulos.map((modulo) => (
                 <TableRow key={modulo.id}>
-                  <TableCell>{modulo.id}</TableCell>
+                  {/* <TableCell>{modulo.id}</TableCell> */}
                   <TableCell>{modulo.nombre}</TableCell>
                   <TableCell>
                     {modulo.have_video ? (

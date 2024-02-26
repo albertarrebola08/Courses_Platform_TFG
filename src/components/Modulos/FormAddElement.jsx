@@ -4,6 +4,7 @@ import { supabase } from "../../supabase/supabaseClient";
 import { GlobalContext } from "../../GlobalContext";
 import { RiAddLine, RiCloseFill } from "react-icons/ri";
 import { useParams } from "react-router-dom";
+import { SelectItem } from "@nextui-org/react";
 
 const FormAddElement = () => {
   const tiposElementos = [

@@ -71,7 +71,7 @@ const DashboardLayout = () => {
             </SidebarItem>
           </Sidebar>
         </div>
-        <div className="overflow-y-auto flex-1 mt-4 rounded-lg">
+        <div className="overflow-y-auto flex-1 mt-4 rounded-lg mx-4">
           <DrawBreadcrumb />
           <Outlet />
         </div>

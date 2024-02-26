@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { RiAddFill, RiCloseFill } from "react-icons/ri";
-import { Button, Checkbox, Input, Textarea, Badge } from "pol-ui";
+import { Button, Checkbox, Input, Textarea, Badge, Loader } from "pol-ui";
+
 const CreateModuloForm = ({ cursoId, onSubmit }) => {
+  const [loading, setLoading] = useState(false);
   const [moduloData, setModuloData] = useState({
     id: "",
     nombre: "",
@@ -54,6 +56,7 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
     };
 
     try {
+      setLoading(true);
       onSubmit(body);
       setModuloData({
         nombre: "",
@@ -75,6 +78,8 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
       });
     } catch (error) {
       console.error("Error al crear el módulo:", error.message);
+    } finally {
+      setLoading(false); // Desactivar indicador de carga
     }
   };
   if (!cursoId) return null;
@@ -169,6 +174,14 @@ const CreateModuloForm = ({ cursoId, onSubmit }) => {
           Afegir
         </Button>
       </form>
+      <div>
+        {loading && (
+          <Button color="secondary" outline className="mt-2">
+            <Loader aria-label="Loading" color="primary" />
+            <span className="pl-3">Carregant...</span>
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

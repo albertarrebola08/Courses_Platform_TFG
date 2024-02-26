@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IconButton, Checkbox } from "pol-ui";
+import { IconButton, Checkbox, Input } from "pol-ui";
 import { RiEyeFill, RiEyeCloseFill } from "react-icons/ri";
 import { useParams } from "react-router-dom";
 import { supabase } from "../../supabase/supabaseClient";
@@ -54,8 +54,18 @@ const PreviewExam = () => {
                       key={respuesta.id}
                       className="flex items-center gap-2 text-gray-400"
                     >
-                      <Checkbox />
-                      {respuesta.texto}
+                      {respuesta.esNumeral ? (
+                        <Input
+                          type="number"
+                          placeholder="Indica un nombre"
+                          className="w-fit"
+                        />
+                      ) : (
+                        <>
+                          <Checkbox />
+                          {respuesta.texto}
+                        </>
+                      )}
                     </li>
                   ))}
                 </ul>

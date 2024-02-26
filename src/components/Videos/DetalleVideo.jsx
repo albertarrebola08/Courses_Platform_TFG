@@ -84,7 +84,19 @@ const DetalleVideo = () => {
       if (error) {
         console.error("Error al actualizar en Supabase:", error);
       } else {
-        console.log("Actualizado correctamente en Supabase:", data);
+        console.log("Actualizado correctamente en Supabase:");
+        const { data: infoElementos, error } = await supabase
+          .from("elementos")
+          .update({ titulo: titulo })
+          .eq("id", parseInt(elementoId));
+
+        if (error) {
+          console.log("Error al cambiar el titulo de la tabla elemento", error);
+        } else {
+          console.log(
+            "Tiítulo actualizado correctamente en la tabla elementos"
+          );
+        }
       }
 
       setVideoInfo([{ ...videoInfo[0], titulo: titulo }]);

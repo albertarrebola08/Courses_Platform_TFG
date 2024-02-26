@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabase/supabaseClient";
-import { Button, IconButton, Input, Checkbox, Loader } from "pol-ui";
+import { Button, IconButton, Input, Checkbox, Loader, Select } from "pol-ui";
 
 import {
   Carousel,
@@ -12,6 +12,7 @@ import {
 
 import { RiAddFill, RiDeleteBin3Fill } from "react-icons/ri";
 import { useParams } from "react-router-dom";
+import { SelectItem } from "@nextui-org/react";
 
 const ExamenForm = () => {
   const [examen, setExamen] = useState({
@@ -19,6 +20,7 @@ const ExamenForm = () => {
   });
   const { elementoId } = useParams();
   const [loading, setLoading] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
 
   useEffect(() => {
     const fetchExamen = async () => {
@@ -43,6 +45,12 @@ const ExamenForm = () => {
 
     fetchExamen();
   }, [elementoId]);
+  //miro el select para saber tipo pregunta
+  const handleSelectChange = (e) => {
+    const selectedOption = e.target.value;
+    // Hacer algo con el valor seleccionado, como actualizar el estado
+    setSelectedOption(selectedOption);
+  };
 
   const handleDeleteQuestion = async (preguntaId) => {
     try {
@@ -111,15 +119,32 @@ const ExamenForm = () => {
   };
 
   const handleAddQuestion = () => {
+    let nuevasRespuestas = [];
+    if (selectedOption === "numeral") {
+      // Si la pregunta es de tipo "numeral", añadir una respuesta vacía
+      nuevasRespuestas.push({
+        id: 1, // O el ID que desees asignarle
+        texto: "", // Valor inicial del texto de la respuesta
+        esCorrecta: true, // Valor inicial de si es correcta o no (puedes ajustarlo según tus necesidades)
+      });
+    }
+
     const nuevaPregunta = {
       id: examen.preguntas.length + 1,
       enunciado: "",
-      respuestas: [],
+      respuestas: nuevasRespuestas, // Asignar el array de respuestas creado
+      tipo: selectedOption === "numeral" ? "numeral" : "test",
     };
+
     setExamen((prevState) => ({
       ...prevState,
       preguntas: [...prevState.preguntas, nuevaPregunta],
     }));
+
+    // Si la pregunta es de tipo "numeral", también añadir automáticamente una respuesta
+    if (selectedOption === "numeral") {
+      handleAddAnswer(nuevaPregunta.id);
+    }
   };
 
   const handleModifyEnun = (preguntaId, enunciado) => {
@@ -131,6 +156,28 @@ const ExamenForm = () => {
           : pregunta
       ),
     }));
+  };
+
+  const handleModifyQuestionType = (preguntaId, nuevoTipo) => {
+    // Encuentra la pregunta en el estado del examen
+    const preguntaIndex = examen.preguntas.findIndex(
+      (pregunta) => pregunta.id === preguntaId
+    );
+
+    // Si no se encuentra la pregunta, no hagas nada
+    if (preguntaIndex === -1) {
+      return;
+    }
+
+    // Actualiza el tipo de pregunta en el estado del examen
+    setExamen((prevState) => {
+      const updatedPreguntas = [...prevState.preguntas];
+      updatedPreguntas[preguntaIndex].tipo = nuevoTipo;
+      return {
+        ...prevState,
+        preguntas: updatedPreguntas,
+      };
+    });
   };
 
   const handleAddAnswer = (preguntaId) => {
@@ -190,23 +237,23 @@ const ExamenForm = () => {
       ),
     }));
   };
-  const handleModifyNumeric = (preguntaId, respuestaId) => {
-    setExamen((prevState) => ({
-      ...prevState,
-      preguntas: prevState.preguntas.map((pregunta) =>
-        pregunta.id === preguntaId
-          ? {
-              ...pregunta,
-              respuestas: pregunta.respuestas.map((respuesta) =>
-                respuesta.id === respuestaId
-                  ? { ...respuesta, esNumeral: !respuesta.esNumeral }
-                  : respuesta
-              ),
-            }
-          : pregunta
-      ),
-    }));
-  };
+  // const handleModifyNumeric = (preguntaId, respuestaId) => {
+  //   setExamen((prevState) => ({
+  //     ...prevState,
+  //     preguntas: prevState.preguntas.map((pregunta) =>
+  //       pregunta.id === preguntaId
+  //         ? {
+  //             ...pregunta,
+  //             respuestas: pregunta.respuestas.map((respuesta) =>
+  //               respuesta.id === respuestaId
+  //                 ? { ...respuesta, esNumeral: !respuesta.esNumeral }
+  //                 : respuesta
+  //             ),
+  //           }
+  //         : pregunta
+  //     ),
+  //   }));
+  // };
 
   const handleDeleteAnswer = (preguntaId, respuestaId) => {
     setExamen((prevState) => ({
@@ -266,64 +313,113 @@ const ExamenForm = () => {
                   </IconButton>
                 </div>
 
+                <label htmlFor="tipo-pregunta">
+                  Quin tipus de pregunta vols fer?
+                </label>
+                <Select
+                  id="tipo-pregunta"
+                  name="question-type"
+                  value={pregunta.tipo}
+                  onChange={(e) =>
+                    handleModifyQuestionType(pregunta.id, e.target.value)
+                  }
+                  className="w-fit"
+                  aria-label="Quin element vols afegir?"
+                >
+                  <option value="numeral">Numeral (resposta unica)</option>
+                  <option value="test">Test (resposta múltiple)</option>
+                </Select>
+
                 <Input
                   type="text"
                   value={pregunta.enunciado}
                   onChange={(e) =>
                     handleModifyEnun(pregunta.id, e.target.value)
                   }
-                  placeholder="Ingrese el enunciado"
+                  placeholder="Indica la pregunta aquí:"
                 />
-                <h4>Respuestas</h4>
-                <IconButton
-                  color="warning"
-                  onClick={() => handleAddAnswer(pregunta.id)}
-                >
-                  <RiAddFill></RiAddFill>
-                </IconButton>
-                {pregunta.respuestas.map((respuesta) => (
-                  <div key={respuesta.id} className="flex gap-2 items-center">
-                    <Input
-                      type="text"
-                      className="py-2"
-                      value={respuesta.texto}
-                      onChange={(e) =>
-                        handleModifyAnswer(
-                          pregunta.id,
-                          respuesta.id,
-                          e.target.value
-                        )
-                      }
-                      placeholder="Ingrese la respuesta"
-                    />
-                    <Checkbox
-                      label="Correcta? "
-                      checked={respuesta.esCorrecta}
-                      onChange={() =>
-                        handleModifyCorrect(pregunta.id, respuesta.id)
-                      }
-                    />
-                    <Checkbox
-                      label="Numeral? "
-                      checked={respuesta.esNumeral}
-                      onChange={() =>
-                        handleModifyNumeric(pregunta.id, respuesta.id)
-                      }
-                    />
+                {pregunta.tipo === "test" ? (
+                  <div className="">
+                    <h4>Respuestas</h4>
                     <IconButton
-                      color="error"
-                      onClick={() =>
-                        handleDeleteAnswer(pregunta.id, respuesta.id)
-                      }
+                      color="dark"
+                      className="bg-white"
+                      onClick={() => handleAddAnswer(pregunta.id)}
                     >
-                      <RiDeleteBin3Fill />
+                      <RiAddFill></RiAddFill>
                     </IconButton>
+                    {pregunta.respuestas.map((respuesta) => (
+                      <div
+                        key={respuesta.id}
+                        className="flex gap-2 items-center"
+                      >
+                        <Input
+                          type="text"
+                          className="py-2"
+                          value={respuesta.texto}
+                          onChange={(e) =>
+                            handleModifyAnswer(
+                              pregunta.id,
+                              respuesta.id,
+                              e.target.value
+                            )
+                          }
+                          placeholder="Ingrese la respuesta"
+                        />
+                        <Checkbox
+                          label="Correcta? "
+                          checked={respuesta.esCorrecta}
+                          onChange={() =>
+                            handleModifyCorrect(pregunta.id, respuesta.id)
+                          }
+                        />
+                        <IconButton
+                          color="error"
+                          onClick={() =>
+                            handleDeleteAnswer(pregunta.id, respuesta.id)
+                          }
+                        >
+                          <RiDeleteBin3Fill />
+                        </IconButton>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                ) : (
+                  <div className="">
+                    <h4>Respuesta</h4>
+                    <div className="flex gap-2 items-center">
+                      <Input
+                        type="number"
+                        className="py-2"
+                        value={pregunta.respuestas[0]?.texto}
+                        onChange={(e) =>
+                          handleModifyAnswer(
+                            pregunta.id,
+                            pregunta.respuestas[0]?.id,
+                            e.target.value
+                          )
+                        }
+                        placeholder="Ingrese la respuesta"
+                      />
+                      <IconButton
+                        color="error"
+                        onClick={() =>
+                          handleDeleteAnswer(
+                            pregunta.id,
+                            pregunta.respuestas[0]?.id
+                          )
+                        }
+                      >
+                        <RiDeleteBin3Fill />
+                      </IconButton>
+                    </div>
+                  </div>
+                )}
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
+
         {examen.preguntas.length > 0 && <CarouselPrevious />}
         {examen.preguntas.length > 0 && <CarouselNext />}
       </Carousel>
