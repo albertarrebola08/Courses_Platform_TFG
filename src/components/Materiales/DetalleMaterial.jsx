@@ -312,6 +312,13 @@ const DetalleMaterial = ({ setTitulo }) => {
                     <div className="pb-1">o</div>
                     <div className=" my-6 bg-gray-800 border-md h-[1px] w-[50%] mx-auto"></div>
                   </div>
+                  <div>
+                    <Textarea
+                      innerClassName="resize"
+                      name="url"
+                      label="Introdueix URL"
+                    ></Textarea>
+                  </div>
                 </div>
                 <IconButton type="submit">
                   <RiCheckFill className="bg-primary" />
@@ -357,6 +364,11 @@ const DetalleMaterial = ({ setTitulo }) => {
             <div className="mt-3">
               Si el material es d'un altre format no es visualitzarà però
               s'oferirà la possibilitat de descarregar-lo.
+            </div>
+            <div className="p-2 bg-info-300 rounded-md mt-3">
+              <strong>Si el material és un video</strong>, també pots introduir
+              la <strong>url del video</strong> si el tens a la plataforma
+              YouTube
             </div>
           </Alert>
           {materialInfo[0] && materialInfo[0].archivo_url && (
