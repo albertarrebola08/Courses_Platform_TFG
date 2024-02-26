@@ -10,7 +10,7 @@ import {
   CarouselPrevious,
 } from "pol-ui/lib/esm/components/Carousel/Carousel";
 
-import { RiAddFill, RiDeleteBin3Fill } from "react-icons/ri";
+import { RiAddFill, RiDeleteBin3Fill, RiSave2Fill } from "react-icons/ri";
 import { useParams } from "react-router-dom";
 import { SelectItem } from "@nextui-org/react";
 
@@ -121,6 +121,7 @@ const ExamenForm = () => {
   const handleAddQuestion = () => {
     let nuevasRespuestas = [];
     if (selectedOption === "numeral") {
+      console.log("seleected option ejeje: ", selectedOption);
       // Si la pregunta es de tipo "numeral", añadir una respuesta vacía
       nuevasRespuestas.push({
         id: 1, // O el ID que desees asignarle
@@ -140,11 +141,6 @@ const ExamenForm = () => {
       ...prevState,
       preguntas: [...prevState.preguntas, nuevaPregunta],
     }));
-
-    // Si la pregunta es de tipo "numeral", también añadir automáticamente una respuesta
-    if (selectedOption === "numeral") {
-      handleAddAnswer(nuevaPregunta.id);
-    }
   };
 
   const handleModifyEnun = (preguntaId, enunciado) => {
@@ -237,23 +233,6 @@ const ExamenForm = () => {
       ),
     }));
   };
-  // const handleModifyNumeric = (preguntaId, respuestaId) => {
-  //   setExamen((prevState) => ({
-  //     ...prevState,
-  //     preguntas: prevState.preguntas.map((pregunta) =>
-  //       pregunta.id === preguntaId
-  //         ? {
-  //             ...pregunta,
-  //             respuestas: pregunta.respuestas.map((respuesta) =>
-  //               respuesta.id === respuestaId
-  //                 ? { ...respuesta, esNumeral: !respuesta.esNumeral }
-  //                 : respuesta
-  //             ),
-  //           }
-  //         : pregunta
-  //     ),
-  //   }));
-  // };
 
   const handleDeleteAnswer = (preguntaId, respuestaId) => {
     setExamen((prevState) => ({
@@ -338,6 +317,7 @@ const ExamenForm = () => {
                   }
                   placeholder="Indica la pregunta aquí:"
                 />
+
                 {pregunta.tipo === "test" ? (
                   <div className="">
                     <h4>Respuestas</h4>
@@ -387,6 +367,7 @@ const ExamenForm = () => {
                 ) : (
                   <div className="">
                     <h4>Respuesta</h4>
+
                     <div className="flex gap-2 items-center">
                       <Input
                         type="number"
@@ -401,16 +382,8 @@ const ExamenForm = () => {
                         }
                         placeholder="Ingrese la respuesta"
                       />
-                      <IconButton
-                        color="error"
-                        onClick={() =>
-                          handleDeleteAnswer(
-                            pregunta.id,
-                            pregunta.respuestas[0]?.id
-                          )
-                        }
-                      >
-                        <RiDeleteBin3Fill />
+                      <IconButton>
+                        <RiSave2Fill />
                       </IconButton>
                     </div>
                   </div>

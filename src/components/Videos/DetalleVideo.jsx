@@ -304,6 +304,10 @@ const DetalleVideo = () => {
               Si el material es d'un altre format no es visualitzarà però
               s'oferirà la possibilitat de descarregar-lo.
             </div>
+            <div className="p-2 bg-info-300 rounded-md mt-3">
+              També pots introduir la <strong>url del video</strong> si el tens
+              a la plataforma YouTube
+            </div>
           </Alert>
           {videoInfo[0] && videoInfo[0].url && (
             <VideoViewer

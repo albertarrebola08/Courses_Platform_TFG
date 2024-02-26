@@ -72,9 +72,9 @@ const DocumentViewer = ({ archivoUrl, titulo }) => {
           />
           <FaFileDownload />
           <span>
-            Descarregar{" "}
+            Descarregar
             <span className="underline">
-              {titulo}.{extension.toUpperCase()}{" "}
+              {titulo}.{extension.toUpperCase()}
             </span>
           </span>
         </div>

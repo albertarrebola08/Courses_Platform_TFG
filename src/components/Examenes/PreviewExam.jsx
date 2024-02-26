@@ -48,27 +48,25 @@ const PreviewExam = () => {
             {examen.preguntas.map((pregunta) => (
               <div key={pregunta.id}>
                 <p>{`${pregunta.id}) ${pregunta.enunciado}`}</p>
-                <ul className="flex flex-col gap-2 mt-2">
-                  {pregunta.respuestas.map((respuesta) => (
-                    <li
-                      key={respuesta.id}
-                      className="flex items-center gap-2 text-gray-400"
-                    >
-                      {respuesta.esNumeral ? (
-                        <Input
-                          type="number"
-                          placeholder="Indica un nombre"
-                          className="w-fit"
-                        />
-                      ) : (
-                        <>
-                          <Checkbox />
-                          {respuesta.texto}
-                        </>
-                      )}
-                    </li>
-                  ))}
-                </ul>
+                {pregunta.tipo === "test" ? (
+                  <ul className="flex flex-col gap-2 mt-2">
+                    {pregunta.respuestas.map((respuesta) => (
+                      <li
+                        key={respuesta.id}
+                        className="flex items-center gap-2 text-gray-400"
+                      >
+                        <Checkbox />
+                        {respuesta.texto}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <Input
+                    type="number"
+                    placeholder="Indica un número"
+                    className="w-fit"
+                  />
+                )}
               </div>
             ))}
           </div>
