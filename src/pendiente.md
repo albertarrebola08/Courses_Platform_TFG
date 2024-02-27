@@ -1,6 +1,6 @@
 ### Tareas Pendientes
 
-1. [] Pol Gubau -- breadcrumbs y loader crear modulo ajustar, seguridad en los videos (no poder hacer clic y obtener url)
+1. [ ] Pol Gubau -- breadcrumbs y loader crear modulo ajustar, seguridad en los videos (no poder hacer clic y obtener url)
 2. [x] Funcional videos y archivos por url y por fileInput
     - [ ] BOTON DE DESCARGA PONER NOMBRE DE ARCIVO CORRECTAMENTE!!
 3. [ ] Arreglar numeral EXAMEN -- Incluir también posibilidad imágenes enunciado
