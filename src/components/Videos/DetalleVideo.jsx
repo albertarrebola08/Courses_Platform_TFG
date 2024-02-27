@@ -2,23 +2,12 @@ import { useParams } from "react-router-dom";
 import { supabase } from "../../supabase/supabaseClient";
 import { useState, useEffect, useContext } from "react";
 import { Input, FileInput, Button, IconButton, Textarea, Alert } from "pol-ui";
-import DocumentViewer from "../Materiales/DocumentViewer";
-import VideoViewer from "../VideoViewer";
-import {
-  RiArrowDownSLine,
-  RiPencilFill,
-  RiCheckLine,
-  RiCloseFill,
-  RiCheckFill,
-} from "react-icons/ri";
+
+import { RiPencilFill, RiCloseFill, RiCheckFill } from "react-icons/ri";
 import { TiHome } from "react-icons/ti";
-import {
-  AiFillAlert,
-  AiOutlinePlaySquare,
-  AiOutlineRead,
-  AiTwotoneDatabase,
-} from "react-icons/ai";
+import { AiFillAlert, AiOutlinePlaySquare } from "react-icons/ai";
 import { GlobalContext } from "../../GlobalContext";
+import FileViewer from "../FileViewer";
 
 const DetalleVideo = () => {
   const { elementoId } = useParams();
@@ -56,10 +45,6 @@ const DetalleVideo = () => {
             // Clonar el array existente y añadir el nuevo elemento al final
             return [...prevItems, nuevoBreadcrumbItem];
           });
-
-          //*****************************************************
-          //CAMBIAR EL TITULO EN TABLA MODULO - HAY QUE CAMBIAR TITULO EN TABLA ELEMENTOS!!! importante
-          //*****************************************************
         }
       } catch (error) {
         console.error("Error al obtener el detalle del video:", error.message);
@@ -304,13 +289,16 @@ const DetalleVideo = () => {
               Si el material es d'un altre format no es visualitzarà però
               s'oferirà la possibilitat de descarregar-lo.
             </div>
-            <div className="p-2 bg-info-300 rounded-md mt-3">
-              També pots introduir la <strong>url del video</strong> si el tens
-              a la plataforma YouTube
+            <div className="flex gap-2 items-center p-2 bg-info-300 rounded-md mt-3">
+              <AiFillAlert />
+              <div className="">
+                També pots introduir la <strong>url del video</strong> si el
+                tens a la plataforma YouTube
+              </div>
             </div>
           </Alert>
           {videoInfo[0] && videoInfo[0].url && (
-            <VideoViewer
+            <FileViewer
               key={videoInfo[0].url}
               archivoUrl={videoInfo[0].url}
               titulo={videoInfo[0].titulo}

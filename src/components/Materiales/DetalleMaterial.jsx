@@ -10,7 +10,8 @@ import {
   RiInformationLine,
 } from "react-icons/ri";
 
-import DocumentViewer from "./DocumentViewer";
+
+import FileViewer from "../FileViewer";
 
 const DetalleMaterial = ({ setTitulo }) => {
   const { elementoId } = useParams();
@@ -119,9 +120,33 @@ const DetalleMaterial = ({ setTitulo }) => {
     e.preventDefault();
 
     const fileInput = e.target.file;
+    const urlInput = e.target.url;
 
+    // Si se proporcionó una URL, actualiza la URL en la base de datos
+    if (urlInput.value.trim() !== "") {
+      const url = urlInput.value.trim();
+      console.log("URL TRIM: ", url);
+
+      try {
+        // Actualizar el campo archivo_url en la tabla Video con la nueva URL
+        const { data: updateData, error: updateError } = await supabase
+          .from("material")
+          .update({ archivo_url: url })
+          .eq("elemento_id", parseInt(elementoId));
+
+        if (updateError) {
+          console.error("Error al actualizar en Supabase:", updateError);
+          return;
+        }
+
+        // Actualizar el estado local con la nueva información del Video
+        setMaterialInfo([{ ...materialInfo[0], archivo_url: url }]);
+      } catch (error) {
+        console.error("Error en la operación Supabase:", error);
+      }
+    }
     // Si se seleccionó un archivo, lo subimos a Supabase
-    if (fileInput.files.length > 0) {
+    else if (fileInput.files.length > 0) {
       try {
         const file = fileInput.files[0];
 
@@ -371,8 +396,12 @@ const DetalleMaterial = ({ setTitulo }) => {
               YouTube
             </div>
           </Alert>
-          {materialInfo[0] && materialInfo[0].archivo_url && (
-            <DocumentViewer archivoUrl={materialInfo[0].archivo_url} />
+          {materialInfo[0]?.archivo_url && materialInfo[0]?.titulo && (
+            <FileViewer
+              key={materialInfo[0].archivo_url}
+              archivoUrl={materialInfo[0].archivo_url}
+              titulo={materialInfo[0].titulo}
+            />
           )}
         </div>
       </div>

@@ -2,8 +2,9 @@ import { useParams } from "react-router-dom";
 import { supabase } from "../../supabase/supabaseClient";
 import { useState, useEffect } from "react";
 import { Input, FileInput, Button, IconButton, Textarea, Alert } from "pol-ui";
-import DocumentViewer from "../Materiales/DocumentViewer";
+
 import { RiPencilFill, RiCloseFill, RiCheckFill } from "react-icons/ri";
+import FileViewer from "../FileViewer";
 
 const DetalleAcciona = () => {
   const { elementoId } = useParams();
@@ -12,7 +13,7 @@ const DetalleAcciona = () => {
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingEnun, setIsEditingEnun] = useState(false);
   const [isEditingAcciona, setIsEditingAcciona] = useState(false);
-  const [isEditingAccionaImg, setIsEditingAccionaImg] = useState(false);
+  const [isEditingAccionaFile, setIsEditingAccionaFile] = useState(false);
 
   useEffect(() => {
     const obtenerDetalleAcciona = async (elementoId) => {
@@ -193,7 +194,7 @@ const DetalleAcciona = () => {
     setIsEditingAcciona(false);
   };
 
-  const handleAccionaImg = async (e, elementoId) => {
+  const handleAccionaFile = async (e, elementoId) => {
     e.preventDefault();
     const urlInput = e.target.url;
     const fileInput = e.target.file;
@@ -207,7 +208,7 @@ const DetalleAcciona = () => {
         // Actualizar el campo archivo_url en la tabla Video con la nueva URL
         const { data: updateData, error: updateError } = await supabase
           .from("acciona")
-          .update({ imagen: url })
+          .update({ archivo_url: url })
           .eq("elemento_id", parseInt(elementoId));
 
         if (updateError) {
@@ -216,7 +217,7 @@ const DetalleAcciona = () => {
         }
 
         // Actualizar el estado local con la nueva información del Video
-        setAccionaInfo([{ ...accionaInfo[0], imagen: url }]);
+        setAccionaInfo([{ ...accionaInfo[0], archivo_url: url }]);
       } catch (error) {
         console.error("Error en la operación Supabase:", error);
       }
@@ -235,7 +236,7 @@ const DetalleAcciona = () => {
         // Subir el archivo al bucket
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from("accionas")
-          .upload(`/imagenes/${fileName}`, file, {
+          .upload(`/archivos/${fileName}`, file, {
             cacheControl: "3600",
             upsert: false,
           });
@@ -258,7 +259,7 @@ const DetalleAcciona = () => {
         // Actualizar el campo archivo_url en la tabla Video con la nueva URL
         const { data: updateData, error: updateError } = await supabase
           .from("acciona")
-          .update({ imagen: publicUrl.publicUrl })
+          .update({ archivo_url: publicUrl.publicUrl })
           .eq("elemento_id", parseInt(elementoId));
 
         if (updateError) {
@@ -267,7 +268,9 @@ const DetalleAcciona = () => {
         }
 
         // Actualizar el estado local con la nueva información del Video
-        setAccionaInfo([{ ...accionaInfo[0], imagen: publicUrl.publicUrl }]);
+        setAccionaInfo([
+          { ...accionaInfo[0], archivo_url: publicUrl.publicUrl },
+        ]);
       } catch (error) {
         console.error("Error en la operación Supabase:", error);
       }
@@ -414,13 +417,13 @@ const DetalleAcciona = () => {
             </form>
           )}
 
-          {/* IMAGENES */}
-          {!isEditingAccionaImg ? (
+          {/* ARCHIVO DE ACCIONA */}
+          {!isEditingAccionaFile ? (
             <span className="flex gap-2 items-center">
-              <h1 className="text-lg">Imatge (opcional):</h1>
+              <h1 className="text-lg">Document acciona:</h1>
 
               <RiPencilFill
-                onClick={() => setIsEditingAccionaImg(true)}
+                onClick={() => setIsEditingAccionaFile(true)}
                 className="text-primary-800"
               />
             </span>
@@ -428,13 +431,13 @@ const DetalleAcciona = () => {
             <form
               className="w-full"
               onSubmit={(e) => {
-                handleAccionaImg(e, elementoId);
+                handleAccionaFile(e, elementoId);
               }}
             >
               <div className="flex gap-3 items-center w-full">
                 <div
                   className={`border border-md border-gray-800  p-8 rounded-lg ${
-                    isEditingAccionaImg ? "block" : "hidden"
+                    isEditingAccionaFile ? "block" : "hidden"
                   } `}
                 >
                   <FileInput name="file" color="secondary"></FileInput>
@@ -456,7 +459,7 @@ const DetalleAcciona = () => {
                   <RiCheckFill className="bg-primary" />
                 </IconButton>
                 <IconButton
-                  onClick={() => setIsEditingAccionaImg(false)}
+                  onClick={() => setIsEditingAccionaFile(false)}
                   color="error"
                 >
                   <RiCloseFill className="" />
@@ -496,10 +499,18 @@ const DetalleAcciona = () => {
             </div>
           </Alert>
 
-          {accionaInfo[0]?.imagen && accionaInfo[0]?.titulo && (
-            <DocumentViewer
-              key={accionaInfo[0].imagen}
-              archivoUrl={accionaInfo[0].imagen}
+          {accionaInfo[0]?.archivo_url && accionaInfo[0]?.titulo && (
+            <FileViewer
+              key={accionaInfo[0].archivo_url}
+              archivoUrl={accionaInfo[0].archivo_url}
+              titulo={accionaInfo[0].titulo}
+            />
+          )}
+
+          {/* Renderiza el VideoViewer si hay una URL de video */}
+          {accionaInfo[0]?.video_enunciado && (
+            <FileViewer
+              archivoUrl={accionaInfo[0].video_enunciado}
               titulo={accionaInfo[0].titulo}
             />
           )}
