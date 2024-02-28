@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabase/supabaseClient";
-import { Button, IconButton, Input, Checkbox, Loader, Select } from "pol-ui";
+import {
+  Button,
+  IconButton,
+  Input,
+  Checkbox,
+  Loader,
+  Select,
+  Modal,
+} from "pol-ui";
 
 import {
   Carousel,
@@ -10,8 +18,16 @@ import {
   CarouselPrevious,
 } from "pol-ui/lib/esm/components/Carousel/Carousel";
 
-import { RiAddFill, RiDeleteBin3Fill, RiSave2Fill } from "react-icons/ri";
+import {
+  RiAddFill,
+  RiCloseFill,
+  RiDeleteBin3Fill,
+  RiFileImageLine,
+  RiPencilFill,
+  RiSave2Fill,
+} from "react-icons/ri";
 import { useParams } from "react-router-dom";
+import ModalQuestionImg from "./ModalQuestionImg";
 
 const ExamenForm = () => {
   const [examen, setExamen] = useState({
@@ -20,6 +36,11 @@ const ExamenForm = () => {
   const { elementoId } = useParams();
   const [loading, setLoading] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const toggleModal = () => {
+    setShowModal((prev) => !prev);
+  };
 
   useEffect(() => {
     const fetchExamen = async () => {
@@ -137,6 +158,7 @@ const ExamenForm = () => {
     const nuevaPregunta = {
       id: examen.preguntas.length + 1,
       enunciado: "",
+      imagen: "",
       respuestas: nuevasRespuestas,
       tipo: selectedOption === "numeral" ? "numeral" : "test",
     };
@@ -244,6 +266,28 @@ const ExamenForm = () => {
     }));
   };
 
+  const handleModifyImage = (preguntaId, url) => {
+    // Encuentra la pregunta en el estado del examen
+    const preguntaIndex = examen.preguntas.findIndex(
+      (pregunta) => pregunta.id === preguntaId
+    );
+
+    // Si no se encuentra la pregunta, no hagas nada
+    if (preguntaIndex === -1) {
+      return;
+    }
+
+    // Actualiza la imagen de la pregunta en el estado del examen
+    setExamen((prevState) => {
+      const updatedPreguntas = [...prevState.preguntas];
+      updatedPreguntas[preguntaIndex].imagen = url;
+      return {
+        ...prevState,
+        preguntas: updatedPreguntas,
+      };
+    });
+  };
+
   const handleDeleteAnswer = (preguntaId, respuestaId) => {
     setExamen((prevState) => ({
       ...prevState,
@@ -290,7 +334,7 @@ const ExamenForm = () => {
         <CarouselContent className="">
           {examen.preguntas.map((pregunta) => (
             <CarouselItem key={pregunta.id}>
-              <div className="bg-primary-400 rounded-xl p-3 flex flex-col gap-2">
+              <form className="bg-primary-400 rounded-xl p-3 flex flex-col gap-2">
                 <div className="flex gap-2 items-center">
                   <h3 className="font-bold">Pregunta {pregunta.id}</h3>
                   <IconButton
@@ -313,15 +357,35 @@ const ExamenForm = () => {
                     handleModifyQuestionType(pregunta.id, e.target.value);
                     handleSelectChange(e);
                   }}
-                  className="w-fit"
+                  className="w-fit mb-5"
                   aria-label="Quin element vols afegir?"
                 >
                   <option value="numeral">Numeral (resposta unica)</option>
                   <option value="test">Test (resposta múltiple)</option>
                 </Select>
+                <h5>Enunciat</h5>
+                <div className=" flex gap-1 items-center  ">
+                  <RiFileImageLine />
+                  <h6>Imatge (opcional)</h6>
+                  <Button
+                    onClick={toggleModal}
+                    className="bg-primary-800 text-white w-[25px] h-[25px]"
+                  >
+                    {showModal ? <RiCloseFill /> : <RiPencilFill />}{" "}
+                  </Button>
+                </div>
+                <div className="">
+                  {showModal && (
+                    <ModalQuestionImg
+                      handleModifyImage={handleModifyImage}
+                      setShowModal={setShowModal}
+                    />
+                  )}
+                </div>
 
                 <Input
                   type="text"
+                  required
                   value={pregunta.enunciado}
                   onChange={(e) =>
                     handleModifyEnun(pregunta.id, e.target.value)
@@ -331,7 +395,7 @@ const ExamenForm = () => {
 
                 {pregunta.tipo === "test" ? (
                   <div className="">
-                    <h4>Respuestas</h4>
+                    <h5>Respostes</h5>
                     <IconButton
                       color="dark"
                       className="bg-white"
@@ -345,6 +409,7 @@ const ExamenForm = () => {
                         className="flex gap-2 items-center"
                       >
                         <Input
+                          required
                           type="text"
                           className="py-2"
                           value={respuesta.texto}
@@ -377,9 +442,8 @@ const ExamenForm = () => {
                   </div>
                 ) : (
                   <div className="">
-                    <h4>Respuesta</h4>
                     {console.log(pregunta.respuestas)}
-
+                    <h5>Resposta</h5>
                     <div className="flex gap-2 items-center">
                       <Input
                         type="number"
@@ -394,13 +458,10 @@ const ExamenForm = () => {
                         }
                         placeholder="Ingrese la respuesta"
                       />
-                      <IconButton>
-                        <RiSave2Fill />
-                      </IconButton>
                     </div>
                   </div>
                 )}
-              </div>
+              </form>
             </CarouselItem>
           ))}
         </CarouselContent>

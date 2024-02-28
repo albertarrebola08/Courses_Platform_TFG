@@ -10,7 +10,6 @@ import {
   RiInformationLine,
 } from "react-icons/ri";
 
-
 import FileViewer from "../FileViewer";
 
 const DetalleMaterial = ({ setTitulo }) => {
@@ -155,29 +154,7 @@ const DetalleMaterial = ({ setTitulo }) => {
           .replace(/\s+/g, "_")
           .replace(/[^\w.-]/g, "");
 
-        // Verificar si el archivo ya existe en el bucket
-        // const { data: fileList, error: fileListError } = await supabase.storage
-        //   .from("materialFiles")
-        //   .list({
-        //     limit: 100, // Límite de resultados
-        //     offset: 0, // Desplazamiento (para la paginación)
-        //   });
-
-        // if (fileListError) {
-        //   console.error(
-        //     "Error al obtener la lista de archivos:",
-        //     fileListError
-        //   );
-        //   return;
-        // }
-
-        // if (fileList.find((fileItem) => fileItem.name === file.name)) {
-        //   // El archivo ya existe, mostrar un aviso
-        //   alert(
-        //     "El archivo ya existe en el bucket. Por favor, seleccione otro archivo."
-        //   );
-        //   return;
-        // }
+        // Verificar si el archivo ya existe en el bucket - pendiente ??
 
         // Subir el archivo al bucket
         const { data: uploadData, error: uploadError } = await supabase.storage

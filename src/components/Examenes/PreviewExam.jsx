@@ -44,9 +44,9 @@ const PreviewExam = () => {
           {previewVisible ? <RiEyeCloseFill /> : <RiEyeFill />}
         </IconButton>
         {previewVisible && examen && (
-          <div className="rounded-xl flex flex-col gap-2">
+          <div className="rounded-xl flex flex-col gap-5">
             {examen.preguntas.map((pregunta) => (
-              <div key={pregunta.id}>
+              <div key={pregunta.id} className="flex flex-col">
                 <p>{`${pregunta.id}) ${pregunta.enunciado}`}</p>
                 {pregunta.tipo === "test" ? (
                   <ul className="flex flex-col gap-2 mt-2">
@@ -64,7 +64,7 @@ const PreviewExam = () => {
                   <Input
                     type="number"
                     placeholder="Indica un número"
-                    className="w-fit"
+                    className="w-fit mt-2"
                   />
                 )}
               </div>
