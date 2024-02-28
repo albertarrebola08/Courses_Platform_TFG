@@ -119,7 +119,7 @@ const ExamenForm = () => {
     setSelectedOption(selectedOption);
   };
 
-  console.log("selected option: ", selectedOption);
+  //console.log("selected option: ", selectedOption);
 
   const handleAddQuestion = () => {
     let nuevasRespuestas = [];
@@ -169,10 +169,15 @@ const ExamenForm = () => {
       return;
     }
 
-    // Actualiza el tipo de pregunta en el estado del examen
+    // Determinar el valor de esCorrecta según el nuevo tipo de pregunta
+    const esCorrectaPorDefecto = nuevoTipo === "numeral" ? true : false;
+
+    // Actualiza el tipo y el valor de esCorrecta de la pregunta en el estado del examen
     setExamen((prevState) => {
       const updatedPreguntas = [...prevState.preguntas];
       updatedPreguntas[preguntaIndex].tipo = nuevoTipo;
+      updatedPreguntas[preguntaIndex].respuestas[0].esCorrecta =
+        esCorrectaPorDefecto; // Actualizar esCorrecta
       return {
         ...prevState,
         preguntas: updatedPreguntas,
@@ -342,7 +347,7 @@ const ExamenForm = () => {
                         <Input
                           type="text"
                           className="py-2"
-                          value={pregunta.respuestas.texto}
+                          value={respuesta.texto}
                           onChange={(e) =>
                             handleModifyAnswer(
                               pregunta.id,
