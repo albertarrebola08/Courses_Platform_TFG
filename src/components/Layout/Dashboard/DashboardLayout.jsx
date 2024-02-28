@@ -25,7 +25,6 @@ const DashboardLayout = () => {
   return (
     <div className="grid w-full border bg-primary-100 overflow-y-hidden h-screen grid-rows-[auto,1fr]">
       <Navbar className="bg-primary-50 shadow-md py-4">
-        {/* <CiMenuFries /> */}
         <Navbar.Brand className="mx-1">
           <img src="/images/logo-rispot.png" className="h-6" alt="logo" />
         </Navbar.Brand>
@@ -71,7 +70,7 @@ const DashboardLayout = () => {
             </SidebarItem>
           </Sidebar>
         </div>
-        <div className="overflow-y-auto flex-1 mt-4 rounded-lg mx-4">
+        <div className="overflow-y-auto flex-1 mt-4 rounded-lg px-4 pb-8">
           <DrawBreadcrumb />
           <Outlet />
         </div>

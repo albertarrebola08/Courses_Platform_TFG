@@ -17,9 +17,7 @@ import TablaModulo from '../components/Modulos/TablaModulo';
 const AdminDashboard = () => {
     const [selectedOption, setSelectedOption] = useState(null);
     const [cursos, setCursos] = useState([]);
-    
-    
-        
+            
   return (
     <div className='container'>
         <div className="header w-screen bg-[#fec446] text-gray-800 p-4">
@@ -27,7 +25,6 @@ const AdminDashboard = () => {
         </div>
         {/* CAJA DE OPCIONES  */}
 
-        
         <div className='flex justify-start gap-8 p-8'>
             <div className='cardOption' onClick={() => setSelectedOption('Cursos')}>Cursos</div>
             <div className='cardOption' onClick={() => setSelectedOption('Modulos')}>Mòduls</div>

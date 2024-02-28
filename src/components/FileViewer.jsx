@@ -46,9 +46,7 @@ const FileViewer = ({ archivoUrl, titulo }) => {
         src={embedUrl}
         width="100%"
         height="500px"
-        allow="accelerometer;"
         allowFullScreen
-        controls
       ></iframe>
     );
     // Renderizar el contenido según la extensión del archivo
@@ -87,10 +85,10 @@ const FileViewer = ({ archivoUrl, titulo }) => {
             src={matchingExtension.logo}
             alt={`logo_${matchingExtension.name}`}
           />
-          <FaFileDownload />
+
           <span>
             Descargar{" "}
-            <span className="underline">{`${titulo}.${extension.toUpperCase()}`}</span>
+            <span className="underline">{`.${extension.toUpperCase()}`}</span>
           </span>
         </div>
       </Button>

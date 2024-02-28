@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { Breadcrumb, BreadcrumbItem } from "pol-ui";
-import { TiHome } from "react-icons/ti";
-import { AiOutlineRead, AiTwotoneDatabase } from "react-icons/ai";
+
 import { GlobalContext } from "../GlobalContext";
 import { useContext } from "react";
 
@@ -16,7 +15,7 @@ const DrawBreadcrumb = () => {
   useEffect(() => {
     const handlePopState = () => {
       // Al retroceder, eliminamos el último elemento del breadcrumb
-      setItemsBreadcrumb((prevItems) => prevItems.slice(0, -1));
+      setItemsBreadcrumb((prevItems) => prevItems.slice(0, -2));
     };
 
     // Agregar un event listener para el evento popstate

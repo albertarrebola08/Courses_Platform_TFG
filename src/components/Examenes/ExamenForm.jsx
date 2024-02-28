@@ -12,7 +12,6 @@ import {
 
 import { RiAddFill, RiDeleteBin3Fill, RiSave2Fill } from "react-icons/ri";
 import { useParams } from "react-router-dom";
-import { SelectItem } from "@nextui-org/react";
 
 const ExamenForm = () => {
   const [examen, setExamen] = useState({
@@ -44,13 +43,9 @@ const ExamenForm = () => {
     };
 
     fetchExamen();
-  }, [elementoId]);
+  }, []);
+
   //miro el select para saber tipo pregunta
-  const handleSelectChange = (e) => {
-    const selectedOption = e.target.value;
-    // Hacer algo con el valor seleccionado, como actualizar el estado
-    setSelectedOption(selectedOption);
-  };
 
   const handleDeleteQuestion = async (preguntaId) => {
     try {
@@ -118,22 +113,31 @@ const ExamenForm = () => {
     }
   };
 
+  const handleSelectChange = (e) => {
+    const selectedOption = e.target.value;
+    // Hacer algo con el valor seleccionado, como actualizar el estado
+    setSelectedOption(selectedOption);
+  };
+
+  console.log("selected option: ", selectedOption);
+
   const handleAddQuestion = () => {
     let nuevasRespuestas = [];
-    if (selectedOption === "numeral") {
-      console.log("seleected option ejeje: ", selectedOption);
-      // Si la pregunta es de tipo "numeral", añadir una respuesta vacía
-      nuevasRespuestas.push({
-        id: 1, // O el ID que desees asignarle
-        texto: "", // Valor inicial del texto de la respuesta
-        esCorrecta: true, // Valor inicial de si es correcta o no (puedes ajustarlo según tus necesidades)
-      });
-    }
+
+    // Determinar el valor de esCorrecta según el tipo de pregunta
+    const esCorrectaPorDefecto = selectedOption === "numeral" ? true : false;
+
+    // Agregar una respuesta por defecto con id 0, texto vacío y esCorrecta determinada por el tipo de pregunta
+    nuevasRespuestas.push({
+      id: 0,
+      texto: "",
+      esCorrecta: esCorrectaPorDefecto,
+    });
 
     const nuevaPregunta = {
       id: examen.preguntas.length + 1,
       enunciado: "",
-      respuestas: nuevasRespuestas, // Asignar el array de respuestas creado
+      respuestas: nuevasRespuestas,
       tipo: selectedOption === "numeral" ? "numeral" : "test",
     };
 
@@ -176,7 +180,7 @@ const ExamenForm = () => {
     });
   };
 
-  const handleAddAnswer = (preguntaId) => {
+  const handleAddAnswer = (preguntaId, esCorrecta) => {
     setExamen((prevState) => ({
       ...prevState,
       preguntas: prevState.preguntas.map((pregunta) =>
@@ -188,7 +192,7 @@ const ExamenForm = () => {
                 {
                   id: pregunta.respuestas.length + 1,
                   texto: "",
-                  esCorrecta: false,
+                  esCorrecta: esCorrecta,
                 },
               ],
             }
@@ -198,6 +202,8 @@ const ExamenForm = () => {
   };
 
   const handleModifyAnswer = (preguntaId, respuestaId, texto) => {
+    console.log(preguntaId, respuestaId, texto);
+
     setExamen((prevState) => ({
       ...prevState,
       preguntas: prevState.preguntas.map((pregunta) =>
@@ -214,7 +220,6 @@ const ExamenForm = () => {
       ),
     }));
   };
-
   const handleModifyCorrect = (preguntaId, respuestaId) => {
     setExamen((prevState) => ({
       ...prevState,
@@ -299,9 +304,10 @@ const ExamenForm = () => {
                   id="tipo-pregunta"
                   name="question-type"
                   value={pregunta.tipo}
-                  onChange={(e) =>
-                    handleModifyQuestionType(pregunta.id, e.target.value)
-                  }
+                  onChange={(e) => {
+                    handleModifyQuestionType(pregunta.id, e.target.value);
+                    handleSelectChange(e);
+                  }}
                   className="w-fit"
                   aria-label="Quin element vols afegir?"
                 >
@@ -336,7 +342,7 @@ const ExamenForm = () => {
                         <Input
                           type="text"
                           className="py-2"
-                          value={respuesta.texto}
+                          value={pregunta.respuestas.texto}
                           onChange={(e) =>
                             handleModifyAnswer(
                               pregunta.id,
@@ -367,6 +373,7 @@ const ExamenForm = () => {
                 ) : (
                   <div className="">
                     <h4>Respuesta</h4>
+                    {console.log(pregunta.respuestas)}
 
                     <div className="flex gap-2 items-center">
                       <Input
@@ -375,9 +382,9 @@ const ExamenForm = () => {
                         value={pregunta.respuestas[0]?.texto}
                         onChange={(e) =>
                           handleModifyAnswer(
-                            pregunta.id,
-                            pregunta.respuestas[0]?.id,
-                            e.target.value
+                            pregunta.id, //id de de la pregunta
+                            0, //id de la respuesta
+                            e.target.value //valor del input numerico
                           )
                         }
                         placeholder="Ingrese la respuesta"

@@ -622,13 +622,6 @@ const TablaModulos = () => {
 
       <CreateModuloForm cursoId={id} onSubmit={(body) => handleSubmit(body)} />
 
-      {isLoading && (
-        <Button color="secondary" className="mt-2 bg-primary-900">
-          <Loader aria-label="Loading" color="primary" />
-          <span className="pl-3">Carregant...</span>
-        </Button>
-      )}
-
       {!isLoading && (
         <div className="flex flex-col gap-3 mt-4">
           <Table aria-label="Tabla de Modulos">
