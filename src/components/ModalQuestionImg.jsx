@@ -2,7 +2,7 @@ import { Button, FileInput, IconButton, Textarea } from "pol-ui";
 import React from "react";
 import { RiCheckFill, RiCloseFill } from "react-icons/ri";
 import { useState } from "react";
-import { supabase } from "../../supabase/supabaseClient";
+import { supabase } from "../supabase/supabaseClient";
 
 const ModalQuestionImg = ({ preguntaId, handleModifyImage, setShowModal }) => {
   const [imageUrl, setImageUrl] = useState("");
@@ -37,7 +37,6 @@ const ModalQuestionImg = ({ preguntaId, handleModifyImage, setShowModal }) => {
 
     // Si se seleccionó un archivo, lo subimos a Supabase
     else if (fileValue) {
-      alert(fileValue);
       try {
         const file = fileValue;
         const fileName = file.name
@@ -47,7 +46,7 @@ const ModalQuestionImg = ({ preguntaId, handleModifyImage, setShowModal }) => {
 
         // Subir el archivo al bucket
         const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("examsQuestionsImg")
+          .from("questionsImg")
           .upload(`${fileName}`, file, {
             cacheControl: "3600",
             upsert: false,
@@ -60,7 +59,7 @@ const ModalQuestionImg = ({ preguntaId, handleModifyImage, setShowModal }) => {
 
         // Obtener la URL pública del archivo recién subido
         const { data: publicUrl, error: getPublicUrlError } = supabase.storage
-          .from("examsQuestionsImg")
+          .from("questionsImg")
           .getPublicUrl(uploadData.path);
 
         if (getPublicUrlError) {

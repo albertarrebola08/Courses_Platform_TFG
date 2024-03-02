@@ -1,20 +1,13 @@
 import { Form, useParams } from "react-router-dom";
 import { supabase } from "../../supabase/supabaseClient";
 import { useState, useEffect } from "react";
-import { Input, FileInput, Button, IconButton, Textarea, Alert } from "pol-ui";
+import { Input, IconButton, Textarea } from "pol-ui";
 
-import {
-  RiPencilFill,
-  RiCloseFill,
-  RiCheckFill,
-  RiAddFill,
-} from "react-icons/ri";
+import { RiPencilFill, RiCloseFill, RiCheckFill } from "react-icons/ri";
 import ExamenForm from "./ExamenForm";
-import PreviewExam from "./PreviewExam";
 
 const DetalleExamen = () => {
   const { elementoId } = useParams();
-  const [isFileUploaded, setIsFileUploaded] = useState(null);
   const [examenInfo, setExamenInfo] = useState("");
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingEnun, setIsEditingEnun] = useState(false);

@@ -8,12 +8,7 @@ import QuestionsPage from "./pages/dashboard/QuestionsPage";
 import ModuloPage from "./pages/dashboard/ModuloPage";
 import { GlobalProvider } from "./GlobalContext";
 
-import DetalleVideo from "./components/Videos/DetalleVideo";
-import DetalleAcciona from "./components/Accionas/DetalleAcciona";
-import DetalleExamen from "./components/Examenes/DetalleExamen";
-import DetalleMaterial from "./components/Materiales/DetalleMaterial";
 import DetalleNumeral from "./components/Numerales/DetalleNumeral";
-import DetalleQuiz from "./components/Quizs/DetalleQuiz";
 import DetalleCamino from "./components/Caminos/DetalleCamino";
 import Error404Page from "./pages/dashboard/Error404Page";
 import MaterialPage from "./pages/dashboard/MaterialPage";
@@ -21,6 +16,8 @@ import VideoPage from "./pages/dashboard/VideoPage";
 import AccionaPage from "./pages/dashboard/AccionaPage";
 import ExamenForm from "./components/Examenes/ExamenForm";
 import ExamenPage from "./pages/dashboard/ExamenPage";
+import QuizPage from "./pages/dashboard/QuizPage";
+import NumeralPage from "./pages/dashboard/NumeralPage";
 
 function App() {
   return (
@@ -57,11 +54,11 @@ function App() {
                 />
                 <Route
                   path="modulo/:moduleId/quiz/:elementoId"
-                  element={<DetalleQuiz />}
+                  element={<QuizPage />}
                 />
                 <Route
                   path="modulo/:moduleId/numeral/:elementoId"
-                  element={<DetalleNumeral />}
+                  element={<NumeralPage/>}
                 />
                 <Route
                   path="modulo/:moduleId/camino/:elementoId"

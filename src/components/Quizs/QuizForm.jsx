@@ -8,7 +8,6 @@ import {
   Loader,
   Select,
   Modal,
-  useBoolean,
 } from "pol-ui";
 
 import {
@@ -30,8 +29,8 @@ import {
 import { useParams } from "react-router-dom";
 import ModalQuestionImg from "../ModalQuestionImg";
 
-const ExamenForm = () => {
-  const [examen, setExamen] = useState({
+const QuizForm = () => {
+  const [quiz, setQuiz] = useState({
     preguntas: [],
   });
   const { elementoId } = useParams();
@@ -39,34 +38,36 @@ const ExamenForm = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
+
   const [hovered, setHovered] = useState(false);
 
   const toggleModal = () => {
     setShowModal((prev) => !prev);
   };
-
+  
+  //obtengo el desarrollo del examen de bbdd fetch
   useEffect(() => {
-    const fetchExamen = async () => {
+    const fetchQuiz = async () => {
       try {
-        // Obtener el examen de la base de datos
+        // Obtener el quiz de la base de datos
         const { data, error } = await supabase
-          .from("examen")
+          .from("actividad_quiz")
           .select("desarrollo")
           .eq("elemento_id", parseInt(elementoId))
           .single();
 
         if (error) {
-          console.error("Error al obtener el examen:", error.message);
+          console.error("Error al obtener el quiz:", error.message);
         } else {
-          console.log("Examen obtenido:", data);
-          setExamen(data?.desarrollo ?? { preguntas: [] });
+          console.log("Quiz obtenido:", data);
+          setQuiz(data?.desarrollo ?? { preguntas: [] });
         }
       } catch (error) {
-        console.error("Error al obtener el examen:", error.message);
+        console.error("Error al obtener el quiz:", error.message);
       }
     };
 
-    fetchExamen();
+    fetchQuiz();
   }, []);
 
   //miro el select para saber tipo pregunta
@@ -75,19 +76,19 @@ const ExamenForm = () => {
     try {
       setLoading(true);
       await handleSubmit();
-      // Obtener el examen de la base de datos
+      // Obtener el quiz de la base de datos
       const { data, error } = await supabase
-        .from("examen")
+        .from("actividad_quiz")
         .select("*") // Seleccionar todas las columnas, incluyendo el desarrollo
         .eq("elemento_id", parseInt(elementoId))
         .single();
 
       if (error) {
-        console.error("Error al obtener el examen:", error.message);
+        console.error("Error al obtener el quiz:", error.message);
         return;
       }
 
-      // Obtener el campo desarrollo del examen
+      // Obtener el campo desarrollo del quiz
       const desarrollo = data.desarrollo || { preguntas: [] };
 
       // Filtrar y reorganizar las preguntas
@@ -98,38 +99,37 @@ const ExamenForm = () => {
           id: index + 1, // Reasignar el ID de la pregunta
         }));
 
-      // Actualizar el examen en la base de datos
+      // Actualizar el quiz en la base de datos
       const { data: updatedData, error: updateError } = await supabase
-        .from("examen")
+        .from("actividad_quiz")
         .update({ desarrollo: { preguntas: nuevasPreguntas } })
         .eq("elemento_id", parseInt(elementoId))
         .single();
 
       if (updateError) {
-        console.error("Error al actualizar el examen:", updateError.message);
+        console.error("Error al actualizar el quiz:", updateError.message);
         return;
       }
 
-      console.log("Examen actualizado:", updatedData);
+      console.log("Quiz actualizado:", updatedData);
 
-      // Volver a obtener los datos actualizados del examen desde la base de datos
-      const { data: updatedExamenData, error: updatedExamenError } =
-        await supabase
-          .from("examen")
-          .select("*")
-          .eq("elemento_id", parseInt(elementoId))
-          .single();
+      // Volver a obtener los datos actualizados del quiz desde la base de datos
+      const { data: updatedQuizData, error: updatedQuizError } = await supabase
+        .from("actividad_quiz")
+        .select("*")
+        .eq("elemento_id", parseInt(elementoId))
+        .single();
 
-      if (updatedExamenError) {
+      if (updatedQuizError) {
         console.error(
-          "Error al obtener los datos actualizados del examen:",
-          updatedExamenError.message
+          "Error al obtener los datos actualizados del quiz:",
+          updatedQuizError.message
         );
         return;
       }
 
-      // Actualizar el estado local con los datos actualizados del examen
-      setExamen(updatedExamenData?.desarrollo ?? { preguntas: [] });
+      // Actualizar el estado local con los datos actualizados del quiz
+      setQuiz(updatedQuizData?.desarrollo ?? { preguntas: [] });
     } catch (error) {
       console.error("Error al eliminar la pregunta:", error.message);
     } finally {
@@ -137,43 +137,32 @@ const ExamenForm = () => {
     }
   };
 
-  const handleSelectChange = (e) => {
-    const selectedOption = e.target.value;
-    // Hacer algo con el valor seleccionado, como actualizar el estado
-    setSelectedOption(selectedOption);
-  };
-
-  //console.log("selected option: ", selectedOption);
-
   const handleAddQuestion = () => {
     let nuevasRespuestas = [];
-
-    // Determinar el valor de esCorrecta según el tipo de pregunta
-    const esCorrectaPorDefecto = selectedOption === "numeral" ? true : false;
 
     // Agregar una respuesta por defecto con id 0, texto vacío y esCorrecta determinada por el tipo de pregunta
     nuevasRespuestas.push({
       id: 0,
       texto: "",
-      esCorrecta: esCorrectaPorDefecto,
+      esCorrecta: false,
     });
 
     const nuevaPregunta = {
-      id: examen.preguntas.length + 1,
+      id: quiz.preguntas.length + 1,
       enunciado: "",
       imagen: "",
       respuestas: nuevasRespuestas,
-      tipo: selectedOption === "numeral" ? "numeral" : "test",
+      tipo:"test"
     };
 
-    setExamen((prevState) => ({
+    setQuiz((prevState) => ({
       ...prevState,
       preguntas: [...prevState.preguntas, nuevaPregunta],
     }));
   };
 
   const handleModifyEnun = (preguntaId, enunciado) => {
-    setExamen((prevState) => ({
+    setQuiz((prevState) => ({
       ...prevState,
       preguntas: prevState.preguntas.map((pregunta) =>
         pregunta.id === preguntaId
@@ -183,50 +172,8 @@ const ExamenForm = () => {
     }));
   };
 
-  const handleModifyQuestionType = (preguntaId, nuevoTipo) => {
-    // Encuentra la pregunta en el estado del examen
-    const preguntaIndex = examen.preguntas.findIndex(
-      (pregunta) => pregunta.id === preguntaId
-    );
-
-    // Si no se encuentra la pregunta, no hagas nada
-    if (preguntaIndex === -1) {
-      return;
-    }
-
-    // Determinar el valor de esCorrecta según el nuevo tipo de pregunta
-    const esCorrectaPorDefecto = nuevoTipo === "numeral" ? true : false;
-
-    // Actualiza el tipo y el valor de esCorrecta de la pregunta en el estado del examen
-    setExamen((prevState) => {
-      const updatedPreguntas = [...prevState.preguntas];
-
-      // Verificar si la preguntaIndex es válida
-      if (preguntaIndex >= 0 && preguntaIndex < updatedPreguntas.length) {
-        updatedPreguntas[preguntaIndex].tipo = nuevoTipo;
-
-        // Verificar si existe al menos una respuesta
-        if (updatedPreguntas[preguntaIndex].respuestas.length > 0) {
-          updatedPreguntas[preguntaIndex].respuestas[0].esCorrecta =
-            esCorrectaPorDefecto;
-        } else {
-          // Si no hay respuestas, puedes mostrar un mensaje de error o manejarlo según sea necesario
-          console.error("No hay respuestas para esta pregunta");
-        }
-      } else {
-        // Si la preguntaIndex no es válida, puedes mostrar un mensaje de error o manejarlo según sea necesario
-        console.error("Índice de pregunta no válido");
-      }
-
-      return {
-        ...prevState,
-        preguntas: updatedPreguntas,
-      };
-    });
-  };
-
   const handleAddAnswer = (preguntaId, esCorrecta) => {
-    setExamen((prevState) => ({
+    setQuiz((prevState) => ({
       ...prevState,
       preguntas: prevState.preguntas.map((pregunta) =>
         pregunta.id === preguntaId
@@ -249,7 +196,7 @@ const ExamenForm = () => {
   const handleModifyAnswer = (preguntaId, respuestaId, texto) => {
     console.log(preguntaId, respuestaId, texto);
 
-    setExamen((prevState) => ({
+    setQuiz((prevState) => ({
       ...prevState,
       preguntas: prevState.preguntas.map((pregunta) =>
         pregunta.id === preguntaId
@@ -266,7 +213,7 @@ const ExamenForm = () => {
     }));
   };
   const handleModifyCorrect = (preguntaId, respuestaId) => {
-    setExamen((prevState) => ({
+    setQuiz((prevState) => ({
       ...prevState,
       preguntas: prevState.preguntas.map((pregunta) =>
         pregunta.id === preguntaId
@@ -283,15 +230,11 @@ const ExamenForm = () => {
       ),
     }));
   };
-  // Función para abrir el modal de una imagen específica
-  const openImageModal = (preguntaId) => {
-    setShowImageModal(preguntaId);
-  };
 
   const handleModifyImage = (preguntaId, url) => {
     console.log("modalurl: ", url, "pregunta id: ", preguntaId);
-    // Encuentra la pregunta en el estado del examen
-    const preguntaIndex = examen.preguntas.findIndex(
+    // Encuentra la pregunta en el estado del quiz
+    const preguntaIndex = quiz.preguntas.findIndex(
       (pregunta) => pregunta.id === preguntaId
     );
 
@@ -300,8 +243,8 @@ const ExamenForm = () => {
       return;
     }
 
-    // Actualiza la imagen de la pregunta en el estado del examen
-    setExamen((prevState) => {
+    // Actualiza la imagen de la pregunta en el estado del quiz
+    setQuiz((prevState) => {
       const updatedPreguntas = [...prevState.preguntas];
       updatedPreguntas[preguntaIndex].imagen = url;
       return {
@@ -309,11 +252,11 @@ const ExamenForm = () => {
         preguntas: updatedPreguntas,
       };
     });
-    console.log("nuevo examen con la img: ", examen);
+    console.log("nuevo quiz con la img: ", quiz);
   };
 
   const handleDeleteAnswer = (preguntaId, respuestaId) => {
-    setExamen((prevState) => ({
+    setQuiz((prevState) => ({
       ...prevState,
       preguntas: prevState.preguntas.map((pregunta) =>
         pregunta.id === preguntaId
@@ -328,21 +271,26 @@ const ExamenForm = () => {
     }));
   };
 
+  // Función para abrir el modal de una imagen específica
+  const openImageModal = (preguntaId) => {
+    setShowImageModal(preguntaId);
+  };
+
   const handleSubmit = async () => {
     try {
-      // Guardar el examen en la base de datos
+      // Guardar el quiz en la base de datos
       await supabase
-        .from("examen")
-        .update({ desarrollo: examen })
+        .from("actividad_quiz")
+        .update({ desarrollo: quiz })
         .eq("elemento_id", parseInt(elementoId));
 
-      console.log("Examen guardado en la base de datos");
+      console.log("Quiz guardado en la base de datos");
 
-      // Actualizar el estado del examen con el examen guardado
-      setExamen({ ...examen });
+      // Actualizar el estado del quiz con el quiz guardado
+      setQuiz({ ...quiz });
     } catch (error) {
       console.error(
-        "Error al guardar el examen en la base de datos:",
+        "Error al guardar el quiz en la base de datos:",
         error.message
       );
     }
@@ -352,11 +300,11 @@ const ExamenForm = () => {
     <div className="flex flex-col gap-3 pl-5">
       <div>{loading && <Loader />}</div>
       <Carousel
-        options={{ startIndex: examen.preguntas.length }}
+        options={{ startIndex: quiz.preguntas.length }}
         className="max-w-[600px]"
       >
         <CarouselContent className="">
-          {examen.preguntas.map((pregunta) => (
+          {quiz.preguntas.map((pregunta) => (
             <CarouselItem key={pregunta.id}>
               <form className="bg-primary-400 rounded-xl p-3 flex flex-col gap-2">
                 <div className="flex gap-2 items-center">
@@ -370,23 +318,6 @@ const ExamenForm = () => {
                   </IconButton>
                 </div>
 
-                <label htmlFor="tipo-pregunta">
-                  Quin tipus de pregunta vols fer?
-                </label>
-                <Select
-                  id="tipo-pregunta"
-                  name="question-type"
-                  value={pregunta.tipo}
-                  onChange={(e) => {
-                    handleModifyQuestionType(pregunta.id, e.target.value);
-                    handleSelectChange(e);
-                  }}
-                  className="w-fit mb-5"
-                  aria-label="Quin element vols afegir?"
-                >
-                  <option value="numeral">Numeral (resposta unica)</option>
-                  <option value="test">Test (resposta múltiple)</option>
-                </Select>
                 <h5>Enunciat</h5>
                 <div className=" flex gap-1 items-center  ">
                   <RiFileImageLine />
@@ -417,7 +348,7 @@ const ExamenForm = () => {
                             hovered ? "opacity-50" : ""
                           }`}
                           src={pregunta.imagen}
-                          alt={`imagen-pregunta-examen-${pregunta.id}`}
+                          alt={`imagen-pregunta-quiz-${pregunta.id}`}
                         />
                         {hovered && (
                           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -465,89 +396,64 @@ const ExamenForm = () => {
                   placeholder="Indica la pregunta aquí:"
                 />
 
-                {pregunta.tipo === "test" ? (
-                  <div className="">
-                    <h5>Respostes</h5>
-                    <IconButton
-                      color="dark"
-                      className="bg-white"
-                      onClick={() => handleAddAnswer(pregunta.id)}
-                    >
-                      <RiAddFill></RiAddFill>
-                    </IconButton>
-                    {pregunta.respuestas.map((respuesta) => (
-                      <div
-                        key={respuesta.id}
-                        className="flex gap-2 items-center"
-                      >
-                        <Input
-                          required
-                          type="text"
-                          className="py-2"
-                          value={respuesta.texto}
-                          onChange={(e) =>
-                            handleModifyAnswer(
-                              pregunta.id,
-                              respuesta.id,
-                              e.target.value
-                            )
-                          }
-                          placeholder="Ingrese la respuesta"
-                        />
-                        <Checkbox
-                          label="Correcta? "
-                          checked={respuesta.esCorrecta}
-                          onChange={() =>
-                            handleModifyCorrect(pregunta.id, respuesta.id)
-                          }
-                        />
-                        <IconButton
-                          color="error"
-                          onClick={() =>
-                            handleDeleteAnswer(pregunta.id, respuesta.id)
-                          }
-                        >
-                          <RiDeleteBin3Fill />
-                        </IconButton>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="">
-                    {console.log(pregunta.respuestas)}
-                    <h5>Resposta</h5>
-                    <div className="flex gap-2 items-center">
+                <div className="">
+                  <h5>Respostes</h5>
+                  <IconButton
+                    color="dark"
+                    className="bg-white"
+                    onClick={() => handleAddAnswer(pregunta.id)}
+                  >
+                    <RiAddFill></RiAddFill>
+                  </IconButton>
+                  {pregunta.respuestas.map((respuesta) => (
+                    <div key={respuesta.id} className="flex gap-2 items-center">
                       <Input
-                        type="number"
+                        required
+                        type="text"
                         className="py-2"
-                        value={pregunta.respuestas[0]?.texto}
+                        value={respuesta.texto}
                         onChange={(e) =>
                           handleModifyAnswer(
-                            pregunta.id, //id de de la pregunta
-                            0, //id de la respuesta
-                            e.target.value //valor del input numerico
+                            pregunta.id,
+                            respuesta.id,
+                            e.target.value
                           )
                         }
                         placeholder="Ingrese la respuesta"
                       />
+                      <Checkbox
+                        label="Correcta? "
+                        checked={respuesta.esCorrecta}
+                        onChange={() =>
+                          handleModifyCorrect(pregunta.id, respuesta.id)
+                        }
+                      />
+                      <IconButton
+                        color="error"
+                        onClick={() =>
+                          handleDeleteAnswer(pregunta.id, respuesta.id)
+                        }
+                      >
+                        <RiDeleteBin3Fill />
+                      </IconButton>
                     </div>
-                  </div>
-                )}
+                  ))}
+                </div>
               </form>
             </CarouselItem>
           ))}
         </CarouselContent>
 
-        {examen.preguntas.length > 0 && <CarouselPrevious />}
-        {examen.preguntas.length > 0 && <CarouselNext />}
+        {quiz.preguntas.length > 0 && <CarouselPrevious />}
+        {quiz.preguntas.length > 0 && <CarouselNext />}
       </Carousel>
       <Button className="w-fit bg-primary-900" onClick={handleAddQuestion}>
         <RiAddFill></RiAddFill>
       </Button>
       <Button className=" bg-success-700 mb-6" onClick={handleSubmit}>
-        Guardar Examen
+        Guardar Quiz
       </Button>
     </div>
   );
 };
-export default ExamenForm;
+export default QuizForm;
