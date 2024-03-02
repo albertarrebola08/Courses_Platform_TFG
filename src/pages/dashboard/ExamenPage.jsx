@@ -3,7 +3,7 @@ import PreviewQuestions from "../../components/PreviewQuestions";
 
 const ExamenPage = () => {
   return (
-    <div className="flex gap-12">
+    <div className="flex justify-between px-4">
       <DetalleExamen />
       <PreviewQuestions contentType={"examen"} />
     </div>
