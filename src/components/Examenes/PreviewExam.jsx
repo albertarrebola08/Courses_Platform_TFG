@@ -48,6 +48,7 @@ const PreviewExam = () => {
             {examen.preguntas.map((pregunta) => (
               <div key={pregunta.id} className="flex flex-col">
                 <p>{`${pregunta.id}) ${pregunta.enunciado}`}</p>
+                <img src={pregunta.imagen} className="w-auto" alt="" />
                 {pregunta.tipo === "test" ? (
                   <ul className="flex flex-col gap-2 mt-2">
                     {pregunta.respuestas.map((respuesta) => (

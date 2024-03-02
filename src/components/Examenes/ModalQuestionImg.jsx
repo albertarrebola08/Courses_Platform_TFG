@@ -2,28 +2,29 @@ import { Button, FileInput, IconButton, Textarea } from "pol-ui";
 import React from "react";
 import { RiCheckFill, RiCloseFill } from "react-icons/ri";
 import { useState } from "react";
-import FileViewer from "../FileViewer";
+import { supabase } from "../../supabase/supabaseClient";
 
-const ModalQuestionImg = ({ handleModifyImage, setShowModal }) => {
+const ModalQuestionImg = ({ preguntaId, handleModifyImage, setShowModal }) => {
   const [imageUrl, setImageUrl] = useState("");
   const [textareaValue, setTextareaValue] = useState("");
+  const [fileValue, setFileValue] = useState(null);
   // //gestiono la imagen
 
   const handleTextareaChange = (e) => {
     setTextareaValue(e.target.value); // Actualiza el estado con el valor del textarea
   };
-
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFileValue(file);
+  };
   // Función para manejar el evento onBlur en el textarea
   const handleTextareaBlur = () => {
     console.log("Valor del Textarea:", textareaValue);
   };
 
-  const handleUploadImage = async (urlValue) => {
+  const handleUploadImage = async (urlValue, fileValue) => {
     console.log("Valor del input de texto:", urlValue);
     // e.preventDefault();
-
-    // const fileInput = e.target.file;
-    const urlInput = urlValue;
 
     //Verificar si urlInput es null antes de acceder a su propiedad value
     if (urlValue !== null && urlValue.trim() !== "") {
@@ -31,48 +32,48 @@ const ModalQuestionImg = ({ handleModifyImage, setShowModal }) => {
       console.log("URL TRIM: ", url);
 
       setImageUrl(url);
-      handleModifyImage(url);
+      handleModifyImage(preguntaId, url);
     }
 
     // Si se seleccionó un archivo, lo subimos a Supabase
-    // else if (fileInput.files.length > 0) {
-    //   try {
-    //     const file = fileInput.files[0];
+    else if (fileValue) {
+      alert(fileValue);
+      try {
+        const file = fileValue;
+        const fileName = file.name
+          .normalize("NFD")
+          .replace(/\s+/g, "_")
+          .replace(/[^\w.-]/g, "");
 
-    //     const fileName = fileInput.files[0].name
-    //       .normalize("NFD")
-    //       .replace(/\s+/g, "_")
-    //       .replace(/[^\w.-]/g, "");
+        // Subir el archivo al bucket
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("examsQuestionsImg")
+          .upload(`${fileName}`, file, {
+            cacheControl: "3600",
+            upsert: false,
+          });
 
-    //     // Subir el archivo al bucket
-    //     const { data: uploadData, error: uploadError } = await supabase.storage
-    //       .from("questionsImages")
-    //       .upload(`${fileName}`, file, {
-    //         cacheControl: "3600",
-    //         upsert: false,
-    //       });
+        if (uploadError) {
+          console.error("Error al subir el archivo a Supabase:", uploadError);
+          return;
+        }
 
-    //     if (uploadError) {
-    //       console.error("Error al subir el archivo a Supabase:", uploadError);
-    //       return;
-    //     }
+        // Obtener la URL pública del archivo recién subido
+        const { data: publicUrl, error: getPublicUrlError } = supabase.storage
+          .from("examsQuestionsImg")
+          .getPublicUrl(uploadData.path);
 
-    //     // Obtener la URL pública del archivo recién subido
-    //     const { data: publicUrl, error: getPublicUrlError } = supabase.storage
-    //       .from("questionsImages")
-    //       .getPublicUrl(uploadData.path);
-
-    //     if (getPublicUrlError) {
-    //       console.error("Error al obtener la URL pública:", getPublicUrlError);
-    //       return;
-    //     }
-
-    //     setImageUrl(publicUrl.publicUrl);
-    //     handleModifyImage(publicUrl.publicUrl);
-    //   } catch (error) {
-    //     console.error("Error en la operación Supabase:", error);
-    //   }
-    // }
+        if (getPublicUrlError) {
+          console.error("Error al obtener la URL pública:", getPublicUrlError);
+          return;
+        }
+        console.log("url supp busket: ", publicUrl.publicUrl);
+        setImageUrl(publicUrl.publicUrl);
+        handleModifyImage(preguntaId, publicUrl.publicUrl);
+      } catch (error) {
+        console.error("Error en la operación Supabase:", error);
+      }
+    }
     setShowModal(false);
   };
   return (
@@ -82,6 +83,7 @@ const ModalQuestionImg = ({ handleModifyImage, setShowModal }) => {
           color="secondary"
           name="file"
           accept=".doc,.docx,.xml,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          onChange={handleFileChange}
         ></FileInput>
         <div className="flex items-center justify-around px-16 gap-4">
           <div className="my-6 bg-gray-800 border-md h-[1px] w-[50%] mx-auto"></div>
@@ -103,7 +105,7 @@ const ModalQuestionImg = ({ handleModifyImage, setShowModal }) => {
         <Button
           color="primary"
           className="bg-primary-800"
-          onClick={() => handleUploadImage(textareaValue)}
+          onClick={() => handleUploadImage(textareaValue, fileValue)}
         >
           <RiCheckFill />
           Pujar imatge

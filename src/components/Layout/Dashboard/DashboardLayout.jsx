@@ -9,10 +9,11 @@ import {
   Sidebar,
   SidebarItem,
   Navbar,
-  Footer,
-  FooterLinkGroup,
   Copyright,
   Button,
+  Dropdown,
+  DropdownItem,
+  Avatar,
 } from "pol-ui";
 import DrawBreadcrumb from "../../DrawBreadcrumb";
 
@@ -24,26 +25,42 @@ const DashboardLayout = () => {
 
   return (
     <div className="grid w-full border bg-primary-100 overflow-y-hidden h-screen grid-rows-[auto,1fr]">
-      <Navbar className="bg-primary-50 shadow-md py-4">
-        <Navbar.Brand className="mx-1">
-          <img src="/images/logo-rispot.png" className="h-6" alt="logo" />
-        </Navbar.Brand>
-        <Navbar.Toggle />
-        <div className="flex gap-2 items-center text-xl">
-          <span>Benvingut Pau</span>
-          <PiHandWavingFill className="text-yellow-500" />
-        </div>
-        <Navbar.Collapse>
-          <Navbar.Link className="text-lg" href="/navbars" active>
-            Home
-          </Navbar.Link>
-          <Navbar.Link className="text-lg " href="/navbars">
-            About
-          </Navbar.Link>
-          <Navbar.Link className="text-lg" href="/navbars">
-            Login
-          </Navbar.Link>
-        </Navbar.Collapse>
+      <Navbar className="bg-primary-50 shadow-md py-4" 
+      leftContent={
+<img src="/images/logo-rispot.png" className="h-6" alt="logo" />
+      } 
+      rightContent={
+        <div className="flex gap-3 md:order-2">
+          <div className="flex gap-2 items-center text-xl">
+            <span>Benvingut Pau</span>
+            <PiHandWavingFill className="text-yellow-500" />
+          </div>
+          <Dropdown 
+          label="User settings"
+          trigger={
+            <Avatar
+              alt="User settings"
+              img="https://avatars.githubusercontent.com/u/104431726?s=48&v=4"
+            />
+          }
+        >
+          <DropdownItem className="mt-4" label="Profile" />
+          <DropdownItem label="Settings" />
+          <DropdownItem label="Logout" />
+        </Dropdown>
+      </div>
+
+      }
+      links={[
+        { href: "#", label: "Home" },
+        { href: "#", label: "About"  }, //puedes añadir contenido con la prop content
+        { href: "#", label: "Services"},
+        { href: "#", label: "Pricing" },
+        { href: "#", label: "Contact" },
+      ]}
+      >
+        
+        
       </Navbar>
       <section className="flex h-full overflow-y-auto gap-4">
         <div className="bg-primary-50 w-fit shadow-md">

@@ -8,6 +8,7 @@ import {
   Loader,
   Select,
   Modal,
+  useBoolean,
 } from "pol-ui";
 
 import {
@@ -23,8 +24,8 @@ import {
   RiCloseFill,
   RiDeleteBin3Fill,
   RiFileImageLine,
+  RiFullscreenFill,
   RiPencilFill,
-  RiSave2Fill,
 } from "react-icons/ri";
 import { useParams } from "react-router-dom";
 import ModalQuestionImg from "./ModalQuestionImg";
@@ -37,7 +38,9 @@ const ExamenForm = () => {
   const [loading, setLoading] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const { value, setTrue, setFalse } = useBoolean(false);
   const toggleModal = () => {
     setShowModal((prev) => !prev);
   };
@@ -197,9 +200,24 @@ const ExamenForm = () => {
     // Actualiza el tipo y el valor de esCorrecta de la pregunta en el estado del examen
     setExamen((prevState) => {
       const updatedPreguntas = [...prevState.preguntas];
-      updatedPreguntas[preguntaIndex].tipo = nuevoTipo;
-      updatedPreguntas[preguntaIndex].respuestas[0].esCorrecta =
-        esCorrectaPorDefecto; // Actualizar esCorrecta
+
+      // Verificar si la preguntaIndex es válida
+      if (preguntaIndex >= 0 && preguntaIndex < updatedPreguntas.length) {
+        updatedPreguntas[preguntaIndex].tipo = nuevoTipo;
+
+        // Verificar si existe al menos una respuesta
+        if (updatedPreguntas[preguntaIndex].respuestas.length > 0) {
+          updatedPreguntas[preguntaIndex].respuestas[0].esCorrecta =
+            esCorrectaPorDefecto;
+        } else {
+          // Si no hay respuestas, puedes mostrar un mensaje de error o manejarlo según sea necesario
+          console.error("No hay respuestas para esta pregunta");
+        }
+      } else {
+        // Si la preguntaIndex no es válida, puedes mostrar un mensaje de error o manejarlo según sea necesario
+        console.error("Índice de pregunta no válido");
+      }
+
       return {
         ...prevState,
         preguntas: updatedPreguntas,
@@ -267,6 +285,7 @@ const ExamenForm = () => {
   };
 
   const handleModifyImage = (preguntaId, url) => {
+    console.log("modalurl: ", url, "pregunta id: ", preguntaId);
     // Encuentra la pregunta en el estado del examen
     const preguntaIndex = examen.preguntas.findIndex(
       (pregunta) => pregunta.id === preguntaId
@@ -286,6 +305,7 @@ const ExamenForm = () => {
         preguntas: updatedPreguntas,
       };
     });
+    console.log("nuevo examen con la img: ", examen);
   };
 
   const handleDeleteAnswer = (preguntaId, respuestaId) => {
@@ -367,6 +387,7 @@ const ExamenForm = () => {
                 <div className=" flex gap-1 items-center  ">
                   <RiFileImageLine />
                   <h6>Imatge (opcional)</h6>
+
                   <Button
                     onClick={toggleModal}
                     className="bg-primary-800 text-white w-[25px] h-[25px]"
@@ -374,9 +395,48 @@ const ExamenForm = () => {
                     {showModal ? <RiCloseFill /> : <RiPencilFill />}{" "}
                   </Button>
                 </div>
+                {pregunta.imagen && (
+                  <div className="relative w-[100px]">
+                    {pregunta.imagen && (
+                      <div
+                        onMouseEnter={() => setHovered(true)}
+                        onMouseLeave={() => setHovered(false)}
+                        onClick={() => {
+                          setHovered(false);
+                          setShowImageModal(true);
+                        }}
+                      >
+                        <img
+                          className={`w-full h-auto cursor-pointer transition-all duration-300 ${
+                            hovered ? "opacity-50" : ""
+                          }`}
+                          src={pregunta.imagen}
+                          alt={`imagen-pregunta-examen-${pregunta.id}`}
+                        />
+                        {hovered && (
+                          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                            <RiFullscreenFill size={24} />
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <Modal
+                      deleteButton
+                      show={showImageModal}
+                      onClose={() => setShowImageModal(false)}
+                    >
+                      {pregunta.imagen && (
+                        <img src={pregunta.imagen} alt="" className="w-full" />
+                      )}
+                    </Modal>
+                  </div>
+                )}
+
                 <div className="">
                   {showModal && (
                     <ModalQuestionImg
+                      preguntaId={pregunta.id}
                       handleModifyImage={handleModifyImage}
                       setShowModal={setShowModal}
                     />

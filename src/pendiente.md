@@ -4,7 +4,7 @@
 2. [x] Funcional videos y archivos por url y por fileInput
    - [x] BOTON DE DESCARGA PONER NOMBRE DE ARCIVO CORRECTAMENTE!!
 3. [x] Arreglar numeral EXAMEN
-4. [ ] Incluir también posibilidad imágenes enunciado
+4. [x] Incluir también posibilidad imágenes enunciado
 5. [ ] Titulo y descripción quiz, numeral
 6. [ ] Hacer quiz
 7. [ ] Hacer numeral
