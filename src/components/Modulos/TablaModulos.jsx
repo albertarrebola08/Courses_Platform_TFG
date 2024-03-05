@@ -758,7 +758,7 @@ const TablaModulos = () => {
                   </TableCell>
 
                   <TableCell className="flex gap-4 items-center">
-                    <Link to={`/dashboard/modulo/${modulo.id}`}>
+                    <Link to={`/dashboard/user/modulo/${modulo.id}`}>
                       <IconButton className="">
                         <RiEditFill className="" />
                       </IconButton>

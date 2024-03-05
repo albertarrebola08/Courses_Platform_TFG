@@ -2,8 +2,6 @@ import CursoForm from "../../components/Cursos/CursoForm";
 import CardsCursos from "../../components/Cursos/CardsCursos";
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabase/supabaseClient";
-import { Breadcrumb } from "pol-ui";
-import { TiHome } from "react-icons/ti";
 
 const CursosPage = () => {
   const [cursos, setCursos] = useState([]);
@@ -14,6 +12,7 @@ const CursosPage = () => {
         const { data: cursosData, error } = await supabase
           .from("curso")
           .select("*");
+
         if (error) {
           throw error;
         }

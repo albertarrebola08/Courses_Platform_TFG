@@ -18,6 +18,9 @@ import ExamenForm from "./components/Examenes/ExamenForm";
 import ExamenPage from "./pages/dashboard/ExamenPage";
 import QuizPage from "./pages/dashboard/QuizPage";
 import NumeralPage from "./pages/dashboard/NumeralPage";
+import RegisterPage from "./pages/dashboard/RegisterPage";
+import LoginPage from "./pages/dashboard/LoginPage";
+import UserHomePage from "./pages/user/UserHomePage";
 
 function App() {
   return (
@@ -26,7 +29,7 @@ function App() {
         <NextUIProvider>
           <div className="App">
             <Routes>
-              <Route element={<DashboardLayout />} path="dashboard">
+              <Route element={<DashboardLayout />} path="dashboard/:id">
                 {/* La ruta a continuación es index, por lo que coge el mismo pat que el padre */}
                 <Route index element={<CursosPage />} />
                 <Route path="cursos" element={<CursosPage />} />
@@ -58,7 +61,7 @@ function App() {
                 />
                 <Route
                   path="modulo/:moduleId/numeral/:elementoId"
-                  element={<NumeralPage/>}
+                  element={<NumeralPage />}
                 />
                 <Route
                   path="modulo/:moduleId/camino/:elementoId"
@@ -66,6 +69,12 @@ function App() {
                 />
                 <Route path="*" element={<Error404Page />} />
               </Route>
+
+              <Route path="/:id/home" element={<UserHomePage />} />
+              <Route path="login" element={<LoginPage />} />
+              <Route path="register" element={<RegisterPage />} />
+
+              <Route path="*" element={<Error404Page />} />
             </Routes>
           </div>
         </NextUIProvider>
