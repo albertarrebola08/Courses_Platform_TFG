@@ -16,7 +16,7 @@ const RegisterPage = () => {
 
   const handleRegister = async () => {
     try {
-      const { user, error } = await supabase.auth.signUp({
+      const { data: user, error } = await supabase.auth.signUp({
         email,
         password,
       });

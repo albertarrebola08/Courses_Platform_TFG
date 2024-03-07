@@ -21,6 +21,7 @@ import NumeralPage from "./pages/dashboard/NumeralPage";
 import RegisterPage from "./pages/dashboard/RegisterPage";
 import LoginPage from "./pages/dashboard/LoginPage";
 import UserHomePage from "./pages/user/UserHomePage";
+import MicursoPage from "./pages/user/Cursos/MicursoPage";
 
 function App() {
   return (
@@ -71,6 +72,8 @@ function App() {
               </Route>
 
               <Route path="/:id/home" element={<UserHomePage />} />
+              <Route path="/:id/curso" element={<MicursoPage />} />
+
               <Route path="login" element={<LoginPage />} />
               <Route path="register" element={<RegisterPage />} />
 

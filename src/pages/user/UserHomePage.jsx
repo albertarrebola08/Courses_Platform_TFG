@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../../supabase/supabaseClient";
+import UserHeader from "./Home/UserHeader";
 
 function UserHomePage() {
   const { id } = useParams();
@@ -32,7 +33,8 @@ function UserHomePage() {
   }, []);
 
   return (
-    <div>
+    <div className="p-8">
+      <UserHeader />
       {perfilInfo && (
         <>
           <h1>Benvingut {perfilInfo[0].nombre}</h1>
