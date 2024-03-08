@@ -273,7 +273,7 @@ const TablaModulo = () => {
               <TableCell>{detalle.titulo || ""}</TableCell>
               <TableCell className="flex gap-2 items-center">
                 <Link
-                  to={`/dashboard/user/modulo/${moduleId}/${detalle.tipo}/${detalle.id}`}
+                  to={`/dashboard/modulo/${moduleId}/${detalle.tipo}/${detalle.id}`}
                 >
                   <IconButton
                     onClick={() => handleEditDetalleModulo(detalle.id)}

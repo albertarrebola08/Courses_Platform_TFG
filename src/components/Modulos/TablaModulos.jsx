@@ -25,10 +25,8 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  divider,
 } from "@nextui-org/react";
 import { AiOutlineRead } from "react-icons/ai";
-import { TiHome } from "react-icons/ti";
 
 const TablaModulos = () => {
   const { id } = useParams();
@@ -758,7 +756,7 @@ const TablaModulos = () => {
                   </TableCell>
 
                   <TableCell className="flex gap-4 items-center">
-                    <Link to={`/dashboard/user/modulo/${modulo.id}`}>
+                    <Link to={`/dashboard/modulo/${modulo.id}`}>
                       <IconButton className="">
                         <RiEditFill className="" />
                       </IconButton>

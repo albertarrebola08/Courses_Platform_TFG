@@ -1,46 +1,24 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { supabase } from "../../supabase/supabaseClient";
+import React, { useContext } from "react";
+
 import UserHeader from "./Home/UserHeader";
+//contexto con info del perfil y del user actual
+import { UserContext } from "../../UserContext";
+import { supabase } from "../../supabase/supabaseClient";
 
 function UserHomePage() {
-  const { id } = useParams();
-  const [perfilInfo, setPerfilInfo] = useState(null);
-
-  useEffect(() => {
-    const obtenerDetallePerfil = async (id) => {
-      try {
-        const { data: perfilData, error } = await supabase
-          .from("perfiles")
-          .select("*")
-          .eq("user_id", id);
-
-        if (error) {
-          console.error(
-            "Error al obtener el detalle del perfil:",
-            error.message
-          );
-        } else {
-          console.log("Detalle perfil:", perfilData);
-          setPerfilInfo(perfilData);
-        }
-      } catch (error) {
-        console.error("Error al obtener el detalle del perfil:", error.message);
-      }
-    };
-
-    obtenerDetallePerfil(id);
-  }, []);
-
+  const { user, perfilInfo } = useContext(UserContext);
+  console.log("profile desde context: ", perfilInfo);
   return (
     <div className="p-8">
       <UserHeader />
       {perfilInfo && (
         <>
-          <h1>Benvingut {perfilInfo[0].nombre}</h1>
-          <h2>{perfilInfo[0].apellidos}</h2>
-          <img src={perfilInfo[0].avatar} alt="" />
-          <h3>{perfilInfo[0].telefono}</h3>
+          <h1>Benvingut {perfilInfo.nombre}</h1>
+          <h2>{perfilInfo.apellidos}</h2>
+
+          <h3>{perfilInfo.telefono}</h3>
+          {user.user && <h5>{user.user.email}</h5>}
+          <a href="/curso">ir al curso</a>
         </>
       )}
     </div>

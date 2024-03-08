@@ -41,7 +41,7 @@ const CardCurso = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Link to={`/dashboard/user/cursos/${id}`}> 
+      <Link to={`/dashboard/cursos/${id}`}>
         <CardHeader className="pb-0 pt-2 px-4 flex-col items-start relative">
           <div className="flex items-center">
             <h4 className="font-bold text-large">{nombre}</h4>
