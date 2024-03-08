@@ -9,7 +9,6 @@ const RegisterPage = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [logo, setLogo] = useState("");
   const [avatar, setAvatar] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -35,7 +34,6 @@ const RegisterPage = () => {
               nombre: firstName,
               apellidos: lastName,
               telefono: phoneNumber,
-              logo,
               avatar,
             },
           ]);
@@ -90,12 +88,7 @@ const RegisterPage = () => {
           value={phoneNumber}
           onChange={(e) => setPhoneNumber(e.target.value)}
         />
-        <Input
-          type="text"
-          placeholder="URL del logo"
-          value={logo}
-          onChange={(e) => setLogo(e.target.value)}
-        />
+
         <Input
           type="text"
           placeholder="URL del avatar"

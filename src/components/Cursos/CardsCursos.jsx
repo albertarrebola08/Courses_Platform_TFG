@@ -14,10 +14,10 @@ const CardsCursos = ({ cursos, onDelete }) => {
     <div className="flex gap-4 flex-wrap">
       {cursos.map((curso) => (
         <CardCurso
-          key={curso.id}
+          key={curso.curso_id}
           nombre={curso.nombre}
           descripcion={curso.descripcion}
-          id={curso.id}
+          id={curso.curso_id}
           handleEditCurso={handleEditCurso}
           handleDeleteCurso={onDelete}
         />
