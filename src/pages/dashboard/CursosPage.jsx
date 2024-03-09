@@ -8,9 +8,9 @@ import { useNavigate } from "react-router-dom";
 const CursosPage = () => {
   const [cursos, setCursos] = useState([]);
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
+  const { user, perfilInfo } = useContext(UserContext);
   const userid = user.id;
-  console.log(userid);
+  console.log(userid, perfilInfo);
 
   useEffect(() => {
     const fetchCursos = async () => {

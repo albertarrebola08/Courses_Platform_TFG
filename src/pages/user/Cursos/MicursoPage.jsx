@@ -1,17 +1,48 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import UserHeader from "../Home/UserHeader";
 import { IconButton, Input } from "pol-ui";
-import { RiEditFill, RiVideoFill } from "react-icons/ri";
+import { RiVideoFill } from "react-icons/ri";
 import { UserContext } from "../../../UserContext";
+import { supabase } from "../../../supabase/supabaseClient";
+import { useParams } from "react-router-dom";
+
 const MicursoPage = () => {
   const { user, perfilInfo } = useContext(UserContext);
   console.log(user, perfilInfo);
+  const [detalleCurso, setDetalleCurso] = useState(null);
+  const { id } = useParams();
+  useEffect(() => {
+    const infoCurso = async () => {
+      try {
+        const { data, error } = await supabase.rpc("obtener_cursos_usuario", {
+          userid: user.id,
+        });
+
+        if (error) {
+          throw error;
+        } else {
+          console.log(Number(id));
+          console.log(data)
+          const cursoConcreto = data.filter(
+            (curso) => curso.curso_id === Number(id)
+          );
+          console.log(cursoConcreto);
+          setDetalleCurso(cursoConcreto);
+        }
+      } catch (error) {
+        console.error("Error al obtener cursos:", error.message);
+      }
+    };
+
+    infoCurso();
+  }, []);
+
   return (
     <main className="bg-white h-screen">
       <UserHeader />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 p-5 text-gray-900 h-full">
         <section className="info-progress p-5 rounded-lg bg-[#ff9900] text-center">
-          <h1 className="mb-6">Vender en Amazon desde cero</h1>
+          <h1 className="mb-6">{detalleCurso && detalleCurso[0].nombre}</h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 grid-rows-2 gap-4 m-3 text-white">
             <div className="bg-[#232f3e] rounded-lg p-4">
               <h3>AHORA MISMO EN:</h3>

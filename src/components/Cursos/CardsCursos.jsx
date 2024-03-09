@@ -1,18 +1,19 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Card, CardHeader, CardBody, Image } from "@nextui-org/react";
 import { RiEdit2Line, RiDeleteBin2Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
+import { UserContext } from "../../UserContext";
+import { Button } from "pol-ui";
 
 const CardsCursos = ({ cursos, onDelete }) => {
   const handleEditCurso = (id) => {
     console.log(`Editar curso con ID: ${id}`);
-
-    // Agrega la lógica de edición aquí según tus necesidades
   };
 
   return (
-    <div className="flex gap-4 flex-wrap">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-5">
       {cursos.map((curso) => (
+        
         <CardCurso
           key={curso.curso_id}
           nombre={curso.nombre}
@@ -33,6 +34,7 @@ const CardCurso = ({
   handleEditCurso,
   handleDeleteCurso,
 }) => {
+  const { perfilInfo } = useContext(UserContext);
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -41,23 +43,29 @@ const CardCurso = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Link to={`/dashboard/cursos/${id}`}>
+      <Link
+        to={
+          perfilInfo && perfilInfo.rol === "admin"
+            ? `/dashboard/cursos/${id}`
+            : `/mis-cursos/${id}`
+        }
+      >
         <CardHeader className="pb-0 pt-2 px-4 flex-col items-start relative">
           <div className="flex items-center">
             <h4 className="font-bold text-large">{nombre}</h4>
-            {isHovered && (
-              <RiEdit2Line
-                className="text-brown-500 cursor-pointer ml-2"
-                onClick={() => handleEditCurso(id)}
-                title="Editar"
-              />
-            )}
-            {isHovered && (
-              <RiDeleteBin2Line
-                className="text-red-500 cursor-pointer ml-2"
-                onClick={() => handleDeleteCurso(id, nombre)}
-                title="Eliminar"
-              />
+            {perfilInfo && perfilInfo.rol === "admin" && isHovered && (
+              <>
+                <RiEdit2Line
+                  className="text-brown-500 cursor-pointer ml-2"
+                  onClick={() => handleEditCurso(id)}
+                  title="Editar"
+                />
+                <RiDeleteBin2Line
+                  className="text-red-500 cursor-pointer ml-2"
+                  onClick={() => handleDeleteCurso(id, nombre)}
+                  title="Eliminar"
+                />
+              </>
             )}
           </div>
           <small className="text-default-500">{descripcion}</small>
@@ -66,11 +74,21 @@ const CardCurso = ({
           <Image
             alt="Curso Image"
             className="object-cover rounded-xl"
-            src="/images/amazon_course_imagen_prueba.jpg" // Cambia esto según cómo manejes las imágenes
+            src="/images/amazon_course_imagen_prueba.jpg"
             width={270}
           />
-          {isHovered && (
-            <div className="absolute top-2 right-2 space-x-2"></div>
+          {console.log("perfil!!!", perfilInfo && perfilInfo.rol)}
+
+          {perfilInfo && perfilInfo.rol === "usuario" && (
+            <div className="p-4 flex justify-center">
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() => handleSolicitarCurso(id)}
+              >
+                Solicitar Curso
+              </Button>
+            </div>
           )}
         </CardBody>
       </Link>

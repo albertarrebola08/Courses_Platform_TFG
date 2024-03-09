@@ -35,7 +35,7 @@ const LoginPage = () => {
             .eq("user_id", usuario.user.id)
             .single();
 
-          console.log('mail del usuario que seteo perfil', usuario.user.email)
+          console.log("mail del usuario que seteo perfil", usuario.user.email);
 
           if (profileError) {
             setError(profileError.message);

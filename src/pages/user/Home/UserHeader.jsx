@@ -9,7 +9,7 @@ import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { UserContext } from "../../../UserContext";
-import { RiLogoutBoxLine } from "react-icons/ri";
+import { RiLogoutBoxLine, RiSettings2Fill } from "react-icons/ri";
 
 const UserHeader = () => {
   const { user, perfilInfo, logout } = useContext(UserContext);
@@ -66,6 +66,13 @@ const UserHeader = () => {
             <Button color="error" onClick={handleLogout}>
               <RiLogoutBoxLine />
             </Button>
+          </NavbarItem>
+          <NavbarItem>
+            <Link to="/mi-perfil">
+              <Button>
+                <RiSettings2Fill />
+              </Button>
+            </Link>
           </NavbarItem>
         </NavbarContent>
       </Navbar>

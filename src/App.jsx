@@ -8,7 +8,6 @@ import QuestionsPage from "./pages/dashboard/QuestionsPage";
 import ModuloPage from "./pages/dashboard/ModuloPage";
 import { GlobalProvider } from "./GlobalContext";
 
-import DetalleNumeral from "./components/Numerales/DetalleNumeral";
 import DetalleCamino from "./components/Caminos/DetalleCamino";
 import Error404Page from "./pages/dashboard/Error404Page";
 import MaterialPage from "./pages/dashboard/MaterialPage";
@@ -23,6 +22,8 @@ import LoginPage from "./pages/LoginPage";
 import UserHomePage from "./pages/user/UserHomePage";
 import MicursoPage from "./pages/user/Cursos/MicursoPage";
 import { UserProvider } from "./UserContext";
+import MisCursosPage from "./pages/user/Cursos/MisCursosPage";
+import ProfilePage from "./pages/user/Settings/ProfilePage";
 
 function App() {
   return (
@@ -74,10 +75,12 @@ function App() {
                 </Route>
 
                 <Route path="/home" element={<UserHomePage />} />
-                <Route path="/curso" element={<MicursoPage />} />
+                <Route path="/mis-cursos/:id" element={<MicursoPage />} />
+                <Route path="/mis-cursos" element={<MisCursosPage />} />
 
                 <Route path="login" element={<LoginPage />} />
                 <Route path="register" element={<RegisterPage />} />
+                <Route path="mi-perfil" element={<ProfilePage />} />
 
                 <Route path="*" element={<Error404Page />} />
               </Routes>

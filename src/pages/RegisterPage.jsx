@@ -35,6 +35,7 @@ const RegisterPage = () => {
               apellidos: lastName,
               telefono: phoneNumber,
               avatar,
+              rol: 'usuario'
             },
           ]);
 
