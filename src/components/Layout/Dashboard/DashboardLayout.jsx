@@ -1,9 +1,5 @@
-import { useState, useBoolean, useEffect, useContext } from "react";
-import { Outlet, useParams } from "react-router-dom";
-import { supabase } from "../../../supabase/supabaseClient";
-import { RiQuestionFill } from "react-icons/ri";
-import { TiHome } from "react-icons/ti";
-import { PiHandWavingFill } from "react-icons/pi";
+import { useState, useContext, useEffect } from "react";
+import { Outlet } from "react-router-dom";
 
 import DrawBreadcrumb from "../../DrawBreadcrumb";
 import UserHeader from "../../../pages/user/Home/UserHeader";
@@ -12,14 +8,27 @@ import SidebarDefault from "../SidebarDefault";
 
 const DashboardLayout = () => {
   const { perfilInfo } = useContext(UserContext);
+  const [isAdmin, setIsAdmin] = useState(null);
+  useEffect(() => {
+    const handleAdmin = () => {
+      if (perfilInfo.rol === "admin" || perfilInfo.rol === "superadmin") {
+        setIsAdmin(true);
+        console.log(isAdmin);
+      } else {
+        setIsAdmin(false);
+        console.log(isAdmin);
+      }
+    };
 
+    handleAdmin();
+  }, []);
   return (
     <div className="grid w-full border bg-primary-100 overflow-y-hidden h-screen grid-rows-[auto,1fr]">
       <UserHeader />
 
       <section className="flex h-full overflow-y-auto gap-4">
         <div className="bg-primary-50 w-fit shadow-md">
-          <SidebarDefault></SidebarDefault>
+          <SidebarDefault isAdmin={isAdmin}></SidebarDefault>
         </div>
         <div className="overflow-y-auto flex-1 mt-4 rounded-lg px-4 pb-8">
           <div className="my-3">

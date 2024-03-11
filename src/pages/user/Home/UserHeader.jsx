@@ -24,37 +24,17 @@ const UserHeader = () => {
   };
 
   return (
-    <div className="flex justify-between">
+    <div className="">
       <Navbar>
         <NavbarBrand>
           <img src="/images/logo-rispot.png" alt="" />
         </NavbarBrand>
         <NavbarContent className="hidden sm:flex gap-4 justify-center">
           <NavbarItem>
-            <Link color="foreground" to="#">
-              Features
-            </Link>
-          </NavbarItem>
-          <NavbarItem isActive>
-            <Link to="#" aria-current="page">
-              Customers
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link color="foreground" to="">
-              Integrations
-            </Link>
+            <h2 className="text-xl ">Benvingut {perfilInfo.nombre} 👋</h2>
           </NavbarItem>
         </NavbarContent>
         <NavbarContent justify="end">
-          <NavbarItem className="hidden lg:flex">
-            <Link to="/login">Login</Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Button as={Link} color="primary" href="#" variant="flat">
-              Sign Up
-            </Button>
-          </NavbarItem>
           <NavbarItem>
             <img
               src={perfilInfo && perfilInfo.avatar}
@@ -66,13 +46,6 @@ const UserHeader = () => {
             <Button color="error" onClick={handleLogout}>
               <RiLogoutBoxLine />
             </Button>
-          </NavbarItem>
-          <NavbarItem>
-            <Link to="/mi-perfil">
-              <Button>
-                <RiSettings2Fill />
-              </Button>
-            </Link>
           </NavbarItem>
         </NavbarContent>
       </Navbar>

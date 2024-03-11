@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabase/supabaseClient";
-import CardsCursos from "./CardsCursos";
+
+import CardsAllCursos from "./CardsAllCursos";
 
 const AllCursos = () => {
   const [cursos, setCursos] = useState([]);
@@ -26,7 +27,7 @@ const AllCursos = () => {
 
   return (
     <div className="flex py-5">
-      <CardsCursos cursos={cursos} />
+      <CardsAllCursos cursos={cursos} />
     </div>
   );
 };

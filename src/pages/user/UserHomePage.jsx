@@ -12,26 +12,25 @@ function UserHomePage() {
   return (
     <div className="p-8">
       <UserHeader />
-      {/* <SidebarDefault></SidebarDefault> */}
 
-    {/* MIRAR LAYOUT EN USER OCN POL !!! */}
+      {/* MIRAR LAYOUT EN USER OCN POL !!! */}
 
+      <section className="flex h-full overflow-y-auto gap-4">
+        <div className="bg-primary-50 w-fit shadow-md"></div>
+        <div className="overflow-y-auto flex-1 mt-4 rounded-lg px-4 pb-8">
+          <div className="my-3">
+            <h3 className="text-2xl">
+              {perfilInfo &&
+                perfilInfo.nombre &&
+                perfilInfo.apellidos &&
+                `${perfilInfo.nombre} ${perfilInfo.apellidos}`}
+            </h3>
+          </div>
+          <hr />
 
-
-
-      {perfilInfo && (
-        <>
-          <h1>Benvingut, {perfilInfo.nombre}</h1>
-          <hr className="my-4" />
-          {/* <h2>{perfilInfo.apellidos}</h2>
-
-          <h3>{perfilInfo.telefono}</h3>
-          {user.user && <h5>{user.user.email}</h5>} */}
-
-          <h2 className="text-xl text-gray-500 ">Oferta de cursos</h2>
           <AllCursos></AllCursos>
-        </>
-      )}
+        </div>
+      </section>
     </div>
   );
 }

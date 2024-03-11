@@ -24,6 +24,7 @@ import MicursoPage from "./pages/user/Cursos/MicursoPage";
 import { UserProvider } from "./UserContext";
 import MisCursosPage from "./pages/user/Cursos/MisCursosPage";
 import ProfilePage from "./pages/user/Settings/ProfilePage";
+import RequestsPage from "./pages/dashboard/RequestsPage";
 
 function App() {
   return (
@@ -41,7 +42,7 @@ function App() {
                   {<Route path="modulo/:moduleId" element={<ModuloPage />} />}
                   {/* {<Route path="editor" element={<TextEditor />} />} */}
                   <Route path="preguntes-diaries" element={<QuestionsPage />} />
-                  <Route path="examen" element={<ExamenForm />} />
+                  <Route path="solicitudes" element={<RequestsPage />} />
 
                   <Route
                     path="modulo/:moduleId/video/:elementoId"

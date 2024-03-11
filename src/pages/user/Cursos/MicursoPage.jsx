@@ -22,7 +22,7 @@ const MicursoPage = () => {
           throw error;
         } else {
           console.log(Number(id));
-          console.log(data)
+          console.log(data);
           const cursoConcreto = data.filter(
             (curso) => curso.curso_id === Number(id)
           );
@@ -42,7 +42,7 @@ const MicursoPage = () => {
       <UserHeader />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 p-5 text-gray-900 h-full">
         <section className="info-progress p-5 rounded-lg bg-[#ff9900] text-center">
-          <h1 className="mb-6">{detalleCurso && detalleCurso[0].nombre}</h1>
+          <h1 className="mb-6">{}</h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 grid-rows-2 gap-4 m-3 text-white">
             <div className="bg-[#232f3e] rounded-lg p-4">
               <h3>AHORA MISMO EN:</h3>
