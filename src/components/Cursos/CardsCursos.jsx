@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { Card, CardHeader, CardBody, Image } from "@nextui-org/react";
 import { RiEdit2Line, RiDeleteBin2Line } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { UserContext } from "../../UserContext";
 import { Button } from "pol-ui";
 
@@ -13,7 +13,6 @@ const CardsCursos = ({ cursos, onDelete }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-5">
       {cursos.map((curso) => (
-        
         <CardCurso
           key={curso.curso_id}
           nombre={curso.nombre}
@@ -36,7 +35,7 @@ const CardCurso = ({
 }) => {
   const { perfilInfo } = useContext(UserContext);
   const [isHovered, setIsHovered] = useState(false);
-
+  const location = useLocation();
   return (
     <Card
       className="py-4 relative"
@@ -79,17 +78,19 @@ const CardCurso = ({
           />
           {console.log("perfil!!!", perfilInfo && perfilInfo.rol)}
 
-          {perfilInfo && perfilInfo.rol === "usuario" && (
-            <div className="p-4 flex justify-center">
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() => handleSolicitarCurso(id)}
-              >
-                Solicitar Curso
-              </Button>
-            </div>
-          )}
+          {perfilInfo &&
+            (perfilInfo.rol === "usuario") !==
+              location.pathname.includes("mis-cursos") && (
+              <div className="p-4 flex justify-center">
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={() => handleSolicitarCurso(id)}
+                >
+                  Solicitar Curso
+                </Button>
+              </div>
+            )}
         </CardBody>
       </Link>
     </Card>

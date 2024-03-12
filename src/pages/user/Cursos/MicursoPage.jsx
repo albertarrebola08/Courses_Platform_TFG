@@ -10,6 +10,37 @@ const MicursoPage = () => {
   const { user, perfilInfo } = useContext(UserContext);
   console.log(user, perfilInfo);
   const [detalleCurso, setDetalleCurso] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  useEffect(() => {
+    // Obtener el cuadrado y establecer su posición inicial
+    const square = document.querySelector(".selected-square");
+    const firstListItem = document.querySelector(`#item-0`);
+    const columnTop = firstListItem.parentElement.getBoundingClientRect().top;
+    const listItemTop = firstListItem.getBoundingClientRect().top;
+
+    const initialPosition = listItemTop - columnTop;
+    square.style.transform = `translateY(${initialPosition}px)`;
+  }, []);
+
+  const handleClick = (index) => {
+    setSelectedItem(index);
+    // Obtener la posición del elemento clickeado
+    const listItem = document.querySelector(`#item-${index}`);
+    const listItemTop = listItem.offsetTop;
+
+    // Obtener el cuadrado
+    const square = document.querySelector(".selected-square");
+
+    // Obtener la posición actual del primer elemento de la lista
+    const firstListItem = document.querySelector(`#item-0`);
+    const columnTop = firstListItem.parentElement.getBoundingClientRect().top;
+    const initialPosition = listItemTop - columnTop;
+
+    // Aplicar la animación de desplazamiento
+    square.style.transition = `transform 1s ease-in-out`;
+    square.style.transform = `translateY(${initialPosition}px)`;
+  };
   const { id } = useParams();
   useEffect(() => {
     const infoCurso = async () => {
@@ -41,8 +72,8 @@ const MicursoPage = () => {
     <main className="bg-white h-screen">
       <UserHeader />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 p-5 text-gray-900 h-full">
-        <section className="info-progress p-5 rounded-lg bg-[#ff9900] text-center">
-          <h1 className="mb-6">{}</h1>
+        <section className="info-progress p-5 rounded-lg bg-[#f8f8f8] text-center shadow-lg">
+          <h1 className="mb-6">{detalleCurso && detalleCurso[0].nombre}</h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 grid-rows-2 gap-4 m-3 text-white">
             <div className="bg-[#232f3e] rounded-lg p-4">
               <h3>AHORA MISMO EN:</h3>
@@ -56,7 +87,7 @@ const MicursoPage = () => {
               <h3>PREGUNTA DIARIA</h3>
               <div>
                 <h4 className="text-gray-300">07/03/2024</h4>
-                <div className="p-4 my-4 rounded-md bg-[#f99b3d]">
+                <div className="p-4 my-4 rounded-md bg-[#f8f8f8]">
                   <h5 className="text-gray-900">
                     Quin és el CPC mínim per llançar publicitat al mercat Xinès?
                   </h5>
@@ -83,27 +114,34 @@ const MicursoPage = () => {
             </div>
           </div>
         </section>
-        <section className="info-progress rounded-lg bg-[#ff9900] overflow-auto">
-          <div className="fix-header rounded-xl shadow-md shadow-[#f99b3d] sticky top-0 z-20 p-4 bg-[#f99b3d]">
+        <section className="info-progress rounded-lg bg-[#f8f8f8] overflow-auto shadow-lg">
+          <div className="fix-header rounded-xl shadow-md sticky top-0 z-20 p-4 ">
             <h2 className="text-lg font-bold">
               Módulo 1 <br />
               Introducción al mercado
             </h2>
           </div>
-          <div className="grid grid-cols-5 px-5">
+          <div className="grid grid-cols-5 px-5 z-10">
             <div className="col-span-1 bg-gray-900 flex items-center gap-6 flex-col">
+              {/* Aquí el cuadrado */}
+              <img
+                className={`selected-square w-[50px] h-[100px]`}
+                src="/images/furgo_rispot.png"
+              />
               {Array.from({ length: 21 }, (_, i) => (
                 <div key={i} className="bg-gray-700 h-[40px] w-[10px]"></div>
               ))}
             </div>
-            <div className="col-span-4">
+            <div className="col-span-4 ">
               <ul>
                 {Array.from({ length: 21 }, (_, i) => (
                   <li
                     key={i}
-                    className="m-2 p-3 rounded-lg flex items-center gap-4 text-primary-200 border border-black my-3"
+                    id={`item-${i}`}
+                    onClick={() => handleClick(i)}
+                    className="mx-3 my-6 p-6 rounded-lg flex items-center gap-4 text-[#232f3e] border border-gray-300 shadow-md cursor-pointer"
                   >
-                    <IconButton className="bg-gray-600">
+                    <IconButton className="bg-gray-300">
                       <RiVideoFill />
                     </IconButton>
                     Actividad {i + 1}: Texto por defecto

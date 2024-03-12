@@ -17,13 +17,26 @@ function TablaSolicitudes() {
       try {
         const { data: requestsInfo, error } = await supabase
           .from("curso_usuario")
-          .select("*")
-          .range(0, 9);
+          .select("*");
 
         if (error) {
           console.log(error);
         } else {
           console.log("fetch correcto ");
+
+          //formateo la fecha
+          const formatDate = (dateString) => {
+            const date = new Date(dateString);
+            const options = {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+            };
+            return date.toLocaleDateString("es-ES", options);
+          };
 
           // Obtener el email del usuario
           const userIds = requestsInfo.map((request) => request.usuario_id); // Obtener los IDs de usuario de las solicitudes
@@ -48,6 +61,10 @@ function TablaSolicitudes() {
               if (user) {
                 request.userEmail = user.email; // Añadir el email del usuario a la solicitud
               }
+              // Formatear la fecha
+              const formattedDate = formatDate(request.created_at);
+              request.formattedDate = formattedDate;
+
               return request;
             });
 
@@ -72,7 +89,7 @@ function TablaSolicitudes() {
                     (course) => course.id === request.curso_id
                   );
                   if (course) {
-                    request.cursoNombre = course.nombre; // Añadir el nombre del curso a la solicitud
+                    request.cursoNombre = course.nombre;
                   }
                   return request;
                 }
@@ -89,39 +106,100 @@ function TablaSolicitudes() {
     fetchRequests();
   }, []);
 
-  // Función para aceptar una solicitud
-  const handleAccept = async (requestId) => {
+  // Función para aceptar una solicitud y realizar la inserción de elementos del curso
+  const handleAccept = async (requestId, setRequests, requests) => {
     try {
-      // Aquí debes implementar la lógica para aceptar la solicitud con el ID 'requestId'
-      console.log(`Solicitud aceptada: ${requestId}`);
+      // Actualizar la solicitud en la base de datos
+      await supabase
+        .from("curso_usuario")
+        .update({ solicitud: true })
+        .eq("id", requestId);
+
+      // Actualizar el estado de la solicitud para reflejar que ha sido aceptada
+      const updatedRequests = requests.map(async (request) => {
+        if (request.id === requestId) {
+          // Añadir el estado de solicitud aceptada
+          request.solicitud = true;
+          console.log(request);
+          // Llamar a la función de inserción mediante RPC
+          await supabase.rpc("insertar_elementos_curso_usuario", {
+            curso_id_param: request.curso_id,
+            usuario_id: request.usuario_id,
+          });
+          console.log(`Solicitud aceptada: ${requestId}`);
+        }
+        return request;
+      });
+      await Promise.all(updatedRequests);
+      setRequests(updatedRequests);
     } catch (error) {
       console.error("Error al aceptar la solicitud:", error);
     }
   };
 
+  // Función para bloquear a un usuario en un curso (poner a false)
+  const handleBlock = async (requestId, setRequests, requests) => {
+    try {
+      // Actualizar la solicitud en la base de datos
+      await supabase
+        .from("curso_usuario")
+        .update({ solicitud: false })
+        .eq("id", requestId);
+
+      // Actualizar el estado de la solicitud para reflejar que ha sido aceptada
+      const updatedRequests = requests.map((request) =>
+        request.id === requestId ? { ...request, solicitud: false } : request
+      );
+
+      setRequests(updatedRequests);
+
+      console.log(`acceso bloqueado: ${requestId}`);
+    } catch (error) {
+      console.error("Error al bloquear acceso:", error);
+    }
+  };
+
+  // Función para eliminar solicitud
+  const handleDelete = async (requestId) => {
+    try {
+      // Actualizar la solicitud en la base de datos
+      await supabase.from("curso_usuario").delete().eq("id", requestId);
+
+      console.log(`solicitud eliminada: ${requestId}`);
+    } catch (error) {
+      console.error("Error al eliminar la solicitud:", error);
+    }
+  };
+
   return (
     <div>
-      <Table>
+      <Table striped="true" hoverable="true" hasShadow="true">
         <Table.Head>
+          <Table.HeadCell>Fecha de acceso</Table.HeadCell>
           <Table.HeadCell>Usuario</Table.HeadCell>
           <Table.HeadCell>Curso</Table.HeadCell>
-          <Table.HeadCell>Solicitud</Table.HeadCell>
+          <Table.HeadCell>Acceso</Table.HeadCell>
           <Table.HeadCell>Acciones</Table.HeadCell>
         </Table.Head>
 
         <Table.Body className="divide-y">
           {requests.map((request) => (
             <Table.Row key={request.id}>
+              <Table.Cell>{request.formattedDate}</Table.Cell>
               <Table.Cell>{request.userEmail}</Table.Cell>
               <Table.Cell>{request.cursoNombre}</Table.Cell>
               <Table.Cell>
                 <div className="flex items-center">
-                  {request.solicitud ? <RiCheckFill /> : <RiCloseFill />}
+                  <div className="flex items-center">
+                    {request.solicitud ? <RiCheckFill /> : <RiCloseFill />}
+                  </div>
                   {/* Botón para aceptar la solicitud */}
                   {!request.solicitud && (
                     <IconButton
                       title="Aceptar"
-                      onClick={() => handleAccept(request.id)}
+                      onClick={() =>
+                        handleAccept(request.id, setRequests, requests)
+                      }
                     >
                       Aceptar
                     </IconButton>
@@ -139,8 +217,10 @@ function TablaSolicitudes() {
                   </IconButton>
                   {/* Botón para bloquear */}
                   <IconButton
-                    title="Bloquear"
-                    onClick={() => handleBlock(request.id)}
+                    title="Bloquear acceso al curso"
+                    onClick={() =>
+                      handleBlock(request.id, setRequests, requests)
+                    }
                   >
                     <RiForbid2Fill />
                   </IconButton>

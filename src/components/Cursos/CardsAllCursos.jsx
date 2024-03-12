@@ -57,7 +57,7 @@ const CardCurso = ({ nombre, descripcion, id }) => {
 
         <div className="p-4 flex justify-center">
           <Button
-          data=""
+            data=""
             color="primary"
             variant="contained"
             onClick={() => handleSolicitarCurso(id)}
