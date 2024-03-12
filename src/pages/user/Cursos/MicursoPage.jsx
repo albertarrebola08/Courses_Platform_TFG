@@ -5,68 +5,54 @@ import { RiVideoFill } from "react-icons/ri";
 import { UserContext } from "../../../UserContext";
 import { supabase } from "../../../supabase/supabaseClient";
 import { useParams } from "react-router-dom";
+import { MdBackHand } from "react-icons/md";
 
 const MicursoPage = () => {
   const { user, perfilInfo } = useContext(UserContext);
-  console.log(user, perfilInfo);
   const [detalleCurso, setDetalleCurso] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
-
-  useEffect(() => {
-    // Obtener el cuadrado y establecer su posición inicial
-    const square = document.querySelector(".selected-square");
-    const firstListItem = document.querySelector(`#item-0`);
-    const columnTop = firstListItem.parentElement.getBoundingClientRect().top;
-    const listItemTop = firstListItem.getBoundingClientRect().top;
-
-    const initialPosition = listItemTop - columnTop;
-    square.style.transform = `translateY(${initialPosition}px)`;
-  }, []);
-
-  const handleClick = (index) => {
-    setSelectedItem(index);
-    // Obtener la posición del elemento clickeado
-    const listItem = document.querySelector(`#item-${index}`);
-    const listItemTop = listItem.offsetTop;
-
-    // Obtener el cuadrado
-    const square = document.querySelector(".selected-square");
-
-    // Obtener la posición actual del primer elemento de la lista
-    const firstListItem = document.querySelector(`#item-0`);
-    const columnTop = firstListItem.parentElement.getBoundingClientRect().top;
-    const initialPosition = listItemTop - columnTop;
-
-    // Aplicar la animación de desplazamiento
-    square.style.transition = `transform 1s ease-in-out`;
-    square.style.transform = `translateY(${initialPosition}px)`;
-  };
+  const [courseElements, setCourseElements] = useState([]);
   const { id } = useParams();
-  useEffect(() => {
-    const infoCurso = async () => {
-      try {
-        const { data, error } = await supabase.rpc("obtener_cursos_usuario", {
-          userid: user.id,
-        });
 
-        if (error) {
-          throw error;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Obtener información del curso del usuario
+        const { data: cursoData, error: cursoError } = await supabase.rpc(
+          "obtener_cursos_usuario",
+          {
+            userid: user.id,
+          }
+        );
+
+        if (cursoError) {
+          throw cursoError;
         } else {
-          console.log(Number(id));
-          console.log(data);
-          const cursoConcreto = data.filter(
+          // Filtrar el curso específico por su ID
+          const cursoConcreto = cursoData.filter(
             (curso) => curso.curso_id === Number(id)
           );
-          console.log(cursoConcreto);
           setDetalleCurso(cursoConcreto);
+
+          // Obtener elementos del curso
+          const { data: elementosData, error: elementosError } =
+            await supabase.rpc("obtener_elementos_curso", {
+              curso_id_param: 51, // Reemplaza el valor fijo con el valor dinámico según el curso actual
+            });
+
+          if (elementosError) {
+            throw elementosError;
+          } else {
+            setCourseElements(elementosData);
+          }
         }
       } catch (error) {
-        console.error("Error al obtener cursos:", error.message);
+        console.error("Error al obtener los datos:", error.message);
       }
     };
 
-    infoCurso();
-  }, []);
+    fetchData();
+  }, [id, user.id]);
 
   return (
     <main className="bg-white h-screen">
@@ -112,7 +98,7 @@ const MicursoPage = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div>{" "}
         </section>
         <section className="info-progress rounded-lg bg-[#f8f8f8] overflow-auto shadow-lg">
           <div className="fix-header rounded-xl shadow-md sticky top-0 z-20 p-4 ">
@@ -134,17 +120,18 @@ const MicursoPage = () => {
             </div>
             <div className="col-span-4 ">
               <ul>
-                {Array.from({ length: 21 }, (_, i) => (
+                {courseElements.map((element, index) => (
                   <li
-                    key={i}
-                    id={`item-${i}`}
-                    onClick={() => handleClick(i)}
+                    key={index}
+                    id={`item-${index}`}
                     className="mx-3 my-6 p-6 rounded-lg flex items-center gap-4 text-[#232f3e] border border-gray-300 shadow-md cursor-pointer"
                   >
                     <IconButton className="bg-gray-300">
-                      <RiVideoFill />
+                      {/* Renderizar un icono según el tipo de elemento del curso */}
+                      {element.tipo === "video" && <RiVideoFill />}
+                      {element.tipo === "acciona" && <MdBackHand />}
                     </IconButton>
-                    Actividad {i + 1}: Texto por defecto
+                    {element.titulo}
                   </li>
                 ))}
               </ul>

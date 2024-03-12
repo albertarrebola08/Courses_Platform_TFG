@@ -63,7 +63,7 @@ const LoginPage = () => {
 
   return (
     <form action="" className="p-8 w-50">
-      <div className="flex-col gap-5 flex">
+      <div className="flex-col gap-5 flex w-fit">
         <h1>Iniciar sesión</h1>
         <Input
           type="email"

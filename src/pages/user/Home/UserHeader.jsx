@@ -36,11 +36,13 @@ const UserHeader = () => {
         </NavbarContent>
         <NavbarContent justify="end">
           <NavbarItem>
-            <img
-              src={perfilInfo && perfilInfo.avatar}
-              alt="avatar-profile"
-              className="rounded-full ring-1 ring-gray-500 object-cover w-10 h-10"
-            />
+            <a href="/mi-perfil">
+              <img
+                src={perfilInfo && perfilInfo.avatar}
+                alt="avatar-profile"
+                className="rounded-full ring-1 ring-gray-500 object-cover w-10 h-10"
+              />
+            </a>
           </NavbarItem>
           <NavbarItem>
             <Button color="error" onClick={handleLogout}>
