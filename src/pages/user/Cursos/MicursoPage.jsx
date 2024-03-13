@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import UserHeader from "../Home/UserHeader";
 import { IconButton, Input } from "pol-ui";
-import { RiVideoFill } from "react-icons/ri";
+import { RiBookOpenFill, RiFileEditFill, RiListCheck3, RiVideoFill } from "react-icons/ri";
 import { UserContext } from "../../../UserContext";
 import { supabase } from "../../../supabase/supabaseClient";
 import { useParams } from "react-router-dom";
 import { MdBackHand } from "react-icons/md";
+import { LuDices } from "react-icons/lu";
 
 const MicursoPage = () => {
   const { user, perfilInfo } = useContext(UserContext);
@@ -37,7 +38,7 @@ const MicursoPage = () => {
           // Obtener elementos del curso
           const { data: elementosData, error: elementosError } =
             await supabase.rpc("obtener_elementos_curso", {
-              curso_id_param: 51, // Reemplaza el valor fijo con el valor dinámico según el curso actual
+              curso_id_param: 51,
             });
 
           if (elementosError) {
@@ -55,10 +56,10 @@ const MicursoPage = () => {
   }, [id, user.id]);
 
   return (
-    <main className="bg-white h-screen">
+    <main className="bg-white ">
       <UserHeader />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 p-5 text-gray-900 h-full">
-        <section className="info-progress p-5 rounded-lg bg-[#f8f8f8] text-center shadow-lg">
+        <section className="info-progress p-5 rounded-lg bg-[#f8f8f8] text-center shadow-lg max-h-[85vh]">
           <h1 className="mb-6">{detalleCurso && detalleCurso[0].nombre}</h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 grid-rows-2 gap-4 m-3 text-white">
             <div className="bg-[#232f3e] rounded-lg p-4">
@@ -100,14 +101,13 @@ const MicursoPage = () => {
             </div>
           </div>{" "}
         </section>
-        <section className="info-progress rounded-lg bg-[#f8f8f8] overflow-auto shadow-lg">
-          <div className="fix-header rounded-xl shadow-md sticky top-0 z-20 p-4 ">
+        <section className="info-progress rounded-lg bg-[#f8f8f8] shadow-lg">
+          <div className="fix-header rounded-xl shadow-md p-4 ">
             <h2 className="text-lg font-bold">
-              Módulo 1 <br />
-              Introducción al mercado
+              {detalleCurso && detalleCurso[0].nombre}
             </h2>
           </div>
-          <div className="grid grid-cols-5 px-5 z-10">
+          <div className="grid grid-cols-5 px-5 z-10 overflow-y-auto max-h-[70vh]">
             <div className="col-span-1 bg-gray-900 flex items-center gap-6 flex-col">
               {/* Aquí el cuadrado */}
               <img
@@ -118,21 +118,33 @@ const MicursoPage = () => {
                 <div key={i} className="bg-gray-700 h-[40px] w-[10px]"></div>
               ))}
             </div>
-            <div className="col-span-4 ">
+            <div className="col-span-4">
               <ul>
-                {courseElements.map((element, index) => (
-                  <li
-                    key={index}
-                    id={`item-${index}`}
-                    className="mx-3 my-6 p-6 rounded-lg flex items-center gap-4 text-[#232f3e] border border-gray-300 shadow-md cursor-pointer"
-                  >
-                    <IconButton className="bg-gray-300">
-                      {/* Renderizar un icono según el tipo de elemento del curso */}
-                      {element.tipo === "video" && <RiVideoFill />}
-                      {element.tipo === "acciona" && <MdBackHand />}
-                    </IconButton>
-                    {element.titulo}
-                  </li>
+                {courseElements.map((modulo, index) => (
+                  <div key={index} className="">
+                    <h2 className="text-xl text-white sticky top-0 z-10 bg-[#ff9900] p-4 ">
+                      {modulo.nombre_modulo}
+                    </h2>
+                    <ul>
+                      {modulo.elementos.map((elemento, index) => (
+                        <li
+                          key={index}
+                          id={`item-${index}`}
+                          className="mx-3 my-2 p-4 rounded-lg flex items-center gap-4 text-[#232f3e] border border-gray-300 shadow-md cursor-pointer"
+                        >
+                          <IconButton className="bg-gray-300">
+                            {elemento.tipo === "video" && <RiVideoFill />}
+                            {elemento.tipo === "acciona" && <MdBackHand />}
+                            {elemento.tipo === "examen" && <RiFileEditFill />}
+                            {elemento.tipo === "quiz" && <RiListCheck3 />}
+                            {elemento.tipo === "numeral" && <LuDices />}
+                            {elemento.tipo === "material" && <RiBookOpenFill />}
+                          </IconButton>
+                          <span>{elemento.titulo}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 ))}
               </ul>
             </div>

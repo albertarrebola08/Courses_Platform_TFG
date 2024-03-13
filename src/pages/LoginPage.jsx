@@ -1,17 +1,18 @@
-import React, { useEffect, useState, useContext } from "react";
-import { supabase } from "../supabase/supabaseClient";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Input } from "pol-ui";
-import { UserContext } from ".././UserContext";
+import { Button, Input, PasswordInput } from "pol-ui";
+import { UserContext } from "../UserContext";
+import { supabase } from "../supabase/supabaseClient";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { user, perfilInfo, setUser, setPerfilInfo } = useContext(UserContext);
+  const { setUser, setPerfilInfo } = useContext(UserContext);
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     try {
       const { data: usuario, error } = await supabase.auth.signInWithPassword({
         email,
@@ -62,25 +63,67 @@ const LoginPage = () => {
   };
 
   return (
-    <form action="" className="p-8 w-50">
-      <div className="flex-col gap-5 flex w-fit">
-        <h1>Iniciar sesión</h1>
-        <Input
-          type="email"
-          placeholder="Correo electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <Input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {error && <p>{error}</p>}
-        <Button onClick={handleLogin}>Iniciar sesión</Button>
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
+        <h1 className="text-center text-3xl font-bold text-[#232f3e]">
+          Rispot Consulting
+        </h1>
+        <p className="mt-2 text-center">Acceso a la plataforma de cursos</p>
+        <form className="mt-6 space-y-6" onSubmit={handleLogin}>
+          <div>
+            <label
+              className="block text-sm font-medium text-gray-700"
+              htmlFor="email"
+            >
+              Email{" "}
+              <span className="text-gray-600 text-[12px]">
+                (este será tu usuario de acceso)
+              </span>
+            </label>
+            <Input
+              className="mt-1"
+              aria-required
+              id="email"
+              placeholder="Ej: usuario@ejemplo.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              type="email"
+            />
+          </div>
+          <div>
+            <label
+              className="block text-sm font-medium text-gray-700"
+              htmlFor="password"
+            >
+              Password
+            </label>
+            <PasswordInput
+              className="mt-1"
+              id="password"
+              placeholder="Indica una contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              type="password"
+            />
+          </div>
+          {error && <p className="text-red-500">{error}</p>}
+          <Button
+            className="w-full bg-[#232f3e] hover:bg-[#1e3a8a] text-white"
+            type="submit"
+          >
+            Iniciar sesión
+          </Button>
+        </form>
+        <div className="flex flex-col items-center justify-center mt-4 gap-4">
+          <span className="text-sm text-gray-600">Aun no tienes cuenta ? </span>
+          <Button className="bg-[#f97316] hover:bg-[#ea580c] text-white">
+            Registrarme
+          </Button>
+        </div>
       </div>
-    </form>
+    </div>
   );
 };
 
