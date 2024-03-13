@@ -25,6 +25,7 @@ import { UserProvider } from "./UserContext";
 import MisCursosPage from "./pages/user/Cursos/MisCursosPage";
 import ProfilePage from "./pages/user/Settings/ProfilePage";
 import RequestsPage from "./pages/dashboard/RequestsPage";
+import Inicio from "./pages/user/Home/Inicio";
 
 function App() {
   return (
@@ -34,13 +35,13 @@ function App() {
           <NextUIProvider>
             <div className="App">
               <Routes>
+                <Route element={<Inicio />} path="/"></Route>
                 <Route element={<DashboardLayout />} path="dashboard/">
                   {/* La ruta a continuación es index, por lo que coge el mismo pat que el padre */}
                   <Route index element={<CursosPage />} />
                   <Route path="cursos" element={<CursosPage />} />
                   <Route path="cursos/:id" element={<CursoPage />} />
                   {<Route path="modulo/:moduleId" element={<ModuloPage />} />}
-                  {/* {<Route path="editor" element={<TextEditor />} />} */}
                   <Route path="preguntes-diaries" element={<QuestionsPage />} />
                   <Route path="solicitudes" element={<RequestsPage />} />
 

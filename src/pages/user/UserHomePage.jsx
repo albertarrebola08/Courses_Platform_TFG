@@ -5,7 +5,13 @@ import UserHeader from "./Home/UserHeader";
 import { UserContext } from "../../UserContext";
 import AllCursos from "../../components/Cursos/AllCursos";
 import { Button } from "pol-ui";
-import { RiUser3Fill } from "react-icons/ri";
+
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+} from "@nextui-org/react";
 
 function UserHomePage() {
   const { user, perfilInfo } = useContext(UserContext);
@@ -15,22 +21,26 @@ function UserHomePage() {
       <section className="flex h-full overflow-y-auto gap-4">
         <div className="bg-primary-50 w-fit shadow-md"></div>
         <div className="overflow-y-auto flex-1 mt-4 rounded-lg px-4 pb-8">
-          <div className="my-3">
-            <h3 className="text-2xl">
-              {perfilInfo &&
-                perfilInfo.nombre &&
-                perfilInfo.apellidos &&
-                `${perfilInfo.nombre} ${perfilInfo.apellidos}`}
-            </h3>
+          <div className="">
+            <Navbar>
+              <NavbarBrand>
+                <img src="/images/logo-rispot.png" alt="" />
+              </NavbarBrand>
+              <NavbarContent justify="end">
+                <NavbarItem>
+                  <Button className="bg-[#ff9900]" href="/login">
+                    Empezar
+                  </Button>
+                </NavbarItem>
+                <NavbarItem>
+                  <Button className="bg-[#232f3e]" href="/register">
+                    Registrarme
+                  </Button>
+                </NavbarItem>
+              </NavbarContent>
+            </Navbar>
           </div>
-          <hr />
-
-          <h3 className="text-xl ">Oferta de cursos</h3>
           <AllCursos></AllCursos>
-
-          <Button href="/mis-cursos" color="success" className="w-fit">
-            <RiUser3Fill/> Els meus cursos
-          </Button>
         </div>
       </section>
     </div>

@@ -50,7 +50,7 @@ const LoginPage = () => {
                 navigate("/dashboard/cursos");
               } else {
                 console.log(profiles.nombre, profiles.rol);
-                navigate("/home");
+                navigate("/mis-cursos");
               }
             }
           }
