@@ -35,6 +35,7 @@ const CardsAllCursos = ({ cursos }) => {
 const CardCurso = ({ nombre, descripcion, id, imagen }) => {
   const { user } = useContext(UserContext);
   const handleSolicitarCurso = async (id) => {
+    // navegar a login 
     try {
       const { data, error } = await supabase
         .from("curso_usuario")

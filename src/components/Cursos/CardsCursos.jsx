@@ -20,6 +20,7 @@ const CardsCursos = ({ cursos, onDelete }) => {
           id={curso.curso_id}
           handleEditCurso={handleEditCurso}
           handleDeleteCurso={onDelete}
+          imagen={curso.imagen}
         />
       ))}
     </div>
@@ -32,16 +33,11 @@ const CardCurso = ({
   id,
   handleEditCurso,
   handleDeleteCurso,
+  imagen,
 }) => {
   const { perfilInfo } = useContext(UserContext);
-  const [isHovered, setIsHovered] = useState(false);
-  const location = useLocation();
   return (
-    <Card
-      className="py-4 relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <Card className="py-4 relative group">
       <Link
         to={
           perfilInfo && perfilInfo.rol === "admin"
@@ -52,15 +48,15 @@ const CardCurso = ({
         <CardHeader className="pb-0 pt-2 px-4 flex-col items-start relative">
           <div className="flex items-center">
             <h4 className="font-bold text-large">{nombre}</h4>
-            {perfilInfo && perfilInfo.rol === "admin" && isHovered && (
+            {perfilInfo && perfilInfo.rol === "admin" && (
               <>
                 <RiEdit2Line
-                  className="text-brown-500 cursor-pointer ml-2"
+                  className="text-brown-500 cursor-pointer ml-2 opacity-0 group-hover:opacity-100"
                   onClick={() => handleEditCurso(id)}
                   title="Editar"
                 />
                 <RiDeleteBin2Line
-                  className="text-red-500 cursor-pointer ml-2"
+                  className="text-red-500 cursor-pointer ml-2 opacity-0 group-hover:opacity-100"
                   onClick={() => handleDeleteCurso(id, nombre)}
                   title="Eliminar"
                 />
@@ -73,24 +69,9 @@ const CardCurso = ({
           <Image
             alt="Curso Image"
             className="object-cover rounded-xl"
-            src="/images/amazon_course_imagen_prueba.jpg"
+            src={imagen}
             width={270}
           />
-          {console.log("perfil!!!", perfilInfo && perfilInfo.rol)}
-
-          {perfilInfo &&
-            (perfilInfo.rol === "usuario") !==
-              location.pathname.includes("mis-cursos") && (
-              <div className="p-4 flex justify-center">
-                <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={() => handleSolicitarCurso(id)}
-                >
-                  Solicitar Curso
-                </Button>
-              </div>
-            )}
         </CardBody>
       </Link>
     </Card>

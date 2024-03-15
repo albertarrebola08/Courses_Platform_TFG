@@ -24,8 +24,8 @@ const SidebarDefault = ({ isAdmin }) => {
   return (
     <Sidebar
       className="bg-primary-50 "
-      collapsed={!openMenu}
-      toggle={toggleMenu}
+      open={!openMenu}
+      onOpenChange={toggleMenu}
     >
       <SidebarItem
         className="bg-white-600 hover:bg-primary-200"
@@ -44,7 +44,7 @@ const SidebarDefault = ({ isAdmin }) => {
             Preguntes diaries
           </SidebarItem>
 
-          <SidebarCollapse icon={RiFolderKeyholeFill} label="Repositori">
+          <SidebarCollapse icon={RiFolderKeyholeFill} badge="Repositori">
             <SidebarItem icon={RiVideoFill} href="#">
               Videos
             </SidebarItem>
@@ -58,7 +58,7 @@ const SidebarDefault = ({ isAdmin }) => {
             <SidebarItem icon={RiFileEditFill} href="#">
               Exàmens
             </SidebarItem>
-            <SidebarCollapse label="Activitats" href="#" className="">
+            <SidebarCollapse badge="Activitats" href="#" className="">
               <SidebarItem icon={RiListCheck3} href="#">
                 Quizs
               </SidebarItem>

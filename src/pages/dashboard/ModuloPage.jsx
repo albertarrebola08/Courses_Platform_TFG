@@ -142,8 +142,8 @@ const ModuloPage = () => {
     <main>
       <FormAddElement />
 
-      <div className="flex gap-4 1-fr flex-wrap">
-        <TablaModulo className="1-fr flex" />
+      <div className="grid lg:grid-cols-[60%,40%] gap-4 pr-4">
+        <TablaModulo className="flex " />
         <div className="bg-white rounded-lg p-5">
           {!isEditingName ? (
             <span className="flex gap-2 items-center">

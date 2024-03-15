@@ -1,7 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import UserHeader from "../Home/UserHeader";
-import { IconButton, Input } from "pol-ui";
-import { RiBookOpenFill, RiFileEditFill, RiListCheck3, RiVideoFill } from "react-icons/ri";
+import { Button, IconButton, Input } from "pol-ui";
+import {
+  RiBookOpenFill,
+  RiFileEditFill,
+  RiListCheck3,
+  RiVideoFill,
+} from "react-icons/ri";
 import { UserContext } from "../../../UserContext";
 import { supabase } from "../../../supabase/supabaseClient";
 import { useParams } from "react-router-dom";
@@ -11,14 +16,14 @@ import { LuDices } from "react-icons/lu";
 const MicursoPage = () => {
   const { user, perfilInfo } = useContext(UserContext);
   const [detalleCurso, setDetalleCurso] = useState(null);
-  const [selectedItem, setSelectedItem] = useState(null);
   const [courseElements, setCourseElements] = useState([]);
   const { id } = useParams();
+  const [progreso, setProgreso] = useState(null);
+  const [usuarioEnCursoData, setUsuarioEnCursoData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Obtener información del curso del usuario
         const { data: cursoData, error: cursoError } = await supabase.rpc(
           "obtener_cursos_usuario",
           {
@@ -29,16 +34,15 @@ const MicursoPage = () => {
         if (cursoError) {
           throw cursoError;
         } else {
-          // Filtrar el curso específico por su ID
           const cursoConcreto = cursoData.filter(
             (curso) => curso.curso_id === Number(id)
           );
           setDetalleCurso(cursoConcreto);
-
-          // Obtener elementos del curso
+          progress();
+          fetchUsuarioCursoData();
           const { data: elementosData, error: elementosError } =
             await supabase.rpc("obtener_elementos_curso", {
-              curso_id_param: 51,
+              curso_id_param: Number(id),
             });
 
           if (elementosError) {
@@ -53,7 +57,75 @@ const MicursoPage = () => {
     };
 
     fetchData();
-  }, [id, user.id]);
+  }, []);
+
+  const handleElementClick = async (elementId, tipo) => {
+    console.log(user.id, elementId, tipo);
+  };
+
+  const handleItemCompleted = async (elementoId) => {
+    try {
+      const { data: updatedRegistro, error } = await supabase
+        .from("usuario_en_curso")
+        .update({ estado: true })
+        .eq("usuario_id", user.id)
+        .eq("curso_id", id)
+        .eq("elemento_id", elementoId);
+
+      if (error) {
+        throw error;
+      }
+
+      // Actualizar el estado local después de la actualización en la base de datos
+      const updatedData = usuarioEnCursoData.map((item) =>
+        item.elemento_id === elementoId ? { ...item, estado: true } : item
+      );
+      setUsuarioEnCursoData(updatedData);
+    } catch (error) {
+      console.error(
+        "Error al marcar el elemento como completado:",
+        error.message
+      );
+    }
+  };
+
+  const fetchUsuarioCursoData = async () => {
+    try {
+      const { data: usuarioEnCursoData, error } = await supabase
+        .from("usuario_en_curso")
+        .select("*")
+        .eq("usuario_id", user.id)
+        .eq("curso_id", id);
+
+      if (error) {
+        throw error;
+      }
+      setUsuarioEnCursoData(usuarioEnCursoData);
+    } catch (error) {
+      console.error(
+        "Error al obtener datos de usuario_en_curso:",
+        error.message
+      );
+      throw error;
+    }
+  };
+
+  const progress = async () => {
+    try {
+      let { data, error } = await supabase.rpc("calcula_progreso_curso", {
+        cursoid: id,
+        usuarioid: user.id,
+      });
+      if (error) {
+        console.log(error);
+      } else {
+        const porcentajeProgreso = data[0].progreso;
+        setProgreso(porcentajeProgreso);
+      }
+    } catch {
+      console.log("error con supabase ");
+    }
+  };
 
   return (
     <main className="bg-white ">
@@ -68,7 +140,8 @@ const MicursoPage = () => {
             </div>
             <div className="bg-[#232f3e] rounded-lg p-4 flex flex-col items-center">
               <h3>MI PROGRESO</h3>
-              <img width="60%" src="/images/progress-circle.png" alt="" />
+              {/* <img width="60%" src="/images/progress-circle.png" alt="" /> */}
+              <div className="w-34 h-34 text-white">{progreso}%</div>
             </div>
             <div className="bg-[#232f3e] rounded-lg p-4">
               <h3>PREGUNTA DIARIA</h3>
@@ -99,7 +172,7 @@ const MicursoPage = () => {
                 </div>
               </div>
             </div>
-          </div>{" "}
+          </div>
         </section>
         <section className="info-progress rounded-lg bg-[#f8f8f8] shadow-lg">
           <div className="fix-header rounded-xl shadow-md p-4 ">
@@ -109,7 +182,6 @@ const MicursoPage = () => {
           </div>
           <div className="grid grid-cols-5 px-5 z-10 overflow-y-auto max-h-[70vh]">
             <div className="col-span-1 bg-gray-900 flex items-center gap-6 flex-col">
-              {/* Aquí el cuadrado */}
               <img
                 className={`selected-square w-[50px] h-[100px]`}
                 src="/images/furgo_rispot.png"
@@ -126,23 +198,59 @@ const MicursoPage = () => {
                       {modulo.nombre_modulo}
                     </h2>
                     <ul>
-                      {modulo.elementos.map((elemento, index) => (
-                        <li
-                          key={index}
-                          id={`item-${index}`}
-                          className="mx-3 my-2 p-4 rounded-lg flex items-center gap-4 text-[#232f3e] border border-gray-300 shadow-md cursor-pointer"
-                        >
-                          <IconButton className="bg-gray-300">
-                            {elemento.tipo === "video" && <RiVideoFill />}
-                            {elemento.tipo === "acciona" && <MdBackHand />}
-                            {elemento.tipo === "examen" && <RiFileEditFill />}
-                            {elemento.tipo === "quiz" && <RiListCheck3 />}
-                            {elemento.tipo === "numeral" && <LuDices />}
-                            {elemento.tipo === "material" && <RiBookOpenFill />}
-                          </IconButton>
-                          <span>{elemento.titulo}</span>
-                        </li>
-                      ))}
+                      {modulo.elementos.map((elemento, index) => {
+                        const usuarioEnCursoElemento = usuarioEnCursoData.find(
+                          (el) =>
+                            el.elemento_id === elemento.id &&
+                            el.usuario_id === user.id &&
+                            el.curso_id === Number(id)
+                        );
+
+                        const elementoCompletado = usuarioEnCursoElemento
+                          ? usuarioEnCursoElemento.estado
+                          : false;
+
+                        return (
+                          <li
+                            key={index}
+                            id={`item-${index}`}
+                            className="mx-3 my-2 p-4 rounded-lg flex items-center justify-between gap-4 text-[#232f3e] border border-gray-300 shadow-md "
+                            onClick={() =>
+                              handleElementClick(elemento.id, elemento.tipo)
+                            }
+                          >
+                            <div className="flex items-center gap-4">
+                              <IconButton className="bg-gray-300">
+                                {elemento.tipo === "video" && <RiVideoFill />}
+                                {elemento.tipo === "acciona" && <MdBackHand />}
+                                {elemento.tipo === "examen" && (
+                                  <RiFileEditFill />
+                                )}
+                                {elemento.tipo === "quiz" && <RiListCheck3 />}
+                                {elemento.tipo === "numeral" && <LuDices />}
+                                {elemento.tipo === "material" && (
+                                  <RiBookOpenFill />
+                                )}
+                              </IconButton>
+                              <span className="flex-shrink-0">
+                                {elemento.titulo}
+                              </span>
+                            </div>
+                            <Button
+                              onClick={() => handleItemCompleted(elemento.id)}
+                              className={`${
+                                elementoCompletado
+                                  ? "bg-green-500"
+                                  : "bg-blue-500"
+                              } text-white`}
+                            >
+                              {elementoCompletado
+                                ? "Completado"
+                                : "Marcar como terminado"}
+                            </Button>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 ))}
