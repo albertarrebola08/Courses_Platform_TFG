@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { Toaster, toast, Button } from "pol-ui";
 import { supabase } from "../../supabase/supabaseClient";
 import { UserContext } from "../../UserContext";
+import { useNavigate } from "react-router-dom";
 
 const CardsAllCursos = ({ cursos }) => {
   return (
@@ -34,7 +35,8 @@ const CardsAllCursos = ({ cursos }) => {
 
 const CardCurso = ({ nombre, descripcion, id, imagen }) => {
   const { user } = useContext(UserContext);
-  const [userRequested, setUserRequested] = useState(false);
+  const [userRequested, setUserRequested] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserRequest = async () => {
@@ -62,6 +64,12 @@ const CardCurso = ({ nombre, descripcion, id, imagen }) => {
 
   const handleSolicitarCurso = async () => {
     try {
+      // Verificar si el usuario está autenticado
+      if (!user) {
+        // Si no hay usuario autenticado, redirigir al usuario a la página de inicio de sesión
+        navigate("/login");
+        return;
+      }
       // Verificar si ya existe una solicitud para este usuario y curso
       const { data } = await supabase
         .from("curso_usuario")
@@ -81,7 +89,7 @@ const CardCurso = ({ nombre, descripcion, id, imagen }) => {
         // Insertar la solicitud en la base de datos
         const { error: insertError } = await supabase
           .from("curso_usuario")
-          .insert([{ curso_id: id, usuario_id: user.id, solicitud: true }]);
+          .insert([{ curso_id: id, usuario_id: user.id, solicitud: false }]);
 
         if (insertError) {
           console.error("Error al insertar datos:", insertError.message);
@@ -145,10 +153,12 @@ const CardCurso = ({ nombre, descripcion, id, imagen }) => {
         <Button
           onClick={handleSolicitarCurso}
           className={`text-white ${
-            userRequested ? "bg-[#ff9900] " : "bg-[#232f3e] hover:bg-[#ff9900]"
+            userRequested !== null
+              ? "bg-[#ff9900] "
+              : "bg-[#232f3e] hover:bg-[#ff9900]"
           }`}
         >
-          {userRequested ? "Solicitado" : "Solicitar Curso"}
+          {userRequested !== null ? "Solicitado" : "Solicitar Curso"}
         </Button>
       </div>
       <Toaster />
