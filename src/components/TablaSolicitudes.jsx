@@ -121,12 +121,27 @@ function TablaSolicitudes() {
           // Añadir el estado de solicitud aceptada
           request.solicitud = true;
           console.log(request);
-          // Llamar a la función de inserción mediante RPC
-          await supabase.rpc("insertar_elementos_curso_usuario", {
-            curso_id_param: request.curso_id,
-            usuario_id: request.usuario_id,
-          });
-          console.log(`Solicitud aceptada: ${requestId}`);
+          // Verificar si ya existe una solicitud para este usuario y curso
+          const existingRequest = await supabase
+            .from("curso_usuario")
+            .select("*")
+            .eq("curso_id", request.curso_id)
+            .eq("usuario_id", request.usuario_id)
+            .eq("solicitud", true)
+            .single();
+
+          if (existingRequest) {
+            console.log("Ya existe una solicitud para este usuario y curso.");
+            // Aquí puedes manejar la lógica para notificar al usuario de que ya existe una solicitud
+            return request;
+          } else {
+            // Llamar a la función de inserción mediante RPC
+            await supabase.rpc("insertar_elementos_curso_usuario", {
+              curso_id_param: request.curso_id,
+              usuario_id: request.usuario_id,
+            });
+            console.log(`Solicitud aceptada: ${requestId}`);
+          }
         }
         return request;
       });

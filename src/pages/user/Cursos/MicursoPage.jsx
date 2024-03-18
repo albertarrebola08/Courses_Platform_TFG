@@ -8,18 +8,21 @@ import {
   RiVideoFill,
 } from "react-icons/ri";
 import { UserContext } from "../../../UserContext";
+import { GlobalContext } from "../../../GlobalContext";
 import { supabase } from "../../../supabase/supabaseClient";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { MdBackHand } from "react-icons/md";
 import { LuDices } from "react-icons/lu";
 
 const MicursoPage = () => {
-  const { user, perfilInfo } = useContext(UserContext);
+  const { user } = useContext(UserContext);
+  const { progressPercent, setProgressPercent } = useContext(GlobalContext);
+
   const [detalleCurso, setDetalleCurso] = useState(null);
   const [courseElements, setCourseElements] = useState([]);
-  const { id } = useParams();
-  const [progreso, setProgreso] = useState(null);
+  const { id, tipo, elementoId } = useParams();
   const [usuarioEnCursoData, setUsuarioEnCursoData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,8 +62,22 @@ const MicursoPage = () => {
     fetchData();
   }, []);
 
+  // Renderiza el componente correspondiente según el tipo de elemento
+  const renderElementComponent = () => {
+    switch (tipo) {
+      case "video":
+        return <UserVideoPage elementoId={elementoId} />;
+      case "material":
+        return <UserAccionaPage elementoId={elementoId} />;
+      // Agrega más casos según sea necesario para otros tipos de elementos
+      default:
+        return null;
+    }
+  };
+
   const handleElementClick = async (elementId, tipo) => {
     console.log(user.id, elementId, tipo);
+    navigate(`/mis-cursos/${id}/${tipo}/${elementId}`);
   };
 
   const handleItemCompleted = async (elementoId) => {
@@ -81,6 +98,8 @@ const MicursoPage = () => {
         item.elemento_id === elementoId ? { ...item, estado: true } : item
       );
       setUsuarioEnCursoData(updatedData);
+      progress();
+      console.log("progreso function llamada");
     } catch (error) {
       console.error(
         "Error al marcar el elemento como completado:",
@@ -120,7 +139,7 @@ const MicursoPage = () => {
         console.log(error);
       } else {
         const porcentajeProgreso = data[0].progreso;
-        setProgreso(porcentajeProgreso);
+        setProgressPercent(porcentajeProgreso);
       }
     } catch {
       console.log("error con supabase ");
@@ -141,7 +160,7 @@ const MicursoPage = () => {
             <div className="bg-[#232f3e] rounded-lg p-4 flex flex-col items-center">
               <h3>MI PROGRESO</h3>
               {/* <img width="60%" src="/images/progress-circle.png" alt="" /> */}
-              <div className="w-34 h-34 text-white">{progreso}%</div>
+              <div className="w-34 h-34 text-white">{progressPercent}%</div>
             </div>
             <div className="bg-[#232f3e] rounded-lg p-4">
               <h3>PREGUNTA DIARIA</h3>
@@ -174,6 +193,7 @@ const MicursoPage = () => {
             </div>
           </div>
         </section>
+
         <section className="info-progress rounded-lg bg-[#f8f8f8] shadow-lg">
           <div className="fix-header rounded-xl shadow-md p-4 ">
             <h2 className="text-lg font-bold">

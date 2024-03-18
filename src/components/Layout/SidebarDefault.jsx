@@ -23,7 +23,7 @@ const SidebarDefault = ({ isAdmin }) => {
 
   return (
     <Sidebar
-      className="bg-primary-50 "
+      className="bg-primary-50"
       open={!openMenu}
       onOpenChange={toggleMenu}
     >

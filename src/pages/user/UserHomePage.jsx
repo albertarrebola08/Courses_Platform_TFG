@@ -4,14 +4,9 @@ import UserHeader from "./Home/UserHeader";
 //contexto con info del perfil y del user actual
 import { UserContext } from "../../UserContext";
 import AllCursos from "../../components/Cursos/AllCursos";
-import { Button } from "pol-ui";
+import { Button, Navbar } from "pol-ui";
 
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-} from "@nextui-org/react";
+
 
 function UserHomePage() {
   const { user, perfilInfo } = useContext(UserContext);
@@ -22,23 +17,32 @@ function UserHomePage() {
         <div className="bg-primary-50 w-fit shadow-md"></div>
         <div className="overflow-y-auto flex-1 mt-4 rounded-lg px-4 pb-8">
           <div className="">
-            <Navbar>
-              <NavbarBrand>
-                <img src="/images/logo-rispot.png" alt="" />
-              </NavbarBrand>
-              <NavbarContent justify="end">
-                <NavbarItem>
+            <Navbar
+              leftContent={
+                <img
+                  src="/images/logo-rispot.png"
+                  alt="Rispot Logo"
+                  className="h-6 sm:h-7"
+                />
+              }
+              rightContent={
+                <div className="flex gap-3">
                   <Button className="bg-[#ff9900]" href="/login">
                     Empezar
                   </Button>
-                </NavbarItem>
-                <NavbarItem>
                   <Button className="bg-[#232f3e]" href="/register">
                     Registrarme
                   </Button>
-                </NavbarItem>
-              </NavbarContent>
-            </Navbar>
+                </div>
+              }
+              links={[
+                { href: "#", label: "Home" },
+                { href: "#", label: "About" },
+                { href: "#", label: "Services" },
+                { href: "#", label: "Pricing" },
+                { href: "#", label: "Contact" },
+              ]}
+            />
           </div>
           <AllCursos></AllCursos>
         </div>

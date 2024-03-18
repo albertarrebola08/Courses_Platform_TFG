@@ -26,6 +26,7 @@ import MisCursosPage from "./pages/user/Cursos/MisCursosPage";
 import ProfilePage from "./pages/user/Settings/ProfilePage";
 import RequestsPage from "./pages/dashboard/RequestsPage";
 import Inicio from "./pages/user/Home/Inicio";
+import UserVideoPage from "./pages/user/UserVideoPage";
 
 function App() {
   return (
@@ -77,7 +78,13 @@ function App() {
                 </Route>
 
                 <Route path="/home" element={<UserHomePage />} />
+
                 <Route path="/mis-cursos/:id" element={<MicursoPage />} />
+                <Route
+                  path="/mis-cursos/:id/:tipo/:elementoId"
+                  element={<MicursoPage />}
+                />
+
                 <Route path="/mis-cursos" element={<MisCursosPage />} />
 
                 <Route path="login" element={<LoginPage />} />

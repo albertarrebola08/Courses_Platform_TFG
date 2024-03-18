@@ -75,7 +75,7 @@ const LoginPage = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="email"
             >
-              Email{" "}
+              Email
               <span className="text-gray-600 text-[12px]">
                 (este será tu usuario de acceso)
               </span>
@@ -105,7 +105,6 @@ const LoginPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              type="password"
             />
           </div>
           {error && <p className="text-red-500">{error}</p>}

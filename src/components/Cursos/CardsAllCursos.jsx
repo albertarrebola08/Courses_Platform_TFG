@@ -1,12 +1,12 @@
-import { useState, useContext } from "react";
-import { Button } from "pol-ui";
+import React, { useState, useContext, useEffect } from "react";
+import { Toaster, toast, Button } from "pol-ui";
 import { supabase } from "../../supabase/supabaseClient";
 import { UserContext } from "../../UserContext";
 
 const CardsAllCursos = ({ cursos }) => {
   return (
-    <div className=" dark:bg-gray-950 py-12 lg:py-24 w-full">
-      <div className=" px-4 space-y-12 lg:space-y-16">
+    <div className="dark:bg-gray-950 py-12 lg:py-24 w-full">
+      <div className="px-4 space-y-12 lg:space-y-16">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold sm:text-4xl md:text-5xl">
             Nuestros cursos
@@ -34,21 +34,79 @@ const CardsAllCursos = ({ cursos }) => {
 
 const CardCurso = ({ nombre, descripcion, id, imagen }) => {
   const { user } = useContext(UserContext);
-  const handleSolicitarCurso = async (id) => {
-    // navegar a login 
-    try {
-      const { data, error } = await supabase
-        .from("curso_usuario")
-        .insert([{ curso_id: id, usuario_id: user.id, solicitud: false }])
-        .select();
+  const [userRequested, setUserRequested] = useState(false);
 
-      if (error) {
-        console.error("Error al insertar datos:", error.message);
+  useEffect(() => {
+    const fetchUserRequest = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("curso_usuario")
+          .select("*")
+          .eq("curso_id", id)
+          .eq("usuario_id", user.id);
+        if (error) {
+          console.error("Error al obtener datos:", error.message);
+        } else {
+          if (data && data.length > 0) {
+            // Si se encontró una solicitud para este curso y usuario, actualiza el estado
+            setUserRequested(data[0].solicitud);
+          }
+        }
+      } catch (error) {
+        console.error("Error al intentar obtener datos:", error.message);
+      }
+    };
+
+    fetchUserRequest(); // Llamar a la función de recuperación de datos al cargar el componente
+  }, [id]); // Ejecutar el efecto cuando id cambie
+
+  const handleSolicitarCurso = async () => {
+    try {
+      // Verificar si ya existe una solicitud para este usuario y curso
+      const { data } = await supabase
+        .from("curso_usuario")
+        .select("*")
+        .eq("curso_id", id)
+        .eq("usuario_id", user.id)
+        .single();
+
+      if (data) {
+        console.log("Ya existe una solicitud para este usuario y curso.");
+        // Mostrar toast de error si ya existe una solicitud
+        toast({
+          title: "Ya existe una solicitud para este usuario y curso.",
+          type: "error",
+        });
       } else {
-        console.log("Datos insertados correctamente:", data);
+        // Insertar la solicitud en la base de datos
+        const { error: insertError } = await supabase
+          .from("curso_usuario")
+          .insert([{ curso_id: id, usuario_id: user.id, solicitud: true }]);
+
+        if (insertError) {
+          console.error("Error al insertar datos:", insertError.message);
+          // Mostrar toast de error si la inserción falló
+          toast({
+            title: "Error al insertar curso. ",
+            type: "error",
+          });
+        } else {
+          console.log("Solicitud insertada correctamente.");
+          // Mostrar toast de éxito si la inserción fue exitosa
+          toast({ title: "Solcitud enviada correctamente", type: "success" });
+
+          // Actualizar el estado para reflejar que el usuario ha solicitado el curso
+          setUserRequested(true);
+        }
       }
     } catch (error) {
-      console.error("Error al intentar insertar datos:", error.message);
+      console.error("Error:", error.message);
+      // Mostrar toast de error si ocurre un error inesperado
+      toast({
+        title: "La solicitud ya existe",
+        message: "Ocurrió un error inesperado.",
+        type: "error",
+      });
     }
   };
 
@@ -85,12 +143,15 @@ const CardCurso = ({ nombre, descripcion, id, imagen }) => {
       </div>
       <div className="flex flex-col justify-end">
         <Button
-          className="text-white bg-[#232f3e] hover:bg-[#ff9900]"
-          onClick={() => handleSolicitarCurso(id)}
+          onClick={handleSolicitarCurso}
+          className={`text-white ${
+            userRequested ? "bg-[#ff9900] " : "bg-[#232f3e] hover:bg-[#ff9900]"
+          }`}
         >
-          Solicitar
+          {userRequested ? "Solicitado" : "Solicitar Curso"}
         </Button>
       </div>
+      <Toaster />
     </div>
   );
 };
