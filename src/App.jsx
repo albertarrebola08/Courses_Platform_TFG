@@ -26,7 +26,6 @@ import MisCursosPage from "./pages/user/Cursos/MisCursosPage";
 import ProfilePage from "./pages/user/Settings/ProfilePage";
 import RequestsPage from "./pages/dashboard/RequestsPage";
 import Inicio from "./pages/user/Home/Inicio";
-import UserVideoPage from "./pages/user/UserVideoPage";
 
 function App() {
   return (

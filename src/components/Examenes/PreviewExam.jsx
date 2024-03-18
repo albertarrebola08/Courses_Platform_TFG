@@ -1,17 +1,13 @@
 import React, { useState } from "react";
 import { IconButton, Checkbox, Input } from "pol-ui";
-import { RiEyeFill, RiEyeCloseFill } from "react-icons/ri";
+
 import { useParams } from "react-router-dom";
 import { supabase } from "../../supabase/supabaseClient";
 
 const PreviewExam = () => {
   const [examen, setExamen] = useState(null);
-  const [previewVisible, setPreviewVisible] = useState(false);
-  const { elementoId } = useParams();
 
-  const handleTogglePreview = () => {
-    setPreviewVisible((prevPreviewVisible) => !prevPreviewVisible);
-  };
+  const { elementoId } = useParams();
 
   const handleFetchExamen = async () => {
     try {
@@ -27,7 +23,6 @@ const PreviewExam = () => {
       } else {
         console.log("Examen obtenido:", data);
         setExamen(data?.desarrollo ?? null);
-        setPreviewVisible(true);
       }
     } catch (error) {
       console.error("Error al obtener el examen:", error.message);
@@ -37,15 +32,9 @@ const PreviewExam = () => {
   return (
     <div className="flex gap-8">
       <div className="flex flex-col">
-        <h1>Vista previa del examen</h1>
-        <IconButton
-          onClick={previewVisible ? handleTogglePreview : handleFetchExamen}
-        >
-          {previewVisible ? <RiEyeCloseFill /> : <RiEyeFill />}
-        </IconButton>
-        {previewVisible && examen && (
-          <div className="rounded-xl flex flex-col gap-5">
-            {examen.preguntas.map((pregunta) => (
+        <div className="rounded-xl flex flex-col gap-5">
+          {examen &&
+            examen.preguntas.map((pregunta) => (
               <div key={pregunta.id} className="flex flex-col">
                 <p>{`${pregunta.id}) ${pregunta.enunciado}`}</p>
                 <img src={pregunta.imagen} className="w-auto" alt="" />
@@ -70,8 +59,7 @@ const PreviewExam = () => {
                 )}
               </div>
             ))}
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

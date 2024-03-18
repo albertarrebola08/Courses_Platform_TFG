@@ -229,7 +229,7 @@ const FormAddElement = () => {
         // Campos específicos para el tipo "quiz"
         const quizData = {
           titulo: "Titulo de quiz por defecto",
-          descripcion: "Descripción de quiz por defecto",
+          enunciado: "Enunciado de quiz por defecto",
           modulo_id: moduleId,
           tipo: selectedValue,
           elemento_id: elementoId,
@@ -267,7 +267,7 @@ const FormAddElement = () => {
         // Campos específicos para el tipo "numeral"
         const numeralData = {
           titulo: "Titulo de actividad numeral por defecto",
-          descripcion: "Descripcion de actividad numeral por defecto",
+          enunciado: "Enunciado de actividad numeral por defecto",
           modulo_id: moduleId,
           tipo: selectedValue,
           elemento_id: elementoId,
@@ -305,7 +305,7 @@ const FormAddElement = () => {
         // Campos específicos para el tipo "camino"
         const caminoData = {
           titulo: "Titulo de actividad camino por defecto",
-          descripcion: "Descripcion de actividad camino por defecto",
+          enunciado: "Enunciado de actividad camino por defecto",
           modulo_id: moduleId,
           tipo: selectedValue,
           elemento_id: elementoId,

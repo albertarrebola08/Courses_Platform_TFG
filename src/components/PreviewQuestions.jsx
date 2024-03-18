@@ -1,17 +1,16 @@
-import React, { useState } from "react";
-import { IconButton, Checkbox, Input } from "pol-ui";
-import { RiEyeFill, RiEyeCloseFill } from "react-icons/ri";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../supabase/supabaseClient";
+import { Checkbox, Input } from "pol-ui";
 
 const PreviewQuestions = ({ contentType }) => {
   const [content, setContent] = useState(null);
-  const [previewVisible, setPreviewVisible] = useState(false);
   const { elementoId } = useParams();
 
-  const handleTogglePreview = () => {
-    setPreviewVisible((prevPreviewVisible) => !prevPreviewVisible);
-  };
+  useEffect(() => {
+    // Llamar a la función para obtener el contenido al montar el componente
+    handleFetchContent();
+  }, []); // Ejecutar el efecto cada vez que cambie el contentType o elementoId
 
   const handleFetchContent = async () => {
     try {
@@ -40,7 +39,6 @@ const PreviewQuestions = ({ contentType }) => {
       } else {
         console.log(`${contentType} obtenido:`, data);
         setContent(data?.desarrollo ?? null);
-        setPreviewVisible(true);
       }
     } catch (error) {
       console.error(`Error al obtener el ${contentType}:`, error.message);
@@ -50,13 +48,7 @@ const PreviewQuestions = ({ contentType }) => {
   return (
     <div className="flex gap-8">
       <div className="flex flex-col">
-        <h1>Vista previa del {contentType}</h1>
-        <IconButton
-          onClick={previewVisible ? handleTogglePreview : handleFetchContent}
-        >
-          {previewVisible ? <RiEyeCloseFill /> : <RiEyeFill />}
-        </IconButton>
-        {previewVisible && content && (
+        {content && (
           <div className="rounded-xl flex flex-col gap-5">
             {content.preguntas.map((pregunta) => (
               <div key={pregunta.id} className="flex flex-col">

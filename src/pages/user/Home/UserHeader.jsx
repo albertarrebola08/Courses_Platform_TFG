@@ -16,10 +16,13 @@ const UserHeader = () => {
     }
   };
 
+  const handleProfileClick = () => {
+    navigate("/mi-perfil");
+  };
+
   return (
-    <div className="py-4 bg-primary-50">
+    <div className="py-5 px-8 bg-primary-50">
       <Navbar
-        className=""
         leftContent={
           <img
             src="/images/logo-rispot.png"
@@ -29,29 +32,45 @@ const UserHeader = () => {
         }
         rightContent={
           <div className="flex gap-3 md:order-2">
-            <Dropdown
-              label="User settings"
-              trigger={
-                <Avatar
-                  alt="User settings"
-                  img={perfilInfo && perfilInfo.avatar}
-                />
-              }
-            >
-              <DropdownItem label="Profile" />
-              <DropdownItem label="Settings" />
-              <DropdownItem label="Logout" onClick={handleLogout}/>
-            </Dropdown>
-
-            {/* <h2>Benvingut {perfilInfo && perfilInfo.nombre}</h2> */}
+            {!user ? (
+              <div className="flex gap-3">
+                <Button className="bg-[#ff9900]" href="/login">
+                  Empezar
+                </Button>
+                <Button className="bg-[#232f3e]" href="/register">
+                  Registrarme
+                </Button>
+              </div>
+            ) : (
+              <Dropdown
+                label="User settings"
+                trigger={
+                  <Avatar
+                    alt="User settings"
+                    img={perfilInfo && perfilInfo.avatar}
+                  />
+                }
+              >
+                <DropdownItem label="Profile" onClick={handleProfileClick} />
+                <DropdownItem label="Settings" />
+                <DropdownItem label="Logout" onClick={handleLogout} />
+              </Dropdown>
+            )}
           </div>
         }
         links={[
-          { href: "#", label: "Home" },
-          { href: "#", label: "About" },
+          { href: "/home", label: "Home" },
+          user
+            ? perfilInfo && perfilInfo.rol === "admin"
+              ? { href: "/dashboard/cursos", label: "Mis cursos" }
+              : { href: "/mis-cursos", label: "Mis cursos" }
+            : { href: "/login", label: "Mis cursos" },
+          { href: "#", label: "Services" },
+          { href: "https://rispot.com/", label: "Nuestra empresa" },
         ]}
       />
     </div>
   );
 };
+
 export default UserHeader;

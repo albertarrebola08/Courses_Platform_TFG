@@ -107,25 +107,51 @@ function TablaSolicitudes() {
   }, []);
 
   // Función para aceptar una solicitud y realizar la inserción de elementos del curso
-  const handleAccept = async (requestId) => {
+  const handleAccept = async (requestId, setRequests, requests) => {
     try {
       // Actualizar la solicitud en la base de datos
       await supabase
         .from("curso_usuario")
         .update({ solicitud: true })
         .eq("id", requestId);
+      // Actualizar el estado de la solicitud para reflejar que ha sido aceptada
+      const updatedRequests = requests.map(async (request) => {
+        if (request.id === requestId) {
+          // Añadir el estado de solicitud aceptada
+          request.solicitud = true;
+          console.log(request);
+          // Llamar a la función de inserción mediante RPC
+          await supabase.rpc("insertar_elementos_curso_usuario", {
+            curso_id_param: request.curso_id,
+            usuario_id: request.usuario_id,
+          });
+          console.log(`Solicitud aceptada: ${requestId}`);
+          // Verificar si ya existe una solicitud para este usuario y curso
+          const existingRequest = await supabase
+            .from("curso_usuario")
+            .select("*")
+            .eq("curso_id", request.curso_id)
+            .eq("usuario_id", request.usuario_id)
+            .eq("solicitud", true)
+            .single();
 
-      // Volver a consultar las solicitudes desde la base de datos
-      const { data: updatedRequests, error } = await supabase
-        .from("curso_usuario")
-        .select("*");
-
-      if (error) {
-        console.error("Error al obtener solicitudes:", error);
-      } else {
-        // Actualizar el estado con las nuevas solicitudes
-        setRequests(updatedRequests);
-      }
+          if (existingRequest) {
+            console.log("Ya existe una solicitud para este usuario y curso.");
+            // Aquí puedes manejar la lógica para notificar al usuario de que ya existe una solicitud
+            return request;
+          } else {
+            // Llamar a la función de inserción mediante RPC
+            await supabase.rpc("insertar_elementos_curso_usuario", {
+              curso_id_param: request.curso_id,
+              usuario_id: request.usuario_id,
+            });
+            console.log(`Solicitud aceptada: ${requestId}`);
+          }
+        }
+        return request;
+      });
+      await Promise.all(updatedRequests);
+      setRequests(updatedRequests);
     } catch (error) {
       console.error("Error al aceptar la solicitud:", error);
     }
