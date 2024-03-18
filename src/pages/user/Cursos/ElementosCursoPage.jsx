@@ -6,6 +6,8 @@ import {
   RiFileEditFill,
   RiListCheck3,
   RiBookOpenFill,
+  RiSearch2Fill,
+  RiSearch2Line,
 } from "react-icons/ri";
 import { MdBackHand } from "react-icons/md";
 import { LuDices } from "react-icons/lu";
@@ -22,9 +24,14 @@ const ElementosCursoPage = ({
   return (
     <section className="info-progress rounded-lg bg-[#f8f8f8] shadow-lg">
       <div className="fix-header rounded-xl shadow-md p-4 ">
-        <h2 className="text-lg font-bold">
-          {detalleCurso && detalleCurso[0].nombre}
-        </h2>
+        <div className="flex gap-2 flex-col">
+          <h2 className="text-lg font-bold">
+            {detalleCurso && detalleCurso[0].nombre}
+          </h2>
+          <a href={`/mis-cursos/${id}`} className="flex items-center gap-1">
+            Ver progreso <RiSearch2Line></RiSearch2Line>
+          </a>
+        </div>
       </div>
       <div className="grid grid-cols-5 px-5 z-10 overflow-y-auto max-h-[70vh]">
         <div className="col-span-1 bg-gray-900 flex items-center gap-6 flex-col">
@@ -61,12 +68,14 @@ const ElementosCursoPage = ({
                         key={index}
                         id={`item-${index}`}
                         className="mx-3 my-2 p-4 rounded-lg flex items-center justify-between gap-4 text-[#232f3e] border border-gray-300 shadow-md "
-                        onClick={() =>
-                          handleElementClick(elemento.id, elemento.tipo)
-                        }
                       >
                         <div className="flex items-center gap-4">
-                          <IconButton className="bg-gray-300">
+                          <IconButton
+                            onClick={() =>
+                              handleElementClick(elemento.id, elemento.tipo)
+                            }
+                            className="bg-gray-300"
+                          >
                             {elemento.tipo === "video" && <RiVideoFill />}
                             {elemento.tipo === "acciona" && <MdBackHand />}
                             {elemento.tipo === "examen" && <RiFileEditFill />}
