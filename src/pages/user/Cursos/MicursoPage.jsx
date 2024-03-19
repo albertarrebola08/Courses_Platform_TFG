@@ -100,12 +100,12 @@ const MicursoPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 grid-rows-2 gap-4 m-3 text-white">
           <div className="bg-[#232f3e] rounded-lg p-4">
             <h3>AHORA MISMO EN:</h3>
-            <div className="">Módulo 2: Introducción al mercado</div>
+            <div className="">Módulo 1</div>
           </div>
           <div className="bg-[#232f3e] rounded-lg p-4 flex flex-col items-center">
             <h3>MI PROGRESO</h3>
 
-            <div className="w-[50%] text-white">
+            <div className="w-[50%] text-white p-4 ">
               <Flat
                 progress={progressPercent}
                 showMiniCircle={false}
