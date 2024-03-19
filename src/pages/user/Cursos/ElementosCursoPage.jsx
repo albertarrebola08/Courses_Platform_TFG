@@ -6,8 +6,8 @@ import {
   RiFileEditFill,
   RiListCheck3,
   RiBookOpenFill,
-  RiSearch2Fill,
   RiSearch2Line,
+  RiMiniProgramFill,
 } from "react-icons/ri";
 import { MdBackHand } from "react-icons/md";
 import { LuDices } from "react-icons/lu";
@@ -28,8 +28,12 @@ const ElementosCursoPage = ({
           <h2 className="text-lg font-bold">
             {detalleCurso && detalleCurso[0].nombre}
           </h2>
-          <a href={`/mis-cursos/${id}`} className="flex items-center gap-1">
-            Ver progreso <RiSearch2Line></RiSearch2Line>
+
+          <a
+            href={`/mis-cursos/${id}`}
+            className="flex items-center gap-1 w-fit hover:underline hover:text-gray-500"
+          >
+            Ver progreso
           </a>
         </div>
       </div>
@@ -90,7 +94,9 @@ const ElementosCursoPage = ({
                         <Button
                           onClick={() => handleItemCompleted(elemento.id)}
                           className={`${
-                            elementoCompletado ? "bg-green-500" : "bg-blue-500"
+                            elementoCompletado
+                              ? "bg-success-700"
+                              : "bg-[#232f3e]"
                           } text-white`}
                         >
                           {elementoCompletado

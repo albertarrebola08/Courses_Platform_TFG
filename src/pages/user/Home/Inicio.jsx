@@ -16,7 +16,7 @@ const Inicio = () => {
         <div className="w-1/2 flex flex-col justify-center gap-6 p-24 ">
           <div className="space-y-8 ">
             <h1 className="text-7xl font-bold">
-              Plataforma per cursos <br /> interactius
+              Plataforma para cursos <br /> interactivos
             </h1>
             <p className="text-gray-500 text-xl">
               Aquí aprenderás lo fundamental sobre el negocio de Amazon de una

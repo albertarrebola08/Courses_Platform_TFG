@@ -12,6 +12,7 @@
     "start:ide": "npm i && npm run dev"
   },
   "dependencies": {
+    "@alptugidin/react-circular-progress-bar": "^1.1.2",
     "@nextui-org/react": "^2.2.9",
     "@supabase/supabase-js": "^2.38.1",
     "framer-motion": "^10.16.4",

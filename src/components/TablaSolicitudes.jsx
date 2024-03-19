@@ -2,6 +2,7 @@ import { IconButton, Table } from "pol-ui";
 import React, { useEffect, useState } from "react";
 import { supabase } from "../supabase/supabaseClient";
 import {
+  RiBluetoothConnectFill,
   RiCheckFill,
   RiCloseFill,
   RiDeleteBinFill,
@@ -109,93 +110,107 @@ function TablaSolicitudes() {
   // Función para aceptar una solicitud y realizar la inserción de elementos del curso
   const handleAccept = async (requestId, setRequests, requests) => {
     try {
-      // Actualizar la solicitud en la base de datos
-      await supabase
-        .from("curso_usuario")
-        .update({ solicitud: true })
-        .eq("id", requestId);
-      // Actualizar el estado de la solicitud para reflejar que ha sido aceptada
-      const updatedRequests = requests.map(async (request) => {
-        if (request.id === requestId) {
-          // Añadir el estado de solicitud aceptada
-          request.solicitud = true;
-          console.log(request);
-          // Llamar a la función de inserción mediante RPC
-          await supabase.rpc("insertar_elementos_curso_usuario", {
-            curso_id_param: request.curso_id,
-            usuario_id: request.usuario_id,
-          });
-          console.log(`Solicitud aceptada: ${requestId}`);
-          // Verificar si ya existe una solicitud para este usuario y curso
-          const existingRequest = await supabase
-            .from("curso_usuario")
-            .select("*")
-            .eq("curso_id", request.curso_id)
-            .eq("usuario_id", request.usuario_id)
-            .eq("solicitud", true)
-            .single();
+      // Hacer una copia local del estado antes de modificarlo
+      const updatedRequests = [...requests];
 
-          if (existingRequest) {
-            console.log("Ya existe una solicitud para este usuario y curso.");
-            // Aquí puedes manejar la lógica para notificar al usuario de que ya existe una solicitud
-            return request;
-          } else {
-            // Llamar a la función de inserción mediante RPC
+      // Realizar las operaciones asíncronas para aceptar la solicitud y actualizar la base de datos
+      await Promise.all(
+        updatedRequests.map(async (request) => {
+          if (request.id === requestId) {
+            request.solicitud = true;
+            console.log(request);
+
+            // Actualizar la base de datos
+            await supabase
+              .from("curso_usuario")
+              .update({ solicitud: true })
+              .eq("id", requestId);
+
+            // Insertar elementos mediante RPC
             await supabase.rpc("insertar_elementos_curso_usuario", {
               curso_id_param: request.curso_id,
               usuario_id: request.usuario_id,
             });
+
             console.log(`Solicitud aceptada: ${requestId}`);
           }
-        }
-        return request;
-      });
-      await Promise.all(updatedRequests);
+        })
+      );
+
+      // Actualizar el estado una vez que se completen todas las operaciones asíncronas
       setRequests(updatedRequests);
     } catch (error) {
       console.error("Error al aceptar la solicitud:", error);
     }
   };
 
-  // // Función para bloquear a un usuario en un curso (poner a false)
-  // const handleBlock = async (requestId, setRequests, requests) => {
-  //   try {
-  //     // Actualizar la solicitud en la base de datos
-  //     await supabase
-  //       .from("curso_usuario")
-  //       .update({ solicitud: false })
-  //       .eq("id", requestId);
-
-  //     // Actualizar el estado de la solicitud para reflejar que ha sido aceptada
-  //     const updatedRequests = requests.map((request) =>
-  //       request.id === requestId ? { ...request, solicitud: false } : request
-  //     );
-
-  //     setRequests(updatedRequests);
-
-  //     console.log(`acceso bloqueado: ${requestId}`);
-  //   } catch (error) {
-  //     console.error("Error al bloquear acceso:", error);
-  //   }
-  // };
-
-  // Función para eliminar solicitud
-  const handleDelete = async (requestId) => {
+  // Función para bloquear a un usuario en un curso (poner a false)
+  const handleBlock = async (requestId, setRequests, requests) => {
     try {
       // Actualizar la solicitud en la base de datos
-      await supabase.from("curso_usuario").delete().eq("id", requestId);
+      await supabase
+        .from("curso_usuario")
+        .update({ solicitud: false })
+        .eq("id", requestId);
 
-      console.log(`solicitud eliminada: ${requestId}`);
+      // Actualizar el estado de la solicitud para reflejar que ha sido aceptada
+      const updatedRequests = requests.map((request) =>
+        request.id === requestId ? { ...request, solicitud: false } : request
+      );
+
+      setRequests(updatedRequests);
+
+      console.log(`acceso bloqueado: ${requestId}`);
+    } catch (error) {
+      console.error("Error al bloquear acceso:", error);
+    }
+  };
+
+  // Función para eliminar solicitud
+
+  const handleDelete = async (requestId) => {
+    try {
+      // Obtener la solicitud para obtener el usuario y el curso
+      const request = await supabase
+        .from("curso_usuario")
+        .select("usuario_id, curso_id")
+        .eq("id", requestId)
+        .single();
+      console.log(request.data);
+      if (
+        request &&
+        request.data.usuario_id !== undefined &&
+        request.data.curso_id !== undefined
+      ) {
+        // Eliminar la solicitud de la tabla "curso_usuario"
+        await supabase.from("curso_usuario").delete().eq("id", requestId);
+
+        console.log(`Solicitud eliminada: ${requestId}`);
+
+        // Eliminar registros de la tabla "usuario_en_curso" donde coincida el usuario y el curso
+        await supabase
+          .from("usuario_en_curso")
+          .delete()
+          .eq("usuario_id", request.data.usuario_id)
+          .eq("curso_id", request.data.curso_id);
+
+        console.log(
+          `Registros de usuario_en_curso eliminados para usuario ${request.data.usuario_id} y curso ${request.data.curso_id}`
+        );
+      } else {
+        console.log(
+          `No se encontró la solicitud con el ID: ${requestId} o los valores de usuario_id y curso_id son undefined`
+        );
+      }
     } catch (error) {
       console.error("Error al eliminar la solicitud:", error);
     }
   };
-
   return (
     <div>
       <Table striped="true" hoverable="true" hasShadow="true">
         <Table.Head>
-          <Table.HeadCell>Fecha de acceso</Table.HeadCell>
+          <Table.HeadCell>Fecha de solicitud</Table.HeadCell>
           <Table.HeadCell>Usuario</Table.HeadCell>
           <Table.HeadCell>Curso</Table.HeadCell>
           <Table.HeadCell>Acceso</Table.HeadCell>
@@ -234,6 +249,15 @@ function TablaSolicitudes() {
                     onClick={() => handleDelete(request.id)}
                   >
                     <RiDeleteBinFill />
+                  </IconButton>
+                  {/* Botón para bloquear */}
+                  <IconButton
+                    title="Bloquear acceso al curso"
+                    onClick={() =>
+                      handleBlock(request.id, setRequests, requests)
+                    }
+                  >
+                    <RiForbid2Fill />
                   </IconButton>
                 </div>
               </Table.Cell>

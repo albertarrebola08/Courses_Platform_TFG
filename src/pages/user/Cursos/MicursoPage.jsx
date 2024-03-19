@@ -17,6 +17,7 @@ import UserNumeral from "../UserNumeral";
 import { RiArrowLeftDoubleFill, RiArrowRightDoubleFill } from "react-icons/ri";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { Flat } from "@alptugidin/react-circular-progress-bar";
 
 const MicursoPage = () => {
   const { user } = useContext(UserContext);
@@ -105,39 +106,15 @@ const MicursoPage = () => {
             <h3>MI PROGRESO</h3>
 
             <div className="w-[50%] text-white">
-              <CircularProgressbar
-                className="p-4"
-                value={progressPercent}
-                text={`${progressPercent}%`}
-                styles={{
-                  // Customize the root svg element
-                  root: {},
-                  // Customize the path, i.e. the "completed progress"
-                  path: {
-                    // Path color
-                    stroke: `rgba(255, 153, 0, 1, ${progressPercent / 100})`,
-
-                    transition: "stroke-dashoffset 0.5s ease 0s",
-                    // Rotate the path
-                    transform: "rotate(0.25turn)",
-                    transformOrigin: "center center",
-                  },
-                  // Customize the circle behind the path, i.e. the "total progress"
-                  trail: {
-                    // Trail color
-                    stroke: "#d6d6d6",
-
-                    // Rotate the trail
-                    transform: "rotate(0.25turn)",
-                    transformOrigin: "center center",
-                  },
-                  // Customize the text
-                  text: {
-                    // Text color
-                    fill: "#ff9900",
-                    // Text size
-                    fontSize: "16px",
-                  },
+              <Flat
+                progress={progressPercent}
+                showMiniCircle={false}
+                sx={{
+                  strokeColor: "#ff9900",
+                  barWidth: 8,
+                  valueColor: "#ff9900",
+                  valueFamily: "Helvetica",
+                  textColor: "#d8cfcf",
                 }}
               />
             </div>
