@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Button, IconButton, Input } from "pol-ui";
+import { Button, FileInput, IconButton, Input } from "pol-ui";
 import { UserContext } from "../../../UserContext";
 import { supabase } from "../../../supabase/supabaseClient";
 import { MdAdminPanelSettings } from "react-icons/md";
@@ -59,15 +59,15 @@ const ProfilePage = () => {
   return (
     <div className="">
       <UserHeader></UserHeader>
-      <div className="p-8">
-        <h1 className="my-4">Profile Page</h1>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-[50%]">
+      <div className="p-12 items-center bg-primary-50 rounded-lg shadow-lg m-8">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <Input
             label="Nombre:"
             type="text"
             name="nombre"
             value={formData.nombre}
             onChange={handleChange}
+            className="mb-3 w-1/2"
           />
           <Input
             label="Apellidos:"
@@ -75,6 +75,7 @@ const ProfilePage = () => {
             name="apellidos"
             value={formData.apellidos}
             onChange={handleChange}
+            className="mb-3 w-1/2"
           />
           <Input
             label="Teléfono:"
@@ -82,18 +83,25 @@ const ProfilePage = () => {
             name="telefono"
             value={formData.telefono}
             onChange={handleChange}
+            className="mb-3 w-1/2"
           />
-          <Input
-            label="Avatar:"
-            type="text"
-            name="avatar"
-            value={formData.avatar}
-            onChange={handleChange}
+
+          <FileInput
+            name="file"
+            color="secondary"
+            className="mb-3 w-1/2"
+            label="Avatar"
           />
           {perfilInfo && perfilInfo.rol === "admin" && (
-            <IconButton onClick={() => setShowRolInput(true)}>
-              <MdAdminPanelSettings />
-            </IconButton>
+            <div className="flex items-center gap-2">
+              <IconButton
+                onClick={() => setShowRolInput(true)}
+                className="text-blue-500"
+              >
+                <MdAdminPanelSettings className="w-6 h-6" />
+              </IconButton>
+              <span className="text-sm text-gray-500">Cambiar rol</span>
+            </div>
           )}
 
           {showRolInput && (
@@ -103,10 +111,16 @@ const ProfilePage = () => {
               name="rol"
               value={formData.rol}
               onChange={handleChange}
+              className="mb-3"
             />
           )}
 
-          <Button type="submit">Guardar cambios</Button>
+          <Button
+            type="submit"
+            className="col-span-2 w-fit bg-[#ff9900] text-gray-100"
+          >
+            Guardar cambios
+          </Button>
         </form>
       </div>
     </div>

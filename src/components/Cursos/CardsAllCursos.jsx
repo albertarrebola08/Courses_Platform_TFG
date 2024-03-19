@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 
 const CardsAllCursos = ({ cursos }) => {
   return (
-    <div className="dark:bg-gray-950 py-12 lg:py-24 w-full">
-      <div className="px-4 space-y-12 lg:space-y-16">
+    <div className="  w-full">
+      <div className="px-4 space-y-8 ">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold sm:text-4xl md:text-5xl">
             Nuestros cursos
