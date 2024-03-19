@@ -25,6 +25,9 @@ const CardsAllCursos = ({ cursos }) => {
               descripcion={curso.descripcion}
               id={curso.id}
               imagen={curso.imagen}
+              instructor={curso.instructor}
+              precio={curso.precio}
+              duracion={curso.duracion}
             />
           ))}
         </div>
@@ -33,7 +36,15 @@ const CardsAllCursos = ({ cursos }) => {
   );
 };
 
-const CardCurso = ({ nombre, descripcion, id, imagen }) => {
+const CardCurso = ({
+  nombre,
+  descripcion,
+  id,
+  imagen,
+  instructor,
+  precio,
+  duracion,
+}) => {
   const { user } = useContext(UserContext);
   const [userRequested, setUserRequested] = useState(null);
   const navigate = useNavigate();
@@ -128,15 +139,15 @@ const CardCurso = ({ nombre, descripcion, id, imagen }) => {
         <div className="grid gap-4">
           <div className="space-y-1">
             <h3 className="text-lg font-semibold">Instructor</h3>
-            <p>Pau Cardús</p>
+            <p>{instructor}</p>
           </div>
           <div className="space-y-1">
             <h3 className="text-lg font-semibold">Duración</h3>
-            <p>30h</p>
+            <p>{duracion}</p>
           </div>
           <div className="space-y-1">
             <h3 className="text-lg font-semibold">Precio</h3>
-            <p>600 €</p>
+            <p>{precio}</p>
           </div>
         </div>
       </div>

@@ -37,7 +37,7 @@ const MicursoPage = () => {
     const fetchData = async () => {
       try {
         const { data: cursoData, error: cursoError } = await supabase.rpc(
-          "obtener_cursos_usuario",
+          "obtener_cursos_usuarios",
           {
             userid: user.id,
           }

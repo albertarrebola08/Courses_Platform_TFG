@@ -16,7 +16,7 @@ const CursosPage = () => {
     const fetchCursos = async () => {
       try {
         const { data: cursosData, error } = await supabase.rpc(
-          "obtener_cursos_usuario",
+          "obtener_cursos_usuarios",
           {
             userid,
           }
@@ -52,7 +52,7 @@ const CursosPage = () => {
       } else {
         // Puedes realizar acciones adicionales después de eliminar el curso si es necesario
         const { data: cursosData, error } = await supabase.rpc(
-          "obtener_cursos_usuario",
+          "obtener_cursos_usuarios",
           {
             userid,
           }

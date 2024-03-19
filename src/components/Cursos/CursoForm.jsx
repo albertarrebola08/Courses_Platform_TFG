@@ -11,6 +11,9 @@ const CursoForm = () => {
     nombre: "",
     descripcion: "",
     imagen: "",
+    instructor: "",
+    precio: "",
+    duracion: "",
   });
   const [cursos, setCursos] = useState([]);
 
@@ -41,18 +44,17 @@ const CursoForm = () => {
       // Inserta un registro en la tabla "curso_usuario" con el ID del curso y el ID del usuario actual
       const { data, error } = await supabase
         .from("curso_usuario")
-        .insert([{ curso_id: cursoId, usuario_id: user.id }]);
+        .insert([{ curso_id: cursoId, usuario_id: user.id, solicitud:true}]);
 
       if (data) {
         throw error;
-      }else{
+      } else {
         setCursos(dataCursos);
-
       }
 
       // Obtén la lista actualizada de cursos después de la inserción
       const { data: dataCursos, error: fetchError } = await supabase.rpc(
-        "obtener_cursos_usuario",
+        "obtener_cursos_usuarios",
         {
           userid: user.id,
         }
@@ -78,7 +80,9 @@ const CursoForm = () => {
       setCursoData({
         nombre: "",
         descripcion: "",
-        // otras propiedades del formulario
+        duracion: "",
+        precio: "",
+        instructor: "",
       });
     } catch (error) {
       console.error("Error al crear el curso:", error.message);
@@ -129,6 +133,33 @@ const CursoForm = () => {
           onChange={handleInputChange}
         />
 
+        <Input
+          name="instructor"
+          type="text"
+          label="Nom del instructor"
+          value={cursoData.instructor}
+          onChange={handleInputChange}
+          required
+          className=""
+        />
+        <Input
+          name="duracion"
+          type="text"
+          label="Duración del curso"
+          value={cursoData.duracion}
+          onChange={handleInputChange}
+          required
+          className=""
+        />
+        <Input
+          name="precio"
+          type="text"
+          label="Precio"
+          value={cursoData.precio}
+          onChange={handleInputChange}
+          required
+          className=""
+        />
         <Button className="bg-green-200 w-full mt-4" type="submit">
           Crear curs
         </Button>

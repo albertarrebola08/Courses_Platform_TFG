@@ -16,7 +16,7 @@ const MisCursosPage = () => {
     const fetchCursos = async () => {
       try {
         const { data: cursosData, error } = await supabase.rpc(
-          "obtener_cursos_usuario",
+          "obtener_cursos_usuarios",
           {
             userid,
           }
@@ -39,7 +39,7 @@ const MisCursosPage = () => {
 
   return (
     <main>
-        <UserHeader></UserHeader>
+      <UserHeader></UserHeader>
       <div className="p-8">
         <CardsCursos cursos={cursos} />
       </div>
