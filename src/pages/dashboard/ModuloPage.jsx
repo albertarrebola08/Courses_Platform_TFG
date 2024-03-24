@@ -19,9 +19,33 @@ import { useParams } from "react-router-dom";
 import { Input, Textarea, IconButton, Breadcrumb } from "pol-ui";
 import { TiHome } from "react-icons/ti";
 import { AiOutlineRead, AiTwotoneDatabase } from "react-icons/ai";
+import { useRecoilState } from "recoil";
+import { ModuleInfoState } from "../../atoms/ModuleElements.state";
+export const obtenerIconoPorTipo = (tipo) => {
+  switch (tipo) {
+    case "video":
+      return <RiVideoFill className="text-xl" />;
 
+    case "material":
+      return <RiBookOpenFill className="text-xl" />;
+
+    case "acciona":
+      return <MdBackHand className="text-xl" />;
+
+    case "examen":
+      return <RiFileEditFill className="text-xl" />;
+
+    case "quiz":
+      return <RiListCheck3 className="text-xl" />;
+
+    case "numeral":
+      return <LuDices className="text-xl" />;
+
+    case "camino":
+      return <RiWalkFill className="text-xl" />;
+  }
+};
 const ModuloPage = () => {
-  const { detalleModulo } = useContext(GlobalContext);
   const { itemsBreadcrumb, setItemsBreadcrumb } = useContext(GlobalContext);
 
   const [isEditingName, setIsEditingName] = useState(false);
@@ -30,6 +54,7 @@ const ModuloPage = () => {
   const [moduloInfo, setModuloInfo] = useState([]);
   const Params = useParams();
   const { moduleId } = useParams();
+  const [items, setItems] = useRecoilState(ModuleInfoState);
 
   useEffect(() => {
     const obtenerInfoModulo = async (moduleId) => {
@@ -61,30 +86,6 @@ const ModuloPage = () => {
     obtenerInfoModulo(moduleId);
   }, []);
 
-  const obtenerIconoPorTipo = (tipo) => {
-    switch (tipo) {
-      case "video":
-        return <RiVideoFill className="text-xl" />;
-
-      case "material":
-        return <RiBookOpenFill className="text-xl" />;
-
-      case "acciona":
-        return <MdBackHand className="text-xl" />;
-
-      case "examen":
-        return <RiFileEditFill className="text-xl" />;
-
-      case "quiz":
-        return <RiListCheck3 className="text-xl" />;
-
-      case "numeral":
-        return <LuDices className="text-xl" />;
-
-      case "camino":
-        return <RiWalkFill className="text-xl" />;
-    }
-  };
   //ACCIONES PARA EDITAR EN LINEA EL TITULO Y DESCRIPCION DEL MODULO
   const handleTitleChange = async (e, moduleId) => {
     e.preventDefault();
@@ -138,89 +139,69 @@ const ModuloPage = () => {
     setIsEditingDesc(false);
   };
 
+  const changeItems = (newItems) => {
+    setItems(newItems);
+  };
+
   return (
     <main>
-      <FormAddElement />
-
-      <div className="grid lg:grid-cols-[60%,40%] gap-4 pr-4">
-        <TablaModulo className="flex " />
-        <div className="bg-white rounded-lg p-5">
-          {!isEditingName ? (
-            <span className="flex gap-2 items-center">
-              <h1 className="text-black text-lg">
-                {moduloInfo[0]?.nombre ?? "Cargando nombre..."}
-              </h1>
-              <RiPencilFill
-                onClick={() => setIsEditingName(true)}
-                className="text-gray-400"
-              />
-            </span>
-          ) : (
-            <>
-              <form
-                className="flex gap-3 items-center "
-                onSubmit={(e) => {
-                  handleTitleChange(e, moduleId);
-                }}
-              >
-                <Input
-                  name="titulo"
-                  defaultValue={moduloInfo[0].nombre}
-                ></Input>
-                <IconButton type="submit">
-                  <RiCheckFill className="bg-primary" />
-                </IconButton>
-              </form>
-            </>
-          )}
-          {!isEditingDesc ? (
-            <span className="flex gap-2 items-center text-md">
-              <h2>{moduloInfo[0]?.descripcion ?? "Cargando descripcion..."}</h2>
-              <RiPencilFill
-                className="text-gray-400"
-                onClick={() => setIsEditingDesc(true)}
-              />
-            </span>
-          ) : (
-            <>
-              <form
-                className="flex gap-3 items-center"
-                onSubmit={(e) => {
-                  handleDescriptionChange(e, moduleId);
-                }}
-              >
-                <Textarea
-                  innerClassName="resize"
-                  defaultValue={moduloInfo[0].descripcion}
-                  name="descripcion"
-                ></Textarea>
-                <IconButton type="submit">
-                  <RiCheckFill className="bg-primary" />
-                </IconButton>
-              </form>
-            </>
-          )}
-
-          {/* Mostrar lista de divs según el orden en detalle.orden */}
-          {detalleModulo
-            .sort((a, b) => a.orden - b.orden)
-            .map((detalle) => (
-              <div
-                className="flex items-center gap-4 border border-gray-300 my-3 rounded-lg p-3"
-                key={`${detalle.tipo}-${detalle.id}`}
-              >
-                <div
-                  className="bg-gray-200 p-4 rounded-[50%]"
-                  role="img"
-                  aria-label="icono-tipo"
-                >
-                  {obtenerIconoPorTipo(detalle.tipo)}
-                </div>
-                <div>{detalle.titulo}</div>
-              </div>
-            ))}
-        </div>
+      {" "}
+      <div className="bg-white rounded-lg p-5">
+        {!isEditingName ? (
+          <span className="flex gap-2 items-center">
+            <h1 className="text-black text-lg">
+              {moduloInfo[0]?.nombre ?? "Cargando nombre..."}
+            </h1>
+            <RiPencilFill
+              onClick={() => setIsEditingName(true)}
+              className="text-gray-400"
+            />
+          </span>
+        ) : (
+          <>
+            <form
+              className="flex gap-3 items-center "
+              onSubmit={(e) => {
+                handleTitleChange(e, moduleId);
+              }}
+            >
+              <Input name="titulo" defaultValue={moduloInfo[0].nombre}></Input>
+              <IconButton type="submit">
+                <RiCheckFill className="bg-primary" />
+              </IconButton>
+            </form>
+          </>
+        )}
+        {!isEditingDesc ? (
+          <span className="flex gap-2 items-center text-md">
+            <h2>{moduloInfo[0]?.descripcion ?? "Cargando descripcion..."}</h2>
+            <RiPencilFill
+              className="text-gray-400"
+              onClick={() => setIsEditingDesc(true)}
+            />
+          </span>
+        ) : (
+          <>
+            <form
+              className="flex gap-3 items-center"
+              onSubmit={(e) => {
+                handleDescriptionChange(e, moduleId);
+              }}
+            >
+              <Textarea
+                innerClassName="resize"
+                defaultValue={moduloInfo[0].descripcion}
+                name="descripcion"
+              ></Textarea>
+              <IconButton type="submit">
+                <RiCheckFill className="bg-primary" />
+              </IconButton>
+            </form>
+          </>
+        )}
       </div>
+      <FormAddElement addNewItem={changeItems} />
+      <TablaModulo className="flex " setItems={setItems} />
     </main>
   );
 };

@@ -1,6 +1,5 @@
 import { Button } from "pol-ui";
 import React from "react";
-import { Link } from "react-router-dom";
 
 const Inicio = () => {
   return (
@@ -9,7 +8,7 @@ const Inicio = () => {
         src="https://rispot.com/wp-content/uploads/2023/12/cropped-logo_possible3.png"
         alt=""
         width="20%"
-        className="mx-[9.5%] "
+        className="mx-[9.5%]"
       />
       <div className="flex justify-center items-center gap-6 mt-[5%]">
         {/* Mensaje de bienvenida */}
@@ -24,16 +23,10 @@ const Inicio = () => {
             </p>
           </div>
           <div className="flex gap-2 ">
-            <Button
-              className="w-[200px] text-dark rounded-md bordertext-dark border-gray-200 bg-gray-200 shadow-sm px-8 "
-              href="/home"
-            >
+            <Button className="px-8" href="/home" outline>
               Explora Cursos
             </Button>
-            <Button
-              className=" w-[200px] px-8 rounded-md bg-[#ff9900]  text-white shadow gap-1 hover:bg-[#ff9900] hover:text-white "
-              href="/login"
-            >
+            <Button className=" px-8 rounded-md  shadow gap-1  " href="/login">
               Iniciar sesión
             </Button>
           </div>

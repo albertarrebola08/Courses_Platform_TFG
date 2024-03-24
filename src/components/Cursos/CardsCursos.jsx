@@ -1,9 +1,8 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import { Card, CardHeader, CardBody, Image } from "@nextui-org/react";
 import { RiEdit2Line, RiDeleteBin2Line } from "react-icons/ri";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { UserContext } from "../../UserContext";
-import { Button } from "pol-ui";
 
 const CardsCursos = ({ cursos, onDelete }) => {
   const handleEditCurso = (id) => {

@@ -21,7 +21,7 @@ const UserHeader = () => {
   };
 
   return (
-    <div className="py-5 px-8 bg-primary-50">
+    <div className="py-5 px-8 bg-primary-50 w-full">
       <Navbar
         leftContent={
           <img
@@ -34,7 +34,7 @@ const UserHeader = () => {
           <div className="flex gap-3 md:order-2">
             {!user ? (
               <div className="flex gap-3">
-                <Button className="bg-[#ff9900]" href="/login">
+                <Button className="bg-primary" href="/login">
                   Empezar
                 </Button>
                 <Button className="bg-[#232f3e]" href="/register">
@@ -65,7 +65,10 @@ const UserHeader = () => {
               ? { href: "/dashboard/cursos", label: "Mis cursos" }
               : { href: "/mis-cursos", label: "Mis cursos" }
             : { href: "/login", label: "Mis cursos" },
-          { href: "#", label: "Services" },
+          {
+            href: "#",
+            label: "Services",
+          },
           { href: "https://rispot.com/", label: "Nuestra empresa" },
         ]}
       />

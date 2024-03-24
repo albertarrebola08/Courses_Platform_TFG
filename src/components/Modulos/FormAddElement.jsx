@@ -4,7 +4,8 @@ import { supabase } from "../../supabase/supabaseClient";
 import { GlobalContext } from "../../GlobalContext";
 import { RiAddLine, RiCloseFill } from "react-icons/ri";
 import { useParams } from "react-router-dom";
-import { SelectItem } from "@nextui-org/react";
+import { useRecoilState } from "recoil";
+import { ModuleInfoState } from "../../atoms/ModuleElements.state";
 
 const FormAddElement = () => {
   const tiposElementos = [
@@ -17,8 +18,8 @@ const FormAddElement = () => {
     "numeral",
   ];
   const [selectedValue, setSelectedValue] = useState(null);
-  const { detalleModulo, setDetalleModulo } = useContext(GlobalContext);
   const [showForm, setShowForm] = useState(false);
+  const [detalleModulo, setDetalleModulo] = useRecoilState(ModuleInfoState);
 
   const { moduleId } = useParams();
 
@@ -34,11 +35,11 @@ const FormAddElement = () => {
       selectedValue ?? "video",
       lastOrder
     );
-    detalleModulo.push(objetoInsertado);
-    setDetalleModulo([...detalleModulo]);
+
+    setDetalleModulo([...detalleModulo, objetoInsertado]);
   };
 
-  let lastOrder = Object.keys(detalleModulo).length;
+  let lastOrder = 0;
 
   const insertaDetalle = async (selectedValue, lastOrder) => {
     const campoHaveElemento = `have_${selectedValue}`;

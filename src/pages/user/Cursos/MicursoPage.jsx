@@ -15,7 +15,6 @@ import UserMaterial from "../UserMaterial";
 import UserQuiz from "../UserQuiz";
 import UserNumeral from "../UserNumeral";
 import { RiArrowLeftDoubleFill, RiArrowRightDoubleFill } from "react-icons/ri";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { Flat } from "@alptugidin/react-circular-progress-bar";
 
@@ -124,11 +123,9 @@ const MicursoPage = () => {
             <div>
               <h4 className="text-gray-300">07/03/2024</h4>
               <div className="p-4 my-4 rounded-md bg-[#f8f8f8]">
-                <h5 className="text-gray-900">
-                  Quin és el CPC mínim per llançar publicitat al mercat Xinès?
-                </h5>
                 <Input
-                  className="bg-[#232f3e] mt-3"
+                  label="Quin és el CPC mínim per llançar publicitat al mercat Xinès?"
+                  innerClassName="placeholder:text-secondary-800"
                   type="number"
                   placeholder="Indica la resposta"
                 />
@@ -237,16 +234,13 @@ const MicursoPage = () => {
 
         <div className="relative">
           <div className="absolute top-0 right-0 mt-4 mr-4">
-            <Button
-              onClick={toggleElementosVisibility}
-              className="4 rounded-lg"
-            >
+            <IconButton onClick={toggleElementosVisibility} className="4">
               {elementosVisible ? (
                 <RiArrowRightDoubleFill />
               ) : (
                 <RiArrowLeftDoubleFill />
               )}
-            </Button>
+            </IconButton>
           </div>
           {elementosVisible && (
             <ElementosCursoPage

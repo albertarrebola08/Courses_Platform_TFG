@@ -6,7 +6,6 @@ import "./index.css";
 import { PoluiProvider } from "pol-ui";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
     <NextUIProvider>
       <PoluiProvider
         theme={{ theme: { breadcrumb: { root: { base: "py-6" } } } }}
@@ -14,5 +13,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <App />
       </PoluiProvider>
     </NextUIProvider>
-  </React.StrictMode>
+
 );
