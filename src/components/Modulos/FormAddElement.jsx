@@ -39,7 +39,7 @@ const FormAddElement = () => {
     setDetalleModulo([...detalleModulo, objetoInsertado]);
   };
 
-  let lastOrder = 0;
+  let lastOrder = detalleModulo.length;
 
   const insertaDetalle = async (selectedValue, lastOrder) => {
     const campoHaveElemento = `have_${selectedValue}`;

@@ -5,6 +5,7 @@ import ItemModuloRow from "./ItemModuloRow";
 import { useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { ModuleInfoState } from "../../atoms/ModuleElements.state";
+import { Button } from "pol-ui";
 const ListaModulo = () => {
   const { moduleId } = useParams();
   const [items, setItems] = useRecoilState(ModuleInfoState);
@@ -88,8 +89,34 @@ const ListaModulo = () => {
       console.error("Error al eliminar el detalle del módulo:", error.message);
     }
   };
+
+  const handleSaveOrderDb = async () => {
+    try {
+      // Obten los elementos con los nuevos órdenes del estado local
+      const elementosConNuevosOrdenes = items.map((item, index) => ({
+        id: item.id,
+        orden: index + 1, // Los índices comienzan desde 0, pero los órdenes deben comenzar desde 1
+      }));
+
+      // Actualiza los órdenes de los elementos en la base de datos
+      for (const elemento of elementosConNuevosOrdenes) {
+        await supabase
+          .from("elementos")
+          .update({ orden: elemento.orden })
+          .eq("id", elemento.id);
+      }
+
+      console.log("Órdenes actualizados con éxito en la base de datos");
+    } catch (error) {
+      console.error(
+        "Error al guardar los órdenes en la base de datos:",
+        error.message
+      );
+    }
+  };
+
   return (
-    <div className=" gap-4 w-full">
+    <div className=" gap-4 w-full flex flex-col">
       <Reorder.Group
         axis="y"
         values={items}
@@ -106,6 +133,9 @@ const ListaModulo = () => {
           );
         })}
       </Reorder.Group>
+      <Button className="w-fit px-8" onClick={handleSaveOrderDb}>
+        Guardar canvis
+      </Button>
     </div>
   );
 };

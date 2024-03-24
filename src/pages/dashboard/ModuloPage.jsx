@@ -144,7 +144,7 @@ const ModuloPage = () => {
   };
 
   return (
-    <main>
+    <main className="flex flex-col gap-4">
       {" "}
       <div className="bg-white rounded-lg p-5">
         {!isEditingName ? (
@@ -200,8 +200,10 @@ const ModuloPage = () => {
           </>
         )}
       </div>
-      <FormAddElement addNewItem={changeItems} />
+      <span>Arrosega per ordenar</span>
       <TablaModulo className="flex " setItems={setItems} />
+      <FormAddElement addNewItem={changeItems} />
+      
     </main>
   );
 };

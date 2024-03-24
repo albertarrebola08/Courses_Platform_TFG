@@ -66,7 +66,7 @@ const UserHeader = () => {
               : { href: "/mis-cursos", label: "Mis cursos" }
             : { href: "/login", label: "Mis cursos" },
           {
-            href: "#",
+            href: "https://rispot.com/ca/serveis/",
             label: "Services",
           },
           { href: "https://rispot.com/", label: "Nuestra empresa" },
