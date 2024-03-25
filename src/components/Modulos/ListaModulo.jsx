@@ -133,7 +133,8 @@ const ListaModulo = () => {
           );
         })}
       </Reorder.Group>
-      <Button className="w-fit px-8" onClick={handleSaveOrderDb}>
+      <Button className="w-fit px-8
+      " onClick={handleSaveOrderDb}>
         Guardar canvis
       </Button>
     </div>

@@ -1,5 +1,4 @@
-import React from "react";
-import { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { IconButton, Button } from "pol-ui";
 import {
   RiVideoFill,
@@ -9,9 +8,11 @@ import {
   RiSearch2Line,
   RiMiniProgramFill,
 } from "react-icons/ri";
-import { MdBackHand } from "react-icons/md";
+import { MdBackHand, MdLock } from "react-icons/md";
 import { LuDices } from "react-icons/lu";
 import { UserContext } from "../../../UserContext";
+import { supabase } from "../../../supabase/supabaseClient";
+
 const ElementosCursoPage = ({
   courseElements,
   usuarioEnCursoData,
@@ -21,6 +22,61 @@ const ElementosCursoPage = ({
   id,
 }) => {
   const { user } = useContext(UserContext);
+  const [examenEstados, setExamenEstados] = useState({});
+  useEffect(() => {
+    const fetchExamenEstados = async () => {
+      const estados = {};
+
+      for (const modulo of courseElements) {
+        for (const elemento of modulo.elementos) {
+          if (elemento.tipo === "examen") {
+            try {
+              const { data, error } = await supabase
+                .from("examen_usuario")
+                .select("*")
+                .eq("examen_id", elemento.id)
+                .eq("usuario_id", user.id);
+
+              if (error) {
+                console.error(
+                  "Error al obtener el estado del examen:",
+                  error.message
+                );
+                estados[elemento.id] = { estado: "error", nota: null };
+              } else {
+                if (data && data.length > 0) {
+                  const intento = data[0].intento;
+                  if (intento >= 2) {
+                    estados[elemento.id] = {
+                      estado: data[0].nota >= 5 ? "aprobado" : "suspendido",
+                      nota: data[0].nota,
+                    };
+                  } else {
+                    estados[elemento.id] = {
+                      estado: data[0].nota >= 5 ? "aprobado" : "suspendido",
+                      nota: data[0].nota,
+                    };
+                  }
+                } else {
+                  estados[elemento.id] = { estado: "examen_vacio", nota: null };
+                }
+              }
+            } catch (error) {
+              console.error(
+                "Error al consultar el estado del examen:",
+                error.message
+              );
+              estados[elemento.id] = { estado: "error", nota: null };
+            }
+          }
+        }
+      }
+
+      setExamenEstados(estados);
+    };
+
+    fetchExamenEstados();
+  }, [courseElements]);
   return (
     <section className="info-progress rounded-lg bg-[#f8f8f8] shadow-lg">
       <div className="fix-header rounded-xl shadow-md p-4 ">
@@ -28,7 +84,6 @@ const ElementosCursoPage = ({
           <h2 className="text-lg font-bold">
             {detalleCurso && detalleCurso[0].nombre}
           </h2>
-
           <a
             href={`/mis-cursos/${id}`}
             className="flex items-center gap-1 w-fit hover:underline hover:text-gray-500"
@@ -99,9 +154,31 @@ const ElementosCursoPage = ({
                               : "bg-[#232f3e]"
                           } text-white`}
                         >
-                          {elementoCompletado
-                            ? "Completado"
-                            : "Marcar como terminado"}
+                          {elemento.tipo === "examen" ? (
+                            examenEstados[elemento.id]?.estado === "aprobado" ||
+                            examenEstados[elemento.id]?.estado ===
+                              "suspendido" ||
+                            examenEstados[elemento.id]?.estado ===
+                              "max_intentos" ? (
+                              <>
+                                {examenEstados[elemento.id].estado ===
+                                "aprobado"
+                                  ? "Aprobado"
+                                  : "Suspendido"}{" "}
+                                - Nota: {examenEstados[elemento.id].nota}
+                                {examenEstados[elemento.id]?.estado ===
+                                  "max_intentos" && <MdLock />}
+                              </>
+                            ) : (
+                              <>Examen vacío</>
+                            )
+                          ) : (
+                            <>
+                              {elementoCompletado
+                                ? "Completado"
+                                : "Marcar como terminado"}
+                            </>
+                          )}
                         </Button>
                       </li>
                     );
