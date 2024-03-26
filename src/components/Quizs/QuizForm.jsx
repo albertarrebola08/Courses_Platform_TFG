@@ -44,7 +44,7 @@ const QuizForm = () => {
   const toggleModal = () => {
     setShowModal((prev) => !prev);
   };
-  
+
   //obtengo el desarrollo del examen de bbdd fetch
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -96,7 +96,7 @@ const QuizForm = () => {
         .filter((p) => p.id !== preguntaId)
         .map((p, index) => ({
           ...p,
-          id: index + 1, // Reasignar el ID de la pregunta
+          id: index + 1,
         }));
 
       // Actualizar el quiz en la base de datos
@@ -152,7 +152,7 @@ const QuizForm = () => {
       enunciado: "",
       imagen: "",
       respuestas: nuevasRespuestas,
-      tipo:"test"
+      tipo: "test",
     };
 
     setQuiz((prevState) => ({
@@ -182,7 +182,7 @@ const QuizForm = () => {
               respuestas: [
                 ...pregunta.respuestas,
                 {
-                  id: pregunta.respuestas.length + 1,
+                  id: pregunta.respuestas.length,
                   texto: "",
                   esCorrecta: esCorrecta,
                 },

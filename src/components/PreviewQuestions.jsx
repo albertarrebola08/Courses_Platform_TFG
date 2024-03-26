@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../supabase/supabaseClient";
-import { Banner, Button, Checkbox, Input, Toaster, toast } from "pol-ui";
+import { Alert, Banner, Button, Checkbox, Input, Toaster, toast } from "pol-ui";
 
 import { UserContext } from "../UserContext";
 import { MdLock } from "react-icons/md";
+import { AiFillAlert } from "react-icons/ai";
 
 const PreviewQuestions = ({ contentType }) => {
   const [content, setContent] = useState(null);
@@ -88,19 +89,37 @@ const PreviewQuestions = ({ contentType }) => {
 
     content.preguntas.forEach((pregunta) => {
       const respuestaUsuario = respuestasUsuario[pregunta.id];
-      console.log(typeof respuestaUsuario);
-      console.log('rrrrr',respuestaUsuario);
-      const respuestaCorrecta = pregunta.respuestas.find(
-        (respuesta) => respuesta.esCorrecta
-      );
+      console.log("Respuesta del usuario:", respuestaUsuario);
 
-      if (respuestaCorrecta) {
-        totalPreguntas++; // Incrementar el contador de preguntas si hay una respuesta correcta definida
-        if (
-          respuestaUsuario !== undefined &&
-          respuestaCorrecta.id === respuestaUsuario
-        ) {
-          puntaje++; // Incrementar el puntaje si la respuesta del usuario es correcta
+      if (pregunta.tipo === "test") {
+        // Para preguntas de opción múltiple
+        const respuestaCorrectaIndex = pregunta.respuestas.findIndex(
+          (respuesta) => respuesta.esCorrecta
+        );
+
+        if (respuestaCorrectaIndex !== -1) {
+          totalPreguntas++;
+          if (
+            respuestaUsuario !== undefined &&
+            respuestaCorrectaIndex === parseInt(respuestaUsuario)
+          ) {
+            puntaje++; // Incrementar el puntaje si la respuesta del usuario es correcta
+          }
+        }
+      } else if (pregunta.tipo === "numeral") {
+        // Para preguntas numéricas
+        const respuestaCorrecta = pregunta.respuestas.find(
+          (respuesta) => respuesta.esCorrecta
+        );
+
+        if (respuestaCorrecta) {
+          totalPreguntas++;
+          if (
+            respuestaUsuario !== undefined &&
+            respuestaCorrecta.texto === respuestaUsuario
+          ) {
+            puntaje++; // Incrementar el puntaje si la respuesta del usuario es correcta
+          }
         }
       }
     });
@@ -109,7 +128,6 @@ const PreviewQuestions = ({ contentType }) => {
     const nota = (puntaje / totalPreguntas) * 10;
     return nota.toFixed(2);
   };
-
   const actualizarNotaEnBaseDeDatos = async (nota) => {
     try {
       const { data: existingData, error: existingError } = await supabase
@@ -230,9 +248,18 @@ const PreviewQuestions = ({ contentType }) => {
               </div>
             ))}
             <Button onClick={handleFinalizarExamen}>
-              Finalizar Examen
+              Enviar prova
               {intentos === 2 && <MdLock />}
             </Button>
+            <Alert className="text-[14px]" bordered="true" color="info">
+              <div className="flex gap-2 items-center p-2 bg-info-300 rounded-md mt-3">
+                <AiFillAlert />
+                <div className="">
+                  Aquesta es una prova NO avaluable per practicar per l'examen.
+                  Pots fer-la tants cops com vulguis
+                </div>
+              </div>
+            </Alert>
           </div>
         )}
         {showBanner && nota !== null && nota !== undefined && (

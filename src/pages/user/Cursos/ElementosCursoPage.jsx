@@ -7,6 +7,11 @@ import {
   RiBookOpenFill,
   RiSearch2Line,
   RiMiniProgramFill,
+  RiCrossFill,
+  RiCheckFill,
+  RiCloseFill,
+  RiCheckboxBlankCircleLine,
+  RiCursorLine,
 } from "react-icons/ri";
 import { MdBackHand, MdLock } from "react-icons/md";
 import { LuDices } from "react-icons/lu";
@@ -88,7 +93,7 @@ const ElementosCursoPage = ({
             href={`/mis-cursos/${id}`}
             className="flex items-center gap-1 w-fit hover:underline hover:text-gray-500"
           >
-            Ver progreso
+            Veure progrés
           </a>
         </div>
       </div>
@@ -150,7 +155,7 @@ const ElementosCursoPage = ({
                           onClick={() => handleItemCompleted(elemento.id)}
                           className={`${
                             elementoCompletado
-                              ? "bg-success-700"
+                              ? "bg-success-500"
                               : "bg-[#232f3e]"
                           } text-white`}
                         >
@@ -164,19 +169,27 @@ const ElementosCursoPage = ({
                                 {examenEstados[elemento.id].estado ===
                                 "aprobado"
                                   ? "Aprobado"
-                                  : "Suspendido"}{" "}
+                                  : "Suspendido"}
                                 - Nota: {examenEstados[elemento.id].nota}
                                 {examenEstados[elemento.id]?.estado ===
                                   "max_intentos" && <MdLock />}
                               </>
                             ) : (
-                              <>Examen vacío</>
+                              <span className="flex gap-2 items-center">
+                                <RiCursorLine />
+                                Marcar com a finalitzat
+                              </span>
                             )
                           ) : (
                             <>
-                              {elementoCompletado
-                                ? "Completado"
-                                : "Marcar como terminado"}
+                              {elementoCompletado ? (
+                                <RiCheckFill />
+                              ) : (
+                                <span className="flex gap-2 items-center">
+                                  <RiCursorLine />
+                                  Marcar com a finalitzat
+                                </span>
+                              )}
                             </>
                           )}
                         </Button>

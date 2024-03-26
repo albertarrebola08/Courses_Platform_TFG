@@ -235,7 +235,7 @@ const ExamenForm = () => {
               respuestas: [
                 ...pregunta.respuestas,
                 {
-                  id: pregunta.respuestas.length + 1,
+                  id: pregunta.respuestas.length,
                   texto: "",
                   esCorrecta: esCorrecta,
                 },
