@@ -6,6 +6,7 @@ export const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
   const [detalleModulo, setDetalleModulo] = useState([]);
+  const [consejosData, setConsejosData] = useState([]);
   const [progressPercent, setProgressPercent] = useState([]);
   const [itemsBreadcrumb, setItemsBreadcrumb] = useState([
     {
@@ -21,7 +22,8 @@ export const GlobalProvider = ({ children }) => {
         setDetalleModulo,
         progressPercent,
         setProgressPercent,
-
+        consejosData,
+        setConsejosData,
         itemsBreadcrumb,
         setItemsBreadcrumb,
       }}

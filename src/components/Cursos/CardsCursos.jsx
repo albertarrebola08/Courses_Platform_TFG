@@ -4,7 +4,9 @@ import { RiEdit2Line, RiDeleteBin2Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { UserContext } from "../../UserContext";
 
-const CardsCursos = ({ cursos, onDelete }) => {
+const CardsCursos = ({ cursos, onDelete, onSubmit}) => {
+  console.log(cursos);
+
   const handleEditCurso = (id) => {
     console.log(`Editar curso con ID: ${id}`);
   };

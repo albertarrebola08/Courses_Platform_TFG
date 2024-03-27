@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { supabase } from "../../supabase/supabaseClient";
-import { Input, Button, Textarea } from "@nextui-org/react";
+import { Input, Button, Textarea } from "pol-ui";
 import { RiAddFill, RiCloseFill, RiThumbUpFill } from "react-icons/ri";
 import { UserContext } from "../../UserContext";
 
@@ -16,7 +16,6 @@ const CursoForm = () => {
     duracion: "",
   });
   const [cursos, setCursos] = useState([]);
-
   const [addCourseSelected, setAddCourseSelected] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
@@ -28,7 +27,7 @@ const CursoForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Inserta el curso en la tabla "curso"
+      // Insertar el curso en la tabla "curso"
       const { data: insertedCursoData, error: cursoError } = await supabase
         .from("curso")
         .insert([cursoData])
@@ -38,21 +37,22 @@ const CursoForm = () => {
         throw cursoError;
       }
 
-      // Obtiene el ID del curso recién creado
+      // Obtener el ID del curso recién creado
       const cursoId = insertedCursoData[0].id;
 
-      // Inserta un registro en la tabla "curso_usuario" con el ID del curso y el ID del usuario actual
-      const { data, error } = await supabase
-        .from("curso_usuario")
-        .insert([{ curso_id: cursoId, usuario_id: user.id, solicitud:true}]);
+      // Insertar un registro en la tabla "curso_usuario" con el ID del curso y el ID del usuario actual
+      const { data: cursoUsuarioData, error: cursoUsuarioError } =
+        await supabase
+          .from("curso_usuario")
+          .insert([
+            { curso_id: cursoId, usuario_id: user.id, solicitud: true },
+          ]);
 
-      if (data) {
-        throw error;
-      } else {
-        setCursos(dataCursos);
+      if (cursoUsuarioError) {
+        throw cursoUsuarioError;
       }
 
-      // Obtén la lista actualizada de cursos después de la inserción
+      // Obtener la lista actualizada de cursos después de la inserción
       const { data: dataCursos, error: fetchError } = await supabase.rpc(
         "obtener_cursos_usuarios",
         {
@@ -61,14 +61,11 @@ const CursoForm = () => {
       );
 
       if (fetchError) {
-        console.error(
-          "Error al obtener cursos después de la inserción:",
-          fetchError.message
-        );
-      } else {
-        // Actualiza el estado de cursos después de la inserción
-        setCursos(dataCursos);
+        throw fetchError;
       }
+
+      // Actualizar el estado de cursos después de la inserción
+      setCursos(dataCursos);
 
       // Mostrar mensaje de éxito durante 3 segundos
       setShowSuccessMessage(true);
@@ -88,6 +85,7 @@ const CursoForm = () => {
       console.error("Error al crear el curso:", error.message);
     }
   };
+
   return (
     <div className="rounded-xl">
       {showSuccessMessage && (
@@ -96,14 +94,14 @@ const CursoForm = () => {
           className="absolute top-2 right-2 bg-green-800 text-white py-2 px-4 rounded"
         >
           <RiThumbUpFill className="mr-2 text-white" />
-          Curs creat amb èxit
+          Curso creado con éxito
         </div>
       )}
       <Button
         className=""
         onClick={() => setAddCourseSelected(!addCourseSelected)}
       >
-        Crear curs{" "}
+        Crear curso
         {addCourseSelected ? (
           <RiCloseFill className="text-red-800" />
         ) : (
@@ -119,24 +117,22 @@ const CursoForm = () => {
         <Input
           name="nombre"
           type="text"
-          label="Nom del curs"
+          label="Nombre del curso"
           value={cursoData.nombre}
           onChange={handleInputChange}
           required
           className=""
         />
-
         <Textarea
-          placeholder="Introdueix la descripció"
+          label="Introduce la descripción"
           name="descripcion"
           value={cursoData.descripcion}
           onChange={handleInputChange}
         />
-
         <Input
           name="instructor"
           type="text"
-          label="Nom del instructor"
+          label="Nombre del instructor"
           value={cursoData.instructor}
           onChange={handleInputChange}
           required
@@ -160,11 +156,15 @@ const CursoForm = () => {
           required
           className=""
         />
-        <Button className="bg-green-200 w-full mt-4" type="submit">
-          Crear curs
+        <Button
+          className="bg-[#232f3e] w-fit px-8 mt-4 hover:shadow-xl"
+          type="submit"
+        >
+          Crear curso
         </Button>
       </form>
     </div>
   );
 };
+
 export default CursoForm;

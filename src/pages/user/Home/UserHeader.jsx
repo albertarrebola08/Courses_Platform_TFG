@@ -21,7 +21,7 @@ const UserHeader = () => {
   };
 
   return (
-    <div className="py-5 px-8 bg-primary-50 w-full">
+    <div className="py-5 px-8 bg-primary-50 w-screen">
       <Navbar
         leftContent={
           <img

@@ -27,6 +27,7 @@ import ProfilePage from "./pages/user/Settings/ProfilePage";
 import RequestsPage from "./pages/dashboard/RequestsPage";
 import Inicio from "./pages/user/Home/Inicio";
 import { RecoilRoot } from "recoil";
+import ConsejosPage from "./pages/dashboard/ConsejosPage";
 
 function App() {
   return (
@@ -45,8 +46,12 @@ function App() {
                     <Route path="cursos/:id" element={<CursoPage />} />
                     {<Route path="modulo/:moduleId" element={<ModuloPage />} />}
                     <Route
-                      path="preguntes-diaries"
+                      path="cursos/:id/preguntas"
                       element={<QuestionsPage />}
+                    />
+                    <Route
+                      path="cursos/:id/consejos"
+                      element={<ConsejosPage />}
                     />
                     <Route path="solicitudes" element={<RequestsPage />} />
 

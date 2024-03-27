@@ -1,11 +1,10 @@
-import { Form, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { supabase } from "../../supabase/supabaseClient";
 import { useState, useEffect } from "react";
 import { Input, IconButton, Textarea, Alert } from "pol-ui";
 
 import { RiPencilFill, RiCloseFill, RiCheckFill } from "react-icons/ri";
 import NumeralForm from "./NumeralForm";
-// import NumeralForm from "./NumeralForm";
 
 const DetalleNumeral = () => {
   const { elementoId } = useParams();
@@ -22,13 +21,19 @@ const DetalleNumeral = () => {
           .eq("elemento_id", parseInt(elementoId));
 
         if (error) {
-          console.error("Error al obtener el detalle del numeral:", error.message);
+          console.error(
+            "Error al obtener el detalle del numeral:",
+            error.message
+          );
         } else {
           console.log("Detalle numeral: ", numeralData);
           setNumeralInfo(numeralData);
         }
       } catch (error) {
-        console.error("Error al obtener el detalle del numeral:", error.message);
+        console.error(
+          "Error al obtener el detalle del numeral:",
+          error.message
+        );
       }
     };
 
@@ -76,7 +81,10 @@ const DetalleNumeral = () => {
   //gestiono enunciado - POSIBLE MODIFICACION A EDITOR DE TEXTO BUSCAR COMPONENTE O PREGUNTAR POL-UI
   const handleEnunciadoChange = async (e, elementoId) => {
     e.preventDefault();
-    console.log("descripcion/enunciado  numeral!!!  : ", e.target.enunciado.value);
+    console.log(
+      "descripcion/enunciado  numeral!!!  : ",
+      e.target.enunciado.value
+    );
     const enunciado = e.target.enunciado.value;
 
     try {
@@ -154,7 +162,8 @@ const DetalleNumeral = () => {
                   </div>
 
                   <p className="text-black text-lg font-light">
-                    {numeralInfo[0]?.enunciado ?? "Carregant enunciat del numeral..."}
+                    {numeralInfo[0]?.enunciado ??
+                      "Carregant enunciat del numeral..."}
                   </p>
                 </div>
               </span>

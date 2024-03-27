@@ -33,7 +33,7 @@ const MisCursosPage = () => {
       }
     };
 
-    // Llama a la función para obtener cursos cada vez que el componente se renderiza
+    // Llama a la función para obtener cursos solo cuando el componente se monta inicialmente
     fetchCursos();
   }, []);
 
@@ -41,7 +41,7 @@ const MisCursosPage = () => {
     <main>
       <UserHeader></UserHeader>
       <div className="p-8">
-        <CardsCursos cursos={cursos} />
+        <CardsCursos cursos={cursos} setCursos={setCursos} />
       </div>
     </main>
   );
